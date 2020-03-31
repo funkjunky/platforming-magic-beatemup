@@ -1,0 +1,50 @@
+TODO
+---
+
+ ~~Finished - Basic Tick Example~~
+
+ *- tag v0.9
+ *- push tags
+ *- branch develop
+
+ *- create various npm libraries for middlewares
+ *- rename repository to “effect-tick”
+ *- merge to master
+ *- tag v1.0
+ *- branch develop
+ *- Greatly improve README for anyone to use
+
+ *- bind key to shoot fireball from me. Enemy is still automatic.
+
+ *- add y coordinate to demo entity reducer and all actions
+ *- update seek to work with y coordinate
+ *- add the y coordinate for graphics
+ *- ensure it all still works
+
+ *- add jump action
+ *- ensure it works
+ *- seek doesn’t seek y properly.
+ *- commit, push
+
+ *- npm link tick folder
+
+ *- Tick: switch the effect for an action, so any library can use it.
+ *- get my project to work with the new action version.
+
+ *- clean up folder structure
+ *- graphics should be in a separate folder.. for now keep it in graphics.js
+ *- get the thing working again with the file moves.
+ *- all generator actions should probably be taken down a function. Do I need to do args => generator(), while not just generator(args)?
+
+ *- copy the code and create a seed project
+ *- get the seed working with parcel instead of webpack/babel
+ - push seed
+ - copy the seed and create a new game!
+	- ipad mini resolution
+
+ - see notes, and do turn based RPG with 2d plane
+
+ - pause individual ticks, would be handy. Could freeze a character and all their abilities, or just an ability, etc.
+
+ - Advanced Logger with a tree
+	~ maybe in middleware to detect generator, then pass on to effect processor that it has a parent. I would need to intercept “put” effects to add them to the tree, and add a branch to be passed on to other put effects, also tick?? Different colours for effects and actions?

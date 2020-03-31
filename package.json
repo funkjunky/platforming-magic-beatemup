@@ -1,0 +1,21 @@
+{
+  "name": "generator-tick-seed",
+  "version": "1.0.0",
+  "description": "A sample game for using redux generators and ticks",
+  "main": "index.js",
+  "author": "Jason McCarrell <jason.abz@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "effect-tick": "^2.0.0",
+    "end-polyfills": "^1.0.0",
+    "react": "^16.2.0",
+    "redux": "^3.7.2",
+    "redux-meta-selector": "^1.0.0",
+    "redux-yield-effect": "^1.1.0"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-1": "^6.24.1"
+  }
+}
