@@ -1,8 +1,11 @@
 {
-  "name": "generator-tick-seed",
+  "name": "platforming-magic-beatemup",
   "version": "1.0.0",
-  "description": "A sample game for using redux generators and ticks",
+  "description": "a basic fun game to make",
   "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server"
+  },
   "author": "Jason McCarrell <jason.abz@gmail.com>",
   "license": "MIT",
   "private": false,
@@ -15,7 +18,13 @@
     "redux-yield-effect": "^1.1.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "babel-loader": "^8.1.0",
     "babel-preset-env": "^1.6.1",
-    "babel-preset-stage-1": "^6.24.1"
+    "babel-preset-stage-1": "^6.24.1",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   }
 }

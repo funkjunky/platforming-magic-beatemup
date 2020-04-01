@@ -10,7 +10,7 @@ const c = {
 const width = 5;
 
 export default (ctx, state, dt) => {
-    const drawPerson = (person, color = c.orange) => {
+    const drawPerson = (person, color = c.purple) => {
         ctx.strokeStyle = color;
         ctx.lineWidth = width;
         ctx.beginPath();

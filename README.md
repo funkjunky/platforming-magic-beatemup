@@ -8,3 +8,5 @@ It comes with the seek action as a demo, but doesn't use it.
 It also includes HMR for both the reducer and graphics!!
 
 See https://funkjunky.github.io/generator-tick-game/ for a demo use case
+
+Music attribution: https://soundcloud.com/weaverbeats/i-used-to-make-stuff-like-this
