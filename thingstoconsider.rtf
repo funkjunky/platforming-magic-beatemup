@@ -9,17 +9,30 @@
 \
 Ugh\'85. pre-todo:\
  [DONE] - copy vimrc over to this laptop\
- - get web server modernized and running, minimize it and simplify it, then update my seed with the new dev server, because the seed is currently relying on global [ie. its broken]\
- - ensure we don\'92t have errors and basic shape graphics are showing.\
+ [DONE[ - get web server modernized and running, minimize it and simplify it, then update my seed with the new dev server, because the seed is currently relying on global [ie. its broken]\
+ [DONE] - ensure we don\'92t have errors and basic shape graphics are showing.\
 \
- - clear current graphics.\
- - show my character from the sprite sheet\
+ [DONE] - clear current graphics.\
+ [DONE] - show my character from the sprite sheet\
+\
+ - used redux toolkit\
+\
  - Write enough using redux to move a still sprite around the screen\
+	- put it in a separate redux slice. The state should have the time it was changed to, and that should be used as a base for which frame to use, combined with the current timestamp.\
+	 - \{ state: \'91running\'92, params: \{ direction: left | right, intensity: [0-1], elapsed: [ms] \} \}\
+\
+?? should DT be replaced with timestamp? No because calculating DT would require the last timestamp, which is outside state and makes the functions not idiompotent\
 \
  - add in animations for running somehow\'85 using redux, nicely\'85\
-	* I\'92m thinking, maybe, have an objectwith the full entity, that references data in the redux store using keys. entity.graphics.run.frameIndex() => getStore().frames[runid][singletonid]\
+	* I\'92m thinking, maybe, have an object with the full entity, that references data in the redux store using keys. entity.graphics.run.frameIndex() => getStore().frames[runid][singletonid]\
 	but\'85 if i can just have everything nicely in redux, that\'92d be better\'85\
 \
+ - get a sound working [turn off after]\
+ - get music working [turn off after getting it to work, or itll be annoying =x]\
+\
+ - Get trello setup to story proper work!! maybe create epics for feature branch names?\
+\
+ - put timestamp in redux, so i have a reference for each state.\
 \
 Things To Consider:\
 \
