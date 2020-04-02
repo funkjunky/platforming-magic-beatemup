@@ -3,8 +3,8 @@ import 'end-polyFills';
 
 import { createStore, applyMiddleware } from 'redux';
 import { createYieldEffectMiddleware } from 'redux-yield-effect';
-import { put, fork, join } from 'redux-yield-effect/lib/effects';
-import { tickMiddleware, resumeTicks, pauseTicks } from 'effect-tick';
+// import { put, fork, join } from 'redux-yield-effect/lib/effects';
+import { tickMiddleware, resumeTicks, /* pauseTicks */ } from 'effect-tick';
 import { createEntity } from './entities/index.js';
 import reducer from './reducer.js';
 import metaSelector from 'redux-meta-selector';
@@ -47,10 +47,10 @@ async function start() {
       metaSelector
     ),
   );
-  store.dispatch(resumeTicks());
+  window.store.dispatch(resumeTicks());
 
   window.ctx = document.querySelector('canvas').getContext('2d');
   setRAF(resources);
 
-  store.dispatch(createEntity({ x: 100 }));
-};
+  window.store.dispatch(createEntity({ x: 100 }));
+}

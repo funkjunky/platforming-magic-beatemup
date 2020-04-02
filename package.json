@@ -10,6 +10,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.3.2",
     "effect-tick": "^2.0.0",
     "end-polyfills": "^1.0.0",
     "react": "^16.2.0",
@@ -21,9 +22,11 @@
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
+    "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-1": "^6.24.1",
+    "eslint": "^6.8.0",
     "file-loader": "^6.0.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
