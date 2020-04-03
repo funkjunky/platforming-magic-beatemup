@@ -11,41 +11,34 @@ import metaSelector from 'redux-meta-selector';
 import loadResources from './loadResources';
 import graphics from './graphics.js';
 
-document.addEventListener('DOMContentLoaded', start);
+document.addEventListener('DOMContentLoaded', firstLoad);
 
-const setRAF = resources => window.raf = window.requestAnimationFrame(step(resources));
+window.raf    // the raf to cancel on HMR
+window.store  // the store to update on HMR
 
-const step = resources => dt => {
-  graphics(window.ctx, window.store.getState(), resources, dt);
-  window.requestAnimationFrame(step(resources));
+const step = (ctx, resources) => dt => {
+  graphics(ctx, window.store.getState(), resources, dt);
+  window.raf = window.requestAnimationFrame(step(resources));
 };
 
-let a = 0;
-
-console.log('modue.hot: ', module.hot);
-if(module.hot) {
-  console.log('called: ', ++a);
-  //module.hot.accept(async () => {
-  module.hot.accept('./graphics.js', async () => {
-  // TODO: if this ever gets slower,
-  // then look into doing intelligent reloading based on what changed.
-    console.log('window raf: ', window.raf);
-    window.store.replaceReducer(reducer);
-    window.cancelAnimationFrame(window.raf);
-
-    // do this after, so it doesn't delay the other things from loading.
-    // TODO: do this more intelligently... so only if resources have changed.
-    const resources = await loadResources();
-    console.log('setting new raf');
-    setRAF(resources);
-    setupController();
+const loadRaf = () => {
+  loadResources().then(resources =>  {
+    const ctx = document.querySelector('canvas').getContext('2d');
+    if (window.raf) window.cancelAnimationFrame(window.raf);
+    window.raf = window.requestAnimationFrame(step(ctx, resources));
   });
+};
+
+if(module.hot) {
+  // Called after every change.
+  // Use window globals to keep track of old state.
+  module.hot.accept();
+  if (window.raf) loadRaf();
+  if (window.store) window.store.replaceReducer(reducer);
+  // NOTE: I might have to add controller in here
 }
 
-async function start() {
-  const resources = await loadResources();
-  console.log('resources: ', resources);
-
+async function firstLoad() {
   window.store = createStore(
     reducer,
     applyMiddleware(
@@ -54,17 +47,21 @@ async function start() {
       metaSelector
     ),
   );
+
+  // load request animation frame
+  loadRaf();
+
+  // start ticks
   window.store.dispatch(resumeTicks());
 
-  window.ctx = document.querySelector('canvas').getContext('2d');
-  setRAF(resources);
 
+  // create the first player entity
   window.store.dispatch(createEntity({ x: 50, y: 480 - 96 }));
 
-  setupController();
+  setController();
 }
 
-const setupController = () => {
+const setController = () => {
   // setup controls
   // TODO: move somewhere else????
   window.addEventListener('gamepadconnected', e => {

@@ -7,16 +7,8 @@
 
 \f0\fs24 \cf0 TODO\
 \
-Ugh\'85. pre-todo:\
- [DONE] - copy vimrc over to this laptop\
- [DONE[ - get web server modernized and running, minimize it and simplify it, then update my seed with the new dev server, because the seed is currently relying on global [ie. its broken]\
- [DONE] - ensure we don\'92t have errors and basic shape graphics are showing.\
-\
- [DONE] - clear current graphics.\
- [DONE] - show my character from the sprite sheet\
-\
- - used redux toolkit\
-\
+ \'97 feat/first-running\
+ *- place sprite at bottom left of screen.\
  - Write enough using redux to move a still sprite around the screen\
 	- put it in a separate redux slice. The state should have the time it was changed to, and that should be used as a base for which frame to use, combined with the current timestamp.\
 	 - \{ state: \'91running\'92, params: \{ direction: left | right, intensity: [0-1], elapsed: [ms] \} \}\
@@ -27,12 +19,35 @@ Ugh\'85. pre-todo:\
 	* I\'92m thinking, maybe, have an object with the full entity, that references data in the redux store using keys. entity.graphics.run.frameIndex() => getStore().frames[runid][singletonid]\
 	but\'85 if i can just have everything nicely in redux, that\'92d be better\'85\
 \
+ - add in a bit of ramp up acceleration and slow down [different based on changing direction or drifting] Play with it to make it feel nice.\
+\
+\'97 \'97\
+\
+ \'97 feat/first-level\
+\
+ - add in basic level based on 2D array of blocks.\
+ - Blocks stop falling\
+ - Blocks prevent moving forward or backward\
+\
+ - add in jumping\
+ - Blocks allow falling\
+ - Block prevent jumping\
+\
+ - smooth out jumping acceleration, still and while moving\
+ - add dash that works with jump [like megaman x]\
+\
+ - movement should feel great!\
+\
+\'97 \'97\
+\
+\'97 feat/first-audio\
  - get a sound working [turn off after]\
  - get music working [turn off after getting it to work, or itll be annoying =x]\
+\'97- \'97\
 \
  - Get trello setup to story proper work!! maybe create epics for feature branch names?\
 \
- - put timestamp in redux, so i have a reference for each state.\
+ - put timestamp in redux [using middleware], so i have a reference for each state.\
 \
 Things To Consider:\
 \
@@ -57,4 +72,52 @@ Things To Consider:\
 	- hierarchical update based on state\
 	? class per state?\
 	? action can set new state for entity ?\
-	- pushdown automata for going back to original state. ie firing while jumping back to jumping?}
+	- pushdown automata for going back to original state. ie firing while jumping back to jumping?\
+\
+*************\
+ARCHIVE *\
+*************\
+\
+	state machines have properties and valid state machines.\
+\
+ - Write out complete flow diagram of CONTROLS, STATE MACHINES, GENERATORS\
+	(I think those three things are all we need for a game)\
+		\'93 | \'93	means \'93filtered by\'94\
+		\'93 [ ] \'93	means \'93idem potent on\'94\
+		\'93 => \'93means \'93interfaces with\'94 (so update state machine or start generator)\
+	controls | state machines => state machines\
+	controls | state machines => generators [state machines]\
+	generators [state machines] => state machines\
+	state machine update [state machines] => state machines\
+\
+	Idea: \'93update\'94 can\'92t change state, it can only update properties.\
+	Example: falling, updates positions, how do we switch state?		[only apply falling if state is falling\'85 side-effect-free gravity.]\
+		[jumping, doesn\'92t apply gravity, it just moves up]\
+\
+	How do we move left and right: state.horizontalMovement = \'93right\'94\
+		- turn on and off based on events \'93on(left, dispatch(moveLeft)\
+		- with joystick: \'93on(joystickLeft, intensiity => if(canMove()) dispatch(moveleft(intensity))\
+			- this would trigger often, but thats fine, its a simple state change\
+\
+ - [DONE] HOW to draw controls filtered by state [SOLVED] RO-state | conditionals (red, green bottom boxes)\
+ - [DONE] HOW to draw update calling entities update [remember that the update lives outside of the state, technically]\
+	 [SOLVED] ( update => [entities.update] => [statemachine.update] => state )\
+\
+ - HOW add in distinction between entity properties, and state.\
+	- update only changes properties??\
+	- generators and controls only update state??\
+ - HOW Landing??? collision detection check in the general update. sends a touching action to entities. To do with as they please.\
+	- HOW to not spam, while on the ground? If entities are already \'93touching\'94 don\'92t send an event. If they become notTouching, send an nolongertouching event.\
+	- update passes level information to player, who uses it to do their movement update.\
+		- with this it can slow the player down on an incline,or cause some players to slide, etc.\
+\
+ [DONE] - copy vimrc over to this laptop\
+ [DONE[ - get web server modernized and running, minimize it and simplify it, then update my seed with the new dev server, because the seed is currently relying on global [ie. its broken]\
+ [DONE] - ensure we don\'92t have errors and basic shape graphics are showing.\
+\
+ [DONE] - clear current graphics.\
+ [DONE] - show my character from the sprite sheet\
+\
+ [DONE] - used redux toolkit\
+\
+ [DONE] - draw diagram for whole system as per tiny note.}
