@@ -10,3 +10,8 @@ It also includes HMR for both the reducer and graphics!!
 See https://funkjunky.github.io/generator-tick-game/ for a demo use case
 
 Music attribution: https://soundcloud.com/weaverbeats/i-used-to-make-stuff-like-this
+
+//------ Redux structure ------//
+// entities[id].state.movement
+//
+// entities[id].props.velocity
