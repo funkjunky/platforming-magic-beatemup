@@ -1,7 +1,7 @@
 import 'regenerator-runtime/runtime.js';
 import 'end-polyFills';
 
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { createYieldEffectMiddleware } from 'redux-yield-effect';
 // import { put, fork, join } from 'redux-yield-effect/lib/effects';
 import { tickMiddleware, resumeTicks, /* pauseTicks */ } from 'effect-tick';
@@ -10,6 +10,7 @@ import reducer from './reducer.js';
 import metaSelector from 'redux-meta-selector';
 import loadResources from './loadResources';
 import graphics from './graphics.js';
+import { setControls } from './Controls';
 
 // TODO: clean up this index file a lot!
 
@@ -34,13 +35,14 @@ const loadRaf = () => {
 //TODO: spriteWidth should be defined elsewhere.. ...
 const spriteWidth = 96;
 async function firstLoad() {
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   window.store = createStore(
     reducer,
-    applyMiddleware(
+    composeEnhancers(applyMiddleware(
       createYieldEffectMiddleware(),
       tickMiddleware,
       metaSelector
-    ),
+    )),
   );
 
   // load request animation frame
@@ -64,7 +66,7 @@ async function firstLoad() {
     console.log('gamepad connected: ', e.gamepad);
   });
 
-  //setControls(window.store.dispatch);
+  window.interval = setControls(window.store.dispatch);
 }
 
 if(module.hot) {
@@ -73,5 +75,9 @@ if(module.hot) {
   module.hot.accept();
   if (window.raf) loadRaf();
   if (window.store) window.store.replaceReducer(reducer);
+  if (window.interval) {
+    clearInterval(window.interval);
+    window.interval = setControls(window.store.dispatch);
+  }
   // NOTE: I might have to add controller in here
 }
