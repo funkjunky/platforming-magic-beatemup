@@ -23,8 +23,8 @@ const entitiesReducer = (entities, action) => {
       props
     })(entities[action.entity.id], action);
   } else {
-    // initialState
-    return {};
+    // initialState = {}
+    return entities || {};
   }
 }
 
