@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import produce from 'immer';
 
 import state from './state';
 import props from './props';
@@ -12,21 +13,20 @@ let _id = 0;
 //  So just explicitly use immer, instead of forcing createSlice
 //  Maybe use createSlice, but only use the pieces I need.
 
-const entitiesReducer = (entities, action) => {
-  if (action.type === 'entities/createEntity') {
-    entities[_id++] = action.payload;
-    return entities;
-  } else if(action.entity) {
-    // mutate the entity TODO: use immer
-    entities[action.entity.id] = combineReducers({
-      state,
-      props
-    })(entities[action.entity.id], action);
-  } else {
-    // initialState = {}
-    return entities || {};
-  }
-}
+const entitiesReducer = (entities, action) =>
+  produce(entities, draft => {
+    const { type, payload: entity } = action
+    if (type === 'entities/createEntity') {
+      draft[entity.id] = entity;
+    } else if(entity) {
+      draft[entity.id] = combineReducers({
+        state,
+        props,
+      })(draft[entity.id], action);
+    } else if(!entities) { //initialState
+      return {};
+    }
+  });
 
 export default entitiesReducer;
 export const createEntity = entity => ({
