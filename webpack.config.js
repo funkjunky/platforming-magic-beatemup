@@ -29,8 +29,16 @@ module.exports = {
   stats: {
     colors: true
   },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+  ],
   devtool: 'inline-source-map',
   devServer: {
     contentBase: './dist',
+    hot: true,
+  },
+  watchOptions: {
+    poll: 1000,
+    ignored: ['node_modules'],
   },
 };
