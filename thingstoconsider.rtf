@@ -38,11 +38,26 @@
 
 \f0\b0 \
  [DONE] - get HMR working with controls \'85\
- - problem is mutability\
- - ties in movement state machine to player entity\
- - get character moving based on state\
+ [DONE] - problem is mutability\
 \
- - test HMR with changes to reducer code, like acceleration.\
+ ~~New Temp TODO~~\
+	*- continue trying the RTK way\'85\
+	*- finish RTK way\
+\
+	*- create the update thunk if it isn\'92t already created??\
+	*- create dt redux slice. Simple.\
+\
+	*- try it\'85\
+	*- everything should be coded\'85 if not tie loose ends.\
+	*- get it working!\
+\
+	- make my own debugger instead of using redux devtools [it bugs out hard very quickly]\
+	- organize files and folders before testing, for sanity sake\
+\
+	- fix auto indenting in vim\
+~~~~~~~\
+\
+ - test HMR with changes to reducer code, like like vx vy changes based on input.\
 \
  - Write enough using redux to move a still sprite around the screen\
 	- put it in a separate redux slice. The state should have the time it was changed to, and that should be used as a base for which frame to use, combined with the current timestamp.\
@@ -115,6 +130,16 @@ Things To Consider:\
 *************\
 ARCHIVE *\
 *************\
+\
+*** SOOO many ways to do this. I should list them and make a blog.\
+\
+Actions consist of: createEntity, updateProps, and then all of the state change actions.\
+ - This way, everything interesting in the game can be trades to the state changes.\
+OR\
+ keep the props separate, createEntity, creates props and entity object, update works separately, then state can work naturally.\
+\
+	?? another idea, ugh, each type has it\'92s own reducer, dumb idea\
+\{ wizardKnights: \{ \'91wizardknight1\'92:  \{ movement \} \} \}\
 \
 Conclusion:\
 	1. update defined in statemachine, used in reducers\

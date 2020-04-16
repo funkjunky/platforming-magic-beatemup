@@ -11,6 +11,8 @@ import metaSelector from 'redux-meta-selector';
 import loadResources from './loadResources';
 import graphics from './graphics.js';
 import { setControls } from './Controls';
+import { typeDefinitions } from './entities/typeDefinitions';
+import { update } from './lastUpdated';
 
 // TODO: clean up this index file a lot!
 
@@ -54,19 +56,27 @@ async function firstLoad() {
 
   // create the first player entity
   window.store.dispatch(createEntity({
-    velocity: 0, //set this as a defualt in props
-    x: spriteWidth,
-    y: 480 - spriteWidth - spriteWidth,
+    props: {
+      x: spriteWidth,
+      y: 480 - spriteWidth - spriteWidth,
+    },
     type: 'player',
   }));
-
-  console.log('state: ', window.store.getState());
 
   window.addEventListener('gamepadconnected', e => {
     console.log('gamepad connected: ', e.gamepad);
   });
 
-  window.interval = setControls(window.store.dispatch);
+  // TODO: put the setControls in with the other interval. They should all be in the same interval.
+  window.controlsInterval = setControls(window.store.dispatch);
+  window.updateInterval = setInterval(() => {
+    const { entities, lastUpdated } = window.store.getState();
+    const dt = (Date.now() - lastUpdated) / 1000;
+    Object.values(entities).forEach(entity =>
+      typeDefinitions[entity.type].update(entity, dt, window.store.dispatch));
+    // call cleanup
+    window.store.dispatch(update(Date.now()));
+  }, 500);
 }
 
 if(module.hot) {
@@ -75,9 +85,9 @@ if(module.hot) {
   module.hot.accept();
   if (window.raf) loadRaf();
   if (window.store) window.store.replaceReducer(reducer);
-  if (window.interval) {
-    clearInterval(window.interval);
-    window.interval = setControls(window.store.dispatch);
+  if (window.controlsInterval) {
+    clearInterval(window.controlsInterval);
+    window.controlsInterval = setControls(window.store.dispatch);
   }
   // NOTE: I might have to add controller in here
 }

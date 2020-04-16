@@ -12,7 +12,7 @@ const c = {
 export default (ctx, state, resources) => {
   const drawPerson = person => {
     // TODO: look into anchor, my char probably isn'tanchored propertly
-    ctx.drawImage(resources.sprites.running[0], person.x, person.y);
+    ctx.drawImage(resources.sprites.running[0], person.props.x, person.props.y);
   };
 
   //BEGIN ACTUAL GRAPHICS

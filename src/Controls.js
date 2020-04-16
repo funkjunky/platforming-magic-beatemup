@@ -1,4 +1,4 @@
-import { pushingLeft, pushingRight, stopping } from './movement';
+import { pushingLeft, pushingRight, stopping } from './entities/movement';
 
 export const setControls = (dispatch) => {
   const [Controls, interval] = getControls();
@@ -11,7 +11,9 @@ export const setControls = (dispatch) => {
   };
   */
 
-  const dispatchMiddleware = cb => dispatch(cb());
+  // TODO: uhhhhhh hacky...
+  const playerEntity = { id: 'player1' };
+  const dispatchMiddleware = entityStateAction => dispatch(entityStateAction(playerEntity));
   Controls.addMiddleware(dispatchMiddleware);
 
   Controls.onAxis({

@@ -1,6 +1,9 @@
-import entities from './entities/index.js';
 import { combineReducers } from 'redux';
 
+import entities from './entities';
+import lastUpdated from './lastUpdated';
+
 export default combineReducers({
-  entities
+  entities,
+  lastUpdated,
 });

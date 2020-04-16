@@ -1,5 +1,5 @@
 import { level } from './level';
-import { cleanupProps } from './props';
+import { cleanupProps } from './entities/props';
 
 //TODO: spriteWidth should be defined elsewhere.. ...
 const spriteWidth = 96;
