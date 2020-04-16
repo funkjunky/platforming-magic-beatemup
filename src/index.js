@@ -13,6 +13,7 @@ import graphics from './graphics.js';
 import { setControls } from './Controls';
 import { typeDefinitions } from './entities/typeDefinitions';
 import { update } from './lastUpdated';
+import getLogger from './logger'; // TODO: rename file to getLogger
 
 // TODO: clean up this index file a lot!
 
@@ -37,13 +38,17 @@ const loadRaf = () => {
 //TODO: spriteWidth should be defined elsewhere.. ...
 const spriteWidth = 96;
 async function firstLoad() {
+  const logger = getLogger();
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   window.store = createStore(
     reducer,
     composeEnhancers(applyMiddleware(
+      logger.middleware,
+      /*
       createYieldEffectMiddleware(),
       tickMiddleware,
-      metaSelector
+      metaSelector,
+      */
     )),
   );
 

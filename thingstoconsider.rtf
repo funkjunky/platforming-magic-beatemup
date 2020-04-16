@@ -51,13 +51,20 @@
 	*- everything should be coded\'85 if not tie loose ends.\
 	*- get it working!\
 \
-	- make my own debugger instead of using redux devtools [it bugs out hard very quickly]\
+feat/debugger (redux devtools is too buggy, overwrites actions and shows undefined)\
+	- update dom in debugger div in html, all actions that are NOT update [using filters] [no diff]\
+	- try adding diff on a new line\
+	- make sure it\'92s useful and add anything that may help\
+\
+chore/running-reorganize\
+	- is HMR working for the update cycle???\
+ 	- test HMR with changes to reducer code, like like vx vy changes based on input.\
 	- organize files and folders before testing, for sanity sake\
 \
+extra\
 	- fix auto indenting in vim\
-~~~~~~~\
 \
- - test HMR with changes to reducer code, like like vx vy changes based on input.\
+~~~~~~~\
 \
  - Write enough using redux to move a still sprite around the screen\
 	- put it in a separate redux slice. The state should have the time it was changed to, and that should be used as a base for which frame to use, combined with the current timestamp.\
