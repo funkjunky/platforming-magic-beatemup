@@ -74,15 +74,18 @@ async function firstLoad() {
 
   // TODO: put the setControls in with the other interval. They should all be in the same interval.
   window.controlsInterval = setControls(window.store.dispatch);
-  window.updateInterval = setInterval(() => {
-    const { entities, lastUpdated } = window.store.getState();
-    const dt = (Date.now() - lastUpdated) / 1000;
-    Object.values(entities).forEach(entity =>
-      typeDefinitions[entity.type].update(entity, dt, window.store.dispatch));
-    // call cleanup
-    window.store.dispatch(update(Date.now()));
-  }, 500);
+  window.updateInterval = setUpdate();
 }
+
+const setUpdate = () => setInterval(() => {
+  const { entities, lastUpdated } = window.store.getState();
+  const dt = (Date.now() - lastUpdated) / 1000;
+  Object.values(entities).forEach(entity =>
+    typeDefinitions[entity.type].update(entity, dt, window.store.dispatch));
+  // call cleanup
+  window.store.dispatch(update(Date.now()));
+}, 500);
+
 
 if(module.hot) {
   // Called after every change.
@@ -93,6 +96,10 @@ if(module.hot) {
   if (window.controlsInterval) {
     clearInterval(window.controlsInterval);
     window.controlsInterval = setControls(window.store.dispatch);
+  }
+  if (window.updateInterval) {
+    clearInterval(window.updateInterval);
+    window.updateInterval = setUpdate();
   }
   // NOTE: I might have to add controller in here
 }
