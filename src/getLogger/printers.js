@@ -18,7 +18,6 @@ export const printType = logs => {
       innerHTML += `<p style="font-size: ${12 + (boldedCount - i) * 3}px">${ logs[i].action.type }</p>`; 
     }
   }
-  console.log('innerHTML: ', innerHTML);
   innerHTML += JSON.stringify(logs.slice(3).map(({ action: { type } }) => type), null, 2);
   document.getElementById('logger').innerHTML = innerHTML;
 }

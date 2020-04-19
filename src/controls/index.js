@@ -1,4 +1,4 @@
-import { pushingLeft, pushingRight, stopping } from './entities/movement';
+import { pushingLeft, pushingRight, stopping } from '../entities/movement';
 
 export const setControls = (dispatch) => {
   const [Controls, interval] = getControls();
