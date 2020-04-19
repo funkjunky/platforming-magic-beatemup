@@ -1,4 +1,4 @@
-import { level } from './level';
+import { level } from '../entities/level';
 
 const c = {
   purple:     '#b35ce5',

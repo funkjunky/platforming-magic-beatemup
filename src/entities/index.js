@@ -21,10 +21,16 @@ export const updateProps = createAction('UPDATE_PROPS', (payload, meta) => ({
   meta,
 }));
 
+// we don't use createSlice, because we need to leverage the default case. RTK requires all code to be under an explicit type.
 const entitiesReducer = (state = {}, action) => produce(state, draftState => {
   switch(action.type) {
     case createEntity.toString(): {
-      const { id, type, states = {}, props: { x = 0, y = 0, vx = 0, vy = 0 } } = action.payload;
+      const {
+        id, type, states = {},
+        // sensible props defaults. Currently use vx and vy for player
+        props: { x = 0, y = 0, vx = 0, vy = 0 }
+      } = action.payload;
+
       draftState[id] = {
         id,
         type,
