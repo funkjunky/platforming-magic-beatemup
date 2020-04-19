@@ -3,7 +3,7 @@ import graphics from '../graphics';
 import { typeDefinitions } from '../entities/typeDefinitions';
 import { update } from '../lastUpdated';
 import reducer from '../reducer';
-import { setControls } from '../Controls';
+import { setControls } from '../controls';
 
 // NOTE: this file and /index should be the only files using the window global
 
