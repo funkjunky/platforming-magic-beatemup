@@ -51,13 +51,21 @@
 	*- everything should be coded\'85 if not tie loose ends.\
 	*- get it working!\
 \
-	- make my own debugger instead of using redux devtools [it bugs out hard very quickly]\
+feat/debugger (redux devtools is too buggy, overwrites actions and shows undefined)\
+	*- update dom in debugger div in html, all actions that are NOT update [using filters] [no diff]\
+	*- write code for diff\
+	*- try adding diff below line for action.\
+\
+chore/running-reorganize\
+	- is HMR working for the update cycle???\
+ 	- test HMR with changes to reducer code, like like vx vy changes based on input.\
 	- organize files and folders before testing, for sanity sake\
 \
+extra\
 	- fix auto indenting in vim\
-~~~~~~~\
+	- get git branch autocomplete working.\
 \
- - test HMR with changes to reducer code, like like vx vy changes based on input.\
+~~~~~~~\
 \
  - Write enough using redux to move a still sprite around the screen\
 	- put it in a separate redux slice. The state should have the time it was changed to, and that should be used as a base for which frame to use, combined with the current timestamp.\
@@ -99,6 +107,11 @@
 \'97- \'97\
 \
  - Get trello setup to story proper work!! maybe create epics for feature branch names?\
+\
+ - Story for Logger: have type showing, and expand to see payload and diff\
+	- group every 20 in collapsable collections, header is the timestamp for the actions [beginning to end]\
+	- make sure logger useful and add anything that may help [maybe controls to expand action and diff, maybe only show type. Add filters?]\
+\
 \
  - put timestamp in redux [using middleware], so i have a reference for each state.\
 \
