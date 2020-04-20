@@ -33,10 +33,6 @@ async function firstLoad() {
     type: 'player',
   }));
 
-  window.addEventListener('gamepadconnected', e => {
-    console.log('gamepad connected: ', e.gamepad);
-  });
-
   // TODO: put the setControls in with the other interval. They should all be in the same interval.
   window.controlsInterval = setControls(window.store.dispatch);
   window.updateInterval = setUpdate();
