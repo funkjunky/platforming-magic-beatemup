@@ -42,14 +42,20 @@
 \cf0  \'97 feat/first-level\
 \
  *- start sprite above blocks\
- - utilize cleanupAction, to fix props after running entity update \
-	- perhaps the entity update will ONLY return the props\
+ *- create bounding boxes around sprite\
+ *- utilize cleanupAction, to fix props after running entity update \
+	*- perhaps the entity update will ONLY return the props\
 		and we\'92ll adjust the props using cleanup.\
+ *- Block from moving left over block.\
+\
+ - use entity.width and height, instead of spriteWidth everywhere, delete all instances of sprite width\
+\
+ - add a form of falling to basic update of entity\
  - Blocks stop falling [cleanupAction]\
  - Blocks prevent moving forward or backward [cleanupAction]\
- - implement vy in update to fall.\
  - ensure we don\'92t fall through blocks and can still move left and right\
- - create a gap in the blocks to fall down to another level, like a stair.\
+\
+ - create a block below character starting x. Ensure i can fall left AND right.\
  - Blocks allow falling off edge and landing still works after.\
 \
 \'97 \'97\

@@ -2,6 +2,8 @@ import 'regenerator-runtime/runtime.js';
 import 'end-polyFills';
 
 import { createStore, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
+
 import { createEntity } from './entities';
 import reducer from './reducer.js';
 import { replaceAllTheModules, setUpdate, loadRaf } from './bootstrap';
@@ -16,6 +18,7 @@ async function firstLoad() {
   window.store = createStore(
     reducer,
     composeEnhancers(applyMiddleware(
+      thunk,
       logger.middleware,
     )),
   );

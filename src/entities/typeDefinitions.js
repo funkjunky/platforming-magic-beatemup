@@ -1,5 +1,6 @@
 import movement from './movement';
 import { updateProps } from './index';
+import boundingBoxes from './basicBoundingBoxes';
 
 // considering immer...
 const combineReducers = reducers => (draftState, action) =>
@@ -15,6 +16,9 @@ export const typeDefinitions = {
   player: {
     type: 'player',
     stateReducer: combineReducers({ movement }),
+    // TODO: remove this... i dont think its even used.
+    spriteWidth: 96,
+    boundingBoxes,
     // dt is in seconds.
     update: (entity, dt, dispatch) => {
       const { props, states: { movement } } = entity;

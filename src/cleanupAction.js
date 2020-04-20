@@ -1,29 +1,38 @@
-import { level } from './level';
-import { cleanupProps } from './entities/props';
+import { level } from './entities/level';
+import { updateProps } from './entities';
+import { typeDefinitions } from './entities/typeDefinitions';
 
-//TODO: spriteWidth should be defined elsewhere.. ...
-const spriteWidth = 96;
-
-// TODO: put in loop after doing state machine updates
-export const cleanupAction = entities => (dispatch) => {
-  entities.forEach(entity => {
+export const cleanupAction = () => (dispatch, getState) => {
+  Object.values(getState().entities).forEach(entity => {
+    const entityDefn = typeDefinitions[entity.type];
     // jumping state change example
     //if (getState()[x].entity.state.jump === 'falling' && collidedWithLevel()) dispatch(jumpingActions.ground());
 
+    const { top, bottom, left, right } = entityDefn.boundingBoxes(entity);
     // stop the entity from being in any square
-    level.filter(block => doBoxesIntersect(block, entity.props))
-      .forEach(intersectingBlock => {
-        // TODO: only doing horiz for now, adding vertical will add complexity
-        // if velocity is positive, then retreat to x
-        if (entity.props.velocity > 0) dispatch(cleanupProps({ x: intersectingBlock.x - spriteWidth }));
-        // if velocity is negative, then retreat to x + width
-        else                           dispatch(cleanupProps({ x: intersectingBlock.x + intersectingBlock.width }));
-      });
+    level.forEach(block => {
+      if (doBoxesIntersect(block, top)) {
+        dispatch(updateProps({ entity, newProps: { y: block.y + block.width + entity.props.height, vy: 0 } }));
+      }
+      if (doBoxesIntersect(block, bottom)) {
+        dispatch(updateProps({ entity, newProps: { y: block.y, vy: 0 } }));
+      }
+      if (doBoxesIntersect(block, right)) {
+        dispatch(updateProps({ entity, newProps: { x: block.x - entity.props.width, vx: 0 } }));
+      }
+      if (doBoxesIntersect(block, left)) {
+        dispatch(updateProps({ entity, newProps: { x: block.x + block.width, vx: 0 } }));
+      }
+    });
   });
 }
 
+const centrex = ({ x, width }) => x + width / 2;
+const centrey = ({ y, height }) => y + height / 2;
 // out of laziness taken from https://gamedev.stackexchange.com/questions/586/what-is-the-fastest-way-to-work-out-2d-bounding-box-intersection
+// I adjusted to anchor in centre for calculation. I should default anchor in centre for performance, perhaps. Or simplicity of code?
+// // TODO: factor out division for performance
 function doBoxesIntersect(a, b) {
-  return (Math.abs(a.x - b.x) * 2 < (a.width + b.width)) &&
-         (Math.abs(a.y - b.y) * 2 < (a.height + b.height));
+  return Math.abs(centrex(a) - centrex(b)) < ((b.width + a.width) / 2)
+  && Math.abs(centrey(a) - centrey(b)) < ((b.height + a.height) / 2);
 }

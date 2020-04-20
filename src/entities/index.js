@@ -28,7 +28,7 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
       const {
         id, type, states = {},
         // sensible props defaults. Currently use vx and vy for player
-        props: { x = 0, y = 0, vx = 0, vy = 0 }
+        props: { x = 0, y = 0, vx = 0, vy = 0, height = 96, width = 96 }
       } = action.payload;
 
       draftState[id] = {
@@ -37,7 +37,7 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
         // because createEntity isn't one of it's actions, state should be unchanged, BUT because state is undefined, initialState should be set!
         // TODO: RTK may break here... make sure it applies initialState here. [it better follow it's own rules about NOT using @@init]
         states: produce(states, states => typeDefinitions[type].stateReducer(states, action)),
-        props: { x, y, vx, vy },
+        props: { x, y, vx, vy, height, width },
       };
       break;
     }
