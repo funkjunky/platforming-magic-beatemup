@@ -32,6 +32,8 @@ async function firstLoad() {
     props: {
       x: spriteWidth * 3,
       y: spriteWidth,
+      height: spriteWidth,
+      width: spriteWidth,
     },
     type: 'player',
   }));

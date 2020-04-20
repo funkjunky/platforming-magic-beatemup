@@ -1,5 +1,4 @@
-//TODO: spriteWidth should be defined elsewhere.. ...
-const spriteWidth = 96;
+const spriteWidth = 96; //This is arbitrary, so it's fine.
 // array of squares drawn down
 export const level = [
   { x: 0, y: 480-spriteWidth, width: 640, height: spriteWidth },
