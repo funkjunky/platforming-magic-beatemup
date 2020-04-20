@@ -27,8 +27,8 @@ async function firstLoad() {
   const spriteWidth = 96;
   window.store.dispatch(createEntity({
     props: {
-      x: spriteWidth,
-      y: 480 - spriteWidth - spriteWidth,
+      x: spriteWidth * 3,
+      y: spriteWidth,
     },
     type: 'player',
   }));
