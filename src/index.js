@@ -2,6 +2,8 @@ import 'regenerator-runtime/runtime.js';
 import 'end-polyFills';
 
 import { createStore, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
+
 import { createEntity } from './entities';
 import reducer from './reducer.js';
 import { replaceAllTheModules, setUpdate, loadRaf } from './bootstrap';
@@ -16,6 +18,7 @@ async function firstLoad() {
   window.store = createStore(
     reducer,
     composeEnhancers(applyMiddleware(
+      thunk,
       logger.middleware,
     )),
   );
@@ -27,15 +30,13 @@ async function firstLoad() {
   const spriteWidth = 96;
   window.store.dispatch(createEntity({
     props: {
-      x: spriteWidth,
-      y: 480 - spriteWidth - spriteWidth,
+      x: spriteWidth * 3,
+      y: spriteWidth,
+      height: spriteWidth,
+      width: spriteWidth,
     },
     type: 'player',
   }));
-
-  window.addEventListener('gamepadconnected', e => {
-    console.log('gamepad connected: ', e.gamepad);
-  });
 
   // TODO: put the setControls in with the other interval. They should all be in the same interval.
   window.controlsInterval = setControls(window.store.dispatch);

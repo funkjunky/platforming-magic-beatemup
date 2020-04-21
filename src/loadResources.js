@@ -6,6 +6,7 @@ const loadResources = async () => {
   console.log('about to loadframes');
   // specify resources, which will trigger the onload
   image.src = character;
+  // TODO: grab 96 from somewhere, like index... or define it elsewhere
   const frames = await loadFrames({ image, count: 10, width: 96, height: 96 });
 
   return {
