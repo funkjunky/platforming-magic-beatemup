@@ -12,10 +12,10 @@ export const cleanupAction = () => (dispatch, getState) => {
     // stop the entity from being in any square
     level.forEach(block => {
       if (doBoxesIntersect(block, top)) {
-        dispatch(updateProps({ entity, newProps: { y: block.y + block.width + entity.props.height, vy: 0 } }));
+        dispatch(updateProps({ entity, newProps: { y: block.y + block.width, vy: 0 } }));
       }
       if (doBoxesIntersect(block, bottom)) {
-        dispatch(updateProps({ entity, newProps: { y: block.y, vy: 0 } }));
+        dispatch(updateProps({ entity, newProps: { y: block.y - entity.props.height, vy: 0 } }));
       }
       if (doBoxesIntersect(block, right)) {
         dispatch(updateProps({ entity, newProps: { x: block.x - entity.props.width, vx: 0 } }));

@@ -33,6 +33,9 @@ export const typeDefinitions = {
         if (props.vx < 0) vx = Math.min(0, props.vx + dec * dt);
       }
 
+      // temporary, until i implement jumping. I need the grounded to properly do the acc of falling
+      vy = 100;
+
       const newProps = {
         vx,
         vy,
