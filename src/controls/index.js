@@ -1,4 +1,5 @@
 import { pushingLeft, pushingRight, stopping } from '../entities/movement';
+import { jumping, falling } from '../entities/jump';
 
 export const setControls = (dispatch) => {
   const [Controls, interval] = getControls();
@@ -28,11 +29,17 @@ export const setControls = (dispatch) => {
     release: stopping,
   });
 
+  Controls.on({
+    button: 0,
+    press: jumping,
+    release: falling,
+  });
+
   return interval;
 };
 
 const getControls = () => {
-  const listeners = {};
+  const buttonListeners = [];
   const axisListeners = [];
   const middleware = [];
 
@@ -40,10 +47,9 @@ const getControls = () => {
     // I'm not a big fan of the naming,probably onpress and onrelease. Also active feels out fo place...
     onAxis: ({ axis, press, release }) => {
       axisListeners.push({ axis, press, release, active: 0 })
-      console.log('count: ', axisListeners.length);
     },
     on: ({ button, press, release }) => {
-      listeners[button] = { press, release, active: 0 };
+      buttonListeners.push({ button, press, release, active: 0 });
     },
     // TODO: add a remove, especially for HMR [perhaps a removeAll]
     addMiddleware: callback => middleware.push(callback),
@@ -57,8 +63,10 @@ const getControls = () => {
 
   const xor = (a, b) => a && !b || b && !a;
   // poll for changes
-  const interval = setInterval(() =>
-    navigator.getGamepads()[0] && axisListeners.forEach(a => {
+  const interval = setInterval(() => {
+    if (!navigator.getGamepads()[0]) return;
+
+    axisListeners.forEach(a => {
       if (xor(a.active, a.axis(navigator.getGamepads()[0].axes))) {
         a.active = !a.active;
         if(a.active) {
@@ -68,7 +76,18 @@ const getControls = () => {
         }
       }
     })
-  , 10);
+
+    buttonListeners.forEach(a => {
+      if (xor(a.active, navigator.getGamepads()[0].buttons[a.button].pressed)) {
+        a.active = !a.active;
+        if(a.active) {
+          applyMiddleware(middleware, a.press);
+        } else {
+          applyMiddleware(middleware, a.release);
+        }
+      }
+    })
+  }, 10);
   // Note: if i put the poll above 10, then  going from right to left, will cause the stop to happen AFTER the left, causing the person to stop.
   //        I'll need to fix that before reducing the poll
 
