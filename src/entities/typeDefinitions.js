@@ -42,11 +42,11 @@ export const typeDefinitions = {
       }
 
       // temporary, until i implement jumping. I need the grounded to properly do the acc of falling
-      if (jump === 'falling') {
+      if (jump.state === 'falling') {
         vy = Math.min(terminalVel, vy + dt * fallingAcc);
-      } else if (jump === 'jumping') { // TODO: most games only allow this for a short time.
+      } else if (jump.state === 'jumping') { // TODO: most games only allow this for a short time.
         vy = -jumpingVel;
-      } else if (jump === 'grounded') {
+      } else if (jump.state === 'grounded') {
         vy = 0;
       }
 
