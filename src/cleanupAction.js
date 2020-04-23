@@ -1,6 +1,7 @@
 import { level } from './entities/level';
 import { updateProps } from './entities';
 import { typeDefinitions } from './entities/typeDefinitions';
+import { grounded, falling } from './entities/jump';
 
 export const cleanupAction = () => (dispatch, getState) => {
   Object.values(getState().entities).forEach(entity => {
@@ -8,6 +9,7 @@ export const cleanupAction = () => (dispatch, getState) => {
 
     // if jumping has been jumping for jumpDuration, then switch it to falling
 
+    let isGrounded = false;
     const { top, bottom, left, right } = entityDefn.boundingBoxes(entity);
     // stop the entity from being in any square
     level.forEach(block => {
@@ -17,9 +19,14 @@ export const cleanupAction = () => (dispatch, getState) => {
       if (doBoxesIntersect(block, bottom)) {
         dispatch(updateProps({ entity, newProps: { y: block.y - entity.props.height, vy: 0 } }));
       }
-      // TODO: perhaps add an extended bottom block that's 5 more pixels out, that feels for an entity
-      //      if these intersect, then change entity to `dispatch(grounded(entity))`
-      //      if NONE of these intersect, then change entity to falling
+      // TODO: move state changes into their own function, even if i have to re-iterate on blocks? Hmmm...
+      // This feels a little more out there, so even as the props are pushed away, this still feels the ground.
+      if (doBoxesIntersect(block, { ...bottom, y: bottom.y + 5 })) {
+        if (entity.states.jump !== 'grounded') {
+          dispatch(grounded(entity));
+        }
+        isGrounded = true;
+      }
       if (doBoxesIntersect(block, right)) {
         dispatch(updateProps({ entity, newProps: { x: block.x - entity.props.width, vx: 0 } }));
       }
@@ -27,6 +34,9 @@ export const cleanupAction = () => (dispatch, getState) => {
         dispatch(updateProps({ entity, newProps: { x: block.x + block.width, vx: 0 } }));
       }
     });
+    if (!isGrounded && entity.states.jump === 'grounded') {
+      dispatch(falling(entity));
+    }
   });
 }
 

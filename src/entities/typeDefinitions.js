@@ -8,7 +8,7 @@ import jump from './jump';
 const combineReducers = reducers => (draftState, action) =>
   Object.entries(reducers).forEach(([name, reducer]) => {
     draftState[name] = reducer(draftState[name], action)
-    console.log('new states: ', action.type, name, draftState[name]);
+    //console.log('new states: ', action.type, name, draftState[name]);
   });
 
 // TODO: these should all be in entity itsself. Maybe props? Maybe somewhere more static (attrs)????

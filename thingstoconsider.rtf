@@ -65,11 +65,14 @@
  *- add in jumping via simple state change\
  *- Block prevent jumping\
 \
- - need to add timestamp to state. Good idea??? Hmmm\
+ *- if falling, then can\'92t jump!\
+ - how to do grounded?\
+	- force it by doing if falling and intersection, then grounded, if grounded no inter, then falling\
+ - need to add timestamp to jump state. Good idea??? Hmmm\
 	- or we could go back to generator ;)\
 	- or use lesson from generator and adding times to update loops somehow??\
  - add in state change from jumping to falling after 1 second\
- - define button mapping for xbox 1 controller\
+ - define button mapping for xbox 1 controller, use id provided by api, then if that\'92s the id for the controller, then use that button mapping with x, y, a, b, etc.\
 \
 \'97 \'97\
 \
