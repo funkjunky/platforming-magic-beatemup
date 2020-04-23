@@ -1,4 +1,4 @@
-import { printType } from './printers';
+import { printFirstThreeDiffs, printType } from './printers';
 import { getDiff } from './getDiff';
 import { getFilter } from './getFilter';
 
