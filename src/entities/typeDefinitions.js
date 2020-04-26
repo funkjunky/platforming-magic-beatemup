@@ -2,7 +2,7 @@ import { updateProps } from './index';
 import boundingBoxes from './basicBoundingBoxes';
 
 import movement from './movement';
-import jump from './jump';
+import jump, { States } from './jump';
 
 // considering immer...
 const combineReducers = reducers => (draftState, action) =>
@@ -42,11 +42,11 @@ export const typeDefinitions = {
       }
 
       // temporary, until i implement jumping. I need the grounded to properly do the acc of falling
-      if (jump.state === 'falling') {
+      if (jump[States.falling]) {
         vy = Math.min(terminalVel, vy + dt * fallingAcc);
-      } else if (jump.state === 'jumping') { // TODO: most games only allow this for a short time.
+      } else if (jump[States.jumping]) {
         vy = -jumpingVel;
-      } else if (jump.state === 'grounded') {
+      } else if (jump[States.grounded]) {
         vy = 0;
       }
 

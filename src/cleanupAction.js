@@ -1,7 +1,7 @@
 import { level } from './entities/level';
 import { updateProps } from './entities';
 import { typeDefinitions } from './entities/typeDefinitions';
-import { grounded, falling } from './entities/jump';
+import { grounded, falling, States } from './entities/jump';
 
 export const cleanupAction = () => (dispatch, getState) => {
   Object.values(getState().entities).forEach(entity => {
@@ -30,19 +30,19 @@ export const cleanupAction = () => (dispatch, getState) => {
       // State related cleanup
       // TODO: This should probably be in tyeDefinition player
       const maxJumpDuration = 1000;
-      if (entity.states.jump.state === 'jumping' && Date.now() - entity.states.jump.updatedOn > maxJumpDuration) {
+      if (entity.states.jump[States.jumping] && (Date.now() - entity.states.jump[States.jumping].createdAt) > maxJumpDuration) {
         dispatch(falling(entity));
       }
       // TODO: move state changes into their own function, even if i have to re-iterate on blocks? Hmmm...
       // This feels a little more out there, so even as the props are pushed away, this still feels the ground.
       if (doBoxesIntersect(block, { ...bottom, y: bottom.y + 5 })) {
-        if (entity.states.jump.state !== 'grounded') {
+        if (!entity.states.jump[States.grounded]) {
           dispatch(grounded(entity));
         }
         isGrounded = true;
       }
     });
-    if (!isGrounded && entity.states.jump.state === 'grounded') {
+    if (!isGrounded && entity.states.jump[States.grounded]) {
       dispatch(falling(entity));
     }
   });
