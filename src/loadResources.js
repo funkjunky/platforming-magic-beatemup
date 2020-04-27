@@ -1,5 +1,8 @@
 import character from '../assets/character.png';
 
+import { States } from './entities/movement';
+const { pushingLeft, pushingRight } = States;
+
 const loadResources = async () => {
   const image = new Image();
 
@@ -9,12 +12,10 @@ const loadResources = async () => {
   // TODO: grab 96 from somewhere, like index... or define it elsewhere
   const frames = await loadFrames({ image, count: 10, width: 96, height: 96 });
 
-  console.log('frame: ', getSprites(frames, 'right'));
-
   return {
     sprites: {
-      right: getSprites(frames, 'right'),
-      left: getSprites(frames, 'left'),
+      pushingRight: getSprites(frames, pushingRight),
+      pushingLeft: getSprites(frames, pushingLeft),
     },
   }
 };
@@ -49,10 +50,10 @@ const loadFrames = ({ image, count, width, height }) => new Promise(resolve =>
     console.log('onload');
     const flippedImage = await getFlippedSprite(image);
     resolve({
-      right: await Promise.all([...Array(count).keys()].map(i =>
+      [pushingRight]: await Promise.all([...Array(count).keys()].map(i =>
         createImageBitmap(image, width * i, 0, width, height)
       )),
-      left: await Promise.all([...Array(count).keys()].map(i =>
+      [pushingLeft]: await Promise.all([...Array(count).keys()].map(i =>
         createImageBitmap(flippedImage, width * i, 0, width, height)
       ))
     })

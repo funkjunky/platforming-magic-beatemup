@@ -14,7 +14,7 @@ const movementSlice = createSlice({
   reducers: {
     pushingRight: () => createState('pushingRight'),
     pushingLeft: () => createState('pushingLeft'),
-    stopping: () => createState('stopping'),
+    stopping: state => createState('stopping', { lastState: Object.keys(state)[0] }),
   },
 });
 

@@ -19,7 +19,7 @@ const groundedDuration = 300;
 const getPlayerSprite = (sprites, entity) => {
   // TODO: this code is too dense. Find a way to abstract out pieces to remove context and simplify it
   const { jump, movement } = entity.states;
-  const dir = entity.props.vx < 0 ? 'left' : 'right';
+  const dir = Object.values(movement)[0].lastState || entity.props.vx < 0 ? pushingLeft : pushingRight;
   if(jump[Jump.States.jumping]) {
     return sprites[dir].jumping.raising[0];
   } else if (jump[falling]) {
@@ -28,25 +28,25 @@ const getPlayerSprite = (sprites, entity) => {
   } else if (jump[grounded] && (Date.now() - jump[grounded].createdAt) < groundedDuration) {
     return sprites[dir].jumping.landing[0];
   } else if (movement[pushingRight]) {
-    console.log(sprites.left.running.length);
+    console.log(sprites.pushingLeft.running.length);
     // TODO: make sprite take an object, not a normal function, so it's more clear?? Maybe
     return getSprite(
       movement[pushingRight],
       500 - entity.props.vx * 4, // TODO: this math seems meh... probably need to NOT use msPerFrame. Need to base on the nominator
-      sprites.right.running
+      sprites.pushingRight.running
     );
   } else if (movement[pushingLeft]) {
     return getSprite(
       movement[pushingLeft],
       500 + entity.props.vx * 4, // TODO: this math seems meh... probably need to NOT use msPerFrame. Need to base on the nominator
-      sprites.left.running
+      sprites.pushingLeft.running
     );
   } else if (movement[stopping]) {
     const idleMsPerFrame = 500;
     return getSprite(
       movement[stopping],
       idleMsPerFrame,
-      sprites.left.idle,
+      sprites[dir].idle,
     );
   } else {
     console.error('NO GRAPHIC FOR STATE', movement, stopping, movement[stopping]);  
