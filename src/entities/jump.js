@@ -1,7 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-
-// TODO: move out, this is generic
-const createState = (state, extraProps = {}) => ({ [state]: { createdAt: Date.now(), ...extraProps } });
+import { createState } from '../createState';
 
 export const States = {
   grounded: 'grounded',
