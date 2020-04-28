@@ -53,16 +53,24 @@ const loadFrames = ({ image, count, width, height }) => new Promise(resolve =>
       [pushingRight]: await Promise.all([...Array(count).keys()].map(i =>
         createImageBitmap(image, width * i, 0, width, height)
       )),
-      [pushingLeft]: await Promise.all([...Array(count).keys()].map(i =>
+      [pushingLeft]: (await Promise.all([...Array(count).keys()].map(i =>
         createImageBitmap(flippedImage, width * i, 0, width, height)
-      ))
+      ))).reduce((reversed, v) => ([ v, ...reversed ]), [])
     })
   }
 );
 
 // TODO: do the flipping
 const getFlippedSprite = image => {
-  return image;
+  const c = document.createElement('canvas');
+  c.width = image.width;
+  c.height= image.height;
+  const ctx = c.getContext('2d');
+  ctx.scale(-1, 1);
+  ctx.drawImage(image, -image.width, 0);
+  const img = new Image();
+  img.src = c.toDataURL();
+  return img;
 }
 
 export default loadResources;
