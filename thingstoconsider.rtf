@@ -24,63 +24,31 @@
 \f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 	
 \f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
 \uc0\u10032  
-\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 feat/logger
-\f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec4 \
-
-\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 	
-\f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
-\uc0\u10032  
-\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 chore/running-reorganize\
+\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 feat/first-level\
 	
 \f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
 \uc0\u10032  
-\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 feat/first-running\
-\pard\pardeftab720\sl520\partightenfactor0
-\cf0 \
+\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 feat/first-jump\
+
+\f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
+	\uc0\u10032  
+\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 feat/logger\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf0  [DONE] \'97 feat/first-level\
-\
- *- start sprite above blocks\
- *- create bounding boxes around sprite\
- *- utilize cleanupAction, to fix props after running entity update \
-	*- perhaps the entity update will ONLY return the props\
-		and we\'92ll adjust the props using cleanup.\
- *- Block from moving left over block.\
-\
- *- use entity.width and height, instead of spriteWidth everywhere, delete all instances of sprite width\
-\
- *- add a form of falling to basic update of entity\
- *- Blocks stop falling [cleanupAction]\
- *- Blocks prevent moving forward or backward [cleanupAction]\
- *- ensure we don\'92t fall through blocks and can still move left and right\
-\
- *- create a block below character starting x. Ensure i can fall left AND right.\
- *- Blocks allow falling off edge and landing still works after.\
-\
-\'97 \'97\
-\
-\'97 feat/first-jump\
-\
- *- add in jumping via simple state change\
- *- Block prevent jumping\
-\
- *- if falling, then can\'92t jump!\
- *- how to do grounded?\
- - need to add timestamp to jump state. Good idea??? Hmmm\
-	- or we could go back to generator ;)\
-	- or use lesson from generator and adding times to update loops somehow??\
- - add in state change from jumping to falling after 1 second\
- - define button mapping for xbox 1 controller, use id provided by api, then if that\'92s the id for the controller, then use that button mapping with x, y, a, b, etc.\
-\
-\'97 \'97\
-\
+\cf0 \
 \'97 feat/first-animations\
 \
-ADD TODOS HERE! :) [SEE: things to consider, BELOW for ideas]\
- - ?? it\'92d be nice to always get the same graphics, based on redux. Perhaps a graphics state? If not a singleton? or spawning a new instance when state changes???\
+ *- update jump reducer to use enum method\
+ *- add structure to do facing indexed\
+ *- show frame based on mod of time since createdAt (now - createdAt / msPerFrame % maxFrames) [adjust msPerFrame, based on velocity, so animation is faster if speed is faster]\
+ *- update movement reduce to use enum method.\
+ *- get it working.\
+\
+ *- define getFlippedImage\
+ *- get the flipped running, jump, and everything working\
 \
 \'97 \'97\
+\
+\'97 chore/cleanup\
 \
 \'97 feat/smooth-movement\
 \
@@ -94,6 +62,15 @@ ADD TODOS HERE! :) [SEE: things to consider, BELOW for ideas]\
 \
 \'97 \'97\
 \
+\'97 feat/xbox1-mapping\
+\
+ - map button indicies to label of the controller. ie. \{ a: 0 \}\
+ - also indicate directionals as \{ \'91axes\'92: 0 \}, add a comment // dpad: \{ left: 12, up: 13, etc. \}\
+ - create a mapping for actions, like jumping, to buttons. Ie. \{ a: \'91jump\'92 \}\
+ - use this mapping for jumping and moving, instead of raw controller input\
+\
+\'97 \'97\
+\
 \'97 feat/first-audio\
  - get a sound working [turn off after]\
  - get music working [turn off after getting it to work, or itll be annoying =x]\
@@ -104,6 +81,19 @@ ADD TODOS HERE! :) [SEE: things to consider, BELOW for ideas]\
 - Add fireball to button, that casts, then shoots out, then pulses, then disappears\
 	(just like my old demo, but in this case it will seek to location, NOT another entity)\
 \
+\'97 \'97\
+\
+\'97 feat/filter-state-changes\
+ - add a middleware or something that filters state changes.\
+	+ state actions only trigger when the state ACTUALLY changes\
+	+ any state can be ATTEMPTED to be changed, so no compounded logic.\
+	+ all state change reducers are painfully simple\
+	~ think of it sorta like a flywheel or clutch ~\
+	So the controls and state reducers stay simple\
+ie. a = jump => [action filter: call jump ONLY IF grounded] => jump action switches jump state\
+	dispatch(attempt(jump(entity[\'91player1\'92])));\
+		- attempt adds meta tag to action, middleware calls tyepDefinition.reducerFilters\
+		 \{ reducerFilters: combineReducerFilters(\{ jump, movement \}) \}\
 \'97 \'97\
 \
  - address TODOs\

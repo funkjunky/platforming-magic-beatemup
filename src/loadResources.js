@@ -1,5 +1,8 @@
 import character from '../assets/character.png';
 
+import { States } from './entities/movement';
+const { pushingLeft, pushingRight } = States;
+
 const loadResources = async () => {
   const image = new Image();
 
@@ -11,37 +14,63 @@ const loadResources = async () => {
 
   return {
     sprites: {
-      idle: select(frames, [0, 1]),
-      slash: {
-        windup: [frames[2]],
-        inmotion: [frames[3]],
-        recover: [frames[5]], //opps, i ordered 4 and 5 wrong in the image
-      },
-      spell: {
-        chargingup: [frames[2]],
-        casting: [frames[4]],
-      },
-      running: select(frames, [6, 7, 8]),
-      jumping: {
-        raising: [frames[9]],
-        crescendo: [frames[9]],
-        falling: [frames[9]],
-      },
-    }
+      pushingRight: getSprites(frames, pushingRight),
+      pushingLeft: getSprites(frames, pushingLeft),
+    },
   }
 };
+
+const getSprites = (frames, direction) => ({
+  idle: select(frames[direction], [0, 1]),
+  slash: {
+    windup: [frames[direction][2]],
+    inmotion: [frames[direction][3]],
+    recover: [frames[direction][5]], //opps, i ordered 4 and 5 wrong in the image
+  },
+  spell: {
+    chargingup: [frames[direction][2]],
+    casting: [frames[direction][4]],
+  },
+  running: select(frames[direction], [6, 7, 8]),
+  jumping: {
+    raising: [frames[direction][9]],
+    crescendo: [frames[direction][9]],
+    falling: [frames[direction][9]],
+    landing: [frames[direction][9]],
+  },
+});
 
 // this will make more sense when i add more frames to animations
 const select = (arr, indices) => indices.map(i => arr[i]);
 
+// TODO: rename image to rightFacingSpriteSheet
 const loadFrames = ({ image, count, width, height }) => new Promise(resolve =>
   // TODO: create a range iterator
   image.onload = async () => {
     console.log('onload');
-    resolve(await Promise.all([...Array(count).keys()].map(i =>
-      createImageBitmap(image, width * i, 0, width, height)
-    )))
+    const flippedImage = await getFlippedSprite(image);
+    resolve({
+      [pushingRight]: await Promise.all([...Array(count).keys()].map(i =>
+        createImageBitmap(image, width * i, 0, width, height)
+      )),
+      [pushingLeft]: (await Promise.all([...Array(count).keys()].map(i =>
+        createImageBitmap(flippedImage, width * i, 0, width, height)
+      ))).reduce((reversed, v) => ([ v, ...reversed ]), [])
+    })
   }
 );
+
+// TODO: do the flipping
+const getFlippedSprite = image => {
+  const c = document.createElement('canvas');
+  c.width = image.width;
+  c.height= image.height;
+  const ctx = c.getContext('2d');
+  ctx.scale(-1, 1);
+  ctx.drawImage(image, -image.width, 0);
+  const img = new Image();
+  img.src = c.toDataURL();
+  return img;
+}
 
 export default loadResources;

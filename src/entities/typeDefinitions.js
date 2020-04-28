@@ -1,8 +1,11 @@
 import { updateProps } from './index';
 import boundingBoxes from './basicBoundingBoxes';
 
-import movement from './movement';
-import jump from './jump';
+import movement, * as Movement from './movement';
+import jump, * as Jump from './jump';
+
+const { jumping, falling, grounded } = Jump.States;
+const { pushingLeft, pushingRight, stopping } = Movement.States;
 
 // considering immer...
 const combineReducers = reducers => (draftState, action) =>
@@ -31,22 +34,22 @@ export const typeDefinitions = {
       // would immer allow me to reuse the props, like destructuring them?
       let vx = props.vx;
       let vy = props.vy;
-      if (movement === 'pushingRight') {
+      if (movement[pushingRight]) {
         vx = Math.min(maxVel, props.vx + acc * dt)
-      } else if (movement === 'pushingLeft') {
+      } else if (movement[pushingLeft]) {
         vx = Math.max(-maxVel, props.vx - acc * dt)
-      } else if (movement === 'stopping') {
+      } else if (movement[stopping]) {
         // decelerate
         if (props.vx > 0) vx = Math.max(0, props.vx - dec * dt);
         if (props.vx < 0) vx = Math.min(0, props.vx + dec * dt);
       }
 
       // temporary, until i implement jumping. I need the grounded to properly do the acc of falling
-      if (jump.state === 'falling') {
+      if (jump[falling]) {
         vy = Math.min(terminalVel, vy + dt * fallingAcc);
-      } else if (jump.state === 'jumping') { // TODO: most games only allow this for a short time.
+      } else if (jump[jumping]) {
         vy = -jumpingVel;
-      } else if (jump.state === 'grounded') {
+      } else if (jump[grounded]) {
         vy = 0;
       }
 
