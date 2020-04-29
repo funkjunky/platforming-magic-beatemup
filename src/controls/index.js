@@ -1,20 +1,11 @@
-import { pushingLeft, pushingRight, stopping } from '../entities/movement';
-import { jumping, falling } from '../entities/jump';
+import { pushingLeft, pushingRight, stopping } from '../entities/states/movement';
+import { jumping, falling } from '../entities/states/jump';
+import { player1 } from '../index';
 
 export const setControls = (dispatch) => {
   const [Controls, interval] = getControls();
 
-  //TODO bette define
-  /*
-  const buttonAssignments = {
-    moveRight: 0, //[button indices]
-    moveLeft: 1,
-  };
-  */
-
-  // TODO: uhhhhhh hacky...
-  const playerEntity = { id: 'player1' };
-  const dispatchMiddleware = entityStateAction => dispatch(entityStateAction(playerEntity));
+  const dispatchMiddleware = entityStateAction => dispatch(entityStateAction(player1));
   Controls.addMiddleware(dispatchMiddleware);
 
   Controls.onAxis({
@@ -51,7 +42,6 @@ const getControls = () => {
     on: ({ button, press, release }) => {
       buttonListeners.push({ button, press, release, active: 0 });
     },
-    // TODO: add a remove, especially for HMR [perhaps a removeAll]
     addMiddleware: callback => middleware.push(callback),
   };
 

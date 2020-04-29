@@ -9,8 +9,11 @@ import reducer from './reducer.js';
 import { replaceAllTheModules, setUpdate, loadRaf } from './bootstrap';
 import { setControls } from './controls';
 import getLogger from './getLogger';
+import { characterWidth } from './loadResources';
 
 document.addEventListener('DOMContentLoaded', firstLoad);
+
+export const player1 = { id: 'player1' };
 
 async function firstLoad() {
   const logger = getLogger();
@@ -27,18 +30,17 @@ async function firstLoad() {
   loadRaf();
 
   // create the first player entity
-  const spriteWidth = 96;
   window.store.dispatch(createEntity({
     props: {
-      x: spriteWidth * 3,
-      y: spriteWidth,
-      height: spriteWidth,
-      width: spriteWidth,
+      x: characterWidth * 3,
+      y: characterWidth,
+      height: characterWidth,
+      width: characterWidth,
     },
     type: 'player',
+    id: player1.id,
   }));
 
-  // TODO: put the setControls in with the other interval. They should all be in the same interval.
   window.controlsInterval = setControls(window.store.dispatch);
   window.updateInterval = setUpdate();
 }

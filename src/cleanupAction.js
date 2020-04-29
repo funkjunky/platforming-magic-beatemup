@@ -1,11 +1,11 @@
 import { level } from './entities/level';
 import { updateProps } from './entities';
-import { typeDefinitions } from './entities/typeDefinitions';
-import { grounded, falling, States } from './entities/jump';
+import { entityDefinitions } from './entities';
+import { grounded, falling, States } from './entities/states/jump';
 
 export const cleanupAction = () => (dispatch, getState) => {
   Object.values(getState().entities).forEach(entity => {
-    const entityDefn = typeDefinitions[entity.type];
+    const entityDefn = entityDefinitions[entity.type];
 
     // if jumping has been jumping for jumpDuration, then switch it to falling
 

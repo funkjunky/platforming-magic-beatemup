@@ -1,21 +1,26 @@
 import { createAction } from '@reduxjs/toolkit';
 import produce from 'immer';
 
-import { typeDefinitions } from './typeDefinitions';
+import player from './player';
 
 let _id= 0;
-export const createEntity = createAction('CREATE_ENTITY', ({ type, state, props }) => ({
+export const createEntity = createAction('CREATE_ENTITY', ({ id, type, state, props }) => ({
   payload: {
-    id: type + ++_id,
+    id: id || type + ++_id,
     type,
     state,
     props,
   },
 }));
 
+export const entityDefinitions = {
+  player,
+};
+
 // put the action(s) that are being called for the update,
 // also the values they're contributing, into this meta object.
 // For debugging purposes.
+// ~~ generic action for all entities
 export const updateProps = createAction('UPDATE_PROPS', (payload, meta) => ({
   payload,
   meta,
@@ -34,9 +39,7 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
       draftState[id] = {
         id,
         type,
-        // because createEntity isn't one of it's actions, state should be unchanged, BUT because state is undefined, initialState should be set!
-        // TODO: RTK may break here... make sure it applies initialState here. [it better follow it's own rules about NOT using @@init]
-        states: produce(states, states => typeDefinitions[type].stateReducer(states, action)),
+        states: produce(states, states => entityDefinitions[type].stateReducer(states, action)),
         props: { x, y, vx, vy, height, width },
       };
       break;
@@ -52,7 +55,7 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
     default:
       if (action.payload && action.payload.id !== undefined) {
         const entity = draftState[action.payload.id];
-        typeDefinitions[entity.type].stateReducer(entity.states, action);
+        entityDefinitions[entity.type].stateReducer(entity.states, action);
       }
   }
 });

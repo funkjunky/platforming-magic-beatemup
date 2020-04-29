@@ -49,11 +49,23 @@
 \'97 \'97\
 \
 \'97 chore/cleanup\
+ - finish looking at TODOs,adding bullets below\
+\
+ *- DRYing diff code\
+ *- lastState for for graphics stopping isn\'92t being used\
+ - ?entities/index should represent the whole entity, so put reducer in it\'92s own file, and maybe import export stuff???\
+\
+ - add button => filter => actions.\
+	- Add actionFilter to typeDefinitions [action filters is a thunk that takes an action]\
+		- typeDefn[player].actionFilter = action => (dispatch, getState) => dispatch(action)\
+	- Call action filter in buttons, instead of directly calling action.\
+	- action filter defaults to just dispatching the action.\
 \
 \'97 feat/smooth-movement\
 \
  - add intensity of joystick: \{ state: \'91pushingLeft\'92, params: \{ intensity: [0-1] \} \}\
  ?? How to do graphics for different intensities??\
+ - add in the ability to more quickly change directions. Ie. if vx is opposite, then double effect\
  - add in a bit of ramp up acceleration and slow down [different based on changing direction or drifting] Play with it to make it feel nice.\
  - smooth out jumping acceleration, still and while moving\
  - add dash that works with jump [like megaman x]\
@@ -103,6 +115,8 @@ ie. a = jump => [action filter: call jump ONLY IF grounded] => jump action switc
  - Story for Logger: have type showing, and expand to see payload and diff\
 	- group every 20 in collapsable collections, header is the timestamp for the actions [beginning to end]\
 	- make sure logger useful and add anything that may help [maybe controls to expand action and diff, maybe only show type. Add filters?]\
+\
+ - use high performance timer, and have controls and update return a callback for interval, and set the \'93intervals\'94 in index instead using the high performance timer.\
 \
  - put timestamp in redux [using middleware], so i have a reference for each state.\
 \

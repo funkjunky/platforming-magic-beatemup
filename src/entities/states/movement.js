@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { createState } from '../createState';
+import { createState } from './createState';
 
 export const States = {
   pushingRight: 'pushingRight',

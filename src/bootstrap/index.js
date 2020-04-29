@@ -1,13 +1,12 @@
 import loadResources from '../loadResources';
 import graphics from '../graphics';
-import { typeDefinitions } from '../entities/typeDefinitions';
+import { entityDefinitions } from '../entities';
 import { update } from '../lastUpdated';
 import reducer from '../reducer';
 import { setControls } from '../controls';
 import { cleanupAction } from '../cleanupAction';
 
 // NOTE: this file and /index should be the only files using the window global
-
 const step = (ctx, resources) => dt => {
   graphics(ctx, window.store.getState(), resources, dt);
   window.raf = window.requestAnimationFrame(step(ctx, resources));
@@ -25,7 +24,7 @@ export const setUpdate = () => setInterval(() => {
   const { entities, lastUpdated } = window.store.getState();
   const dt = (Date.now() - lastUpdated) / 1000;
   Object.values(entities).forEach(entity =>
-    typeDefinitions[entity.type].update(entity, dt, window.store.dispatch));
+    entityDefinitions[entity.type].update(entity, dt, window.store.dispatch));
   window.store.dispatch(cleanupAction())
   // call cleanup
   window.store.dispatch(update(Date.now()));
@@ -42,6 +41,4 @@ export const replaceAllTheModules = () => {
     clearInterval(window.updateInterval);
     window.updateInterval = setUpdate();
   }
-  // should i also hot the logger???
-  // NOTE: I might have to add controller in here
 }
