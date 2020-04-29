@@ -56,7 +56,9 @@ const getPlayerSprite = (sprites, entity, now) => {
     return getSprite(
       movement[stopping],
       idleMsPerFrame,
-      sprites[dir].idle,
+      movement[stopping].lastState === pushingRight
+        ? sprites[pushingRight].idle
+        : sprites[pushingLeft].idle,
     );
 
   } else {
