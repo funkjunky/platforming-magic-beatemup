@@ -4,9 +4,9 @@ import produce from 'immer';
 import { typeDefinitions } from './typeDefinitions';
 
 let _id= 0;
-export const createEntity = createAction('CREATE_ENTITY', ({ type, state, props }) => ({
+export const createEntity = createAction('CREATE_ENTITY', ({ id, type, state, props }) => ({
   payload: {
-    id: type + ++_id,
+    id: id || type + ++_id,
     type,
     state,
     props,
@@ -34,8 +34,6 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
       draftState[id] = {
         id,
         type,
-        // because createEntity isn't one of it's actions, state should be unchanged, BUT because state is undefined, initialState should be set!
-        // TODO: RTK may break here... make sure it applies initialState here. [it better follow it's own rules about NOT using @@init]
         states: produce(states, states => typeDefinitions[type].stateReducer(states, action)),
         props: { x, y, vx, vy, height, width },
       };

@@ -3,14 +3,15 @@ import character from '../assets/character.png';
 import { States } from './entities/movement';
 const { pushingLeft, pushingRight } = States;
 
+export const characterWidth = 96;
+
 const loadResources = async () => {
-  const image = new Image();
+  const rightFacingImage = new Image();
 
   console.log('about to loadframes');
   // specify resources, which will trigger the onload
-  image.src = character;
-  // TODO: grab 96 from somewhere, like index... or define it elsewhere
-  const frames = await loadFrames({ image, count: 10, width: 96, height: 96 });
+  rightFacingImage.src = character;
+  const frames = await loadFrames({ rightFacingImage, count: 10, width: characterWidth, height: characterWidth });
 
   return {
     sprites: {
@@ -31,7 +32,7 @@ const getSprites = (frames, direction) => ({
     chargingup: [frames[direction][2]],
     casting: [frames[direction][4]],
   },
-  running: select(frames[direction], [6, 7, 8]),
+  running: select(frames[direction], [6, 7, 8, 7]),
   jumping: {
     raising: [frames[direction][9]],
     crescendo: [frames[direction][9]],
@@ -43,15 +44,14 @@ const getSprites = (frames, direction) => ({
 // this will make more sense when i add more frames to animations
 const select = (arr, indices) => indices.map(i => arr[i]);
 
-// TODO: rename image to rightFacingSpriteSheet
-const loadFrames = ({ image, count, width, height }) => new Promise(resolve =>
+const loadFrames = ({ rightFacingImage, count, width, height }) => new Promise(resolve =>
   // TODO: create a range iterator
-  image.onload = async () => {
+  rightFacingImage.onload = async () => {
     console.log('onload');
-    const flippedImage = await getFlippedSprite(image);
+    const flippedImage = await getFlippedSprite(rightFacingImage);
     resolve({
       [pushingRight]: await Promise.all([...Array(count).keys()].map(i =>
-        createImageBitmap(image, width * i, 0, width, height)
+        createImageBitmap(rightFacingImage, width * i, 0, width, height)
       )),
       [pushingLeft]: (await Promise.all([...Array(count).keys()].map(i =>
         createImageBitmap(flippedImage, width * i, 0, width, height)
@@ -60,7 +60,6 @@ const loadFrames = ({ image, count, width, height }) => new Promise(resolve =>
   }
 );
 
-// TODO: do the flipping
 const getFlippedSprite = image => {
   const c = document.createElement('canvas');
   c.width = image.width;

@@ -15,32 +15,42 @@ const c = {
 };
 
 const groundedDuration = 300;
-// TODO: add a grounded sprite, for when "grounded" is new, ie. now - createdAt < 300
-const getPlayerSprite = (sprites, entity) => {
+const getPlayerSprite = (sprites, entity, now) => {
   // TODO: this code is too dense. Find a way to abstract out pieces to remove context and simplify it
   const { jump, movement } = entity.states;
   const dir = Object.values(movement)[0].lastState || entity.props.vx < 0 ? pushingLeft : pushingRight;
-  if(jump[Jump.States.jumping]) {
+  const getSprite = getGetSprite(now);
+  if(jump[jumping]) {
     return sprites[dir].jumping.raising[0];
+
   } else if (jump[falling]) {
     return sprites[dir].jumping.falling[0];
-    // TODO: pass in Date.now(), to make this function idempotent
-  } else if (jump[grounded] && (Date.now() - jump[grounded].createdAt) < groundedDuration) {
-    return sprites[dir].jumping.landing[0];
+
   } else if (movement[pushingRight]) {
-    console.log(sprites.pushingLeft.running.length);
     // TODO: make sprite take an object, not a normal function, so it's more clear?? Maybe
     return getSprite(
       movement[pushingRight],
-      500 - entity.props.vx * 4, // TODO: this math seems meh... probably need to NOT use msPerFrame. Need to base on the nominator
+      // Need abs, because we could be pushing right, while sliding left (ie. -vx)
+      96 * 96 / Math.floor(Math.abs(entity.props.vx), 1),
       sprites.pushingRight.running
     );
+
   } else if (movement[pushingLeft]) {
     return getSprite(
       movement[pushingLeft],
-      500 + entity.props.vx * 4, // TODO: this math seems meh... probably need to NOT use msPerFrame. Need to base on the nominator
+      96 * 96 / Math.floor(Math.abs(entity.props.vx), 1),
       sprites.pushingLeft.running
     );
+
+  } else if (jump[grounded] && (now - jump[grounded].createdAt) < groundedDuration) {
+    // TODO: make a landing animation and use it here instead IT should last groundedDuration
+    const idleMsPerFrame = 500;
+    return getSprite(
+      movement[stopping],
+      idleMsPerFrame,
+      sprites[dir].idle,
+    );
+
   } else if (movement[stopping]) {
     const idleMsPerFrame = 500;
     return getSprite(
@@ -48,22 +58,21 @@ const getPlayerSprite = (sprites, entity) => {
       idleMsPerFrame,
       sprites[dir].idle,
     );
+
   } else {
     console.error('NO GRAPHIC FOR STATE', movement, stopping, movement[stopping]);  
   }
 };
 
-const getSprite = (state, msPerFrame, sprites) => {
-    // TODO: pass in Date.now(), to make this function idempotent
-    const totalMs = Date.now() - state.createdAt
+const getGetSprite = now => (state, msPerFrame, sprites) => {
+    const totalMs = now - state.createdAt
     const index = Math.floor(totalMs / msPerFrame) % sprites.length;
     return sprites[index];
 };
 
 export default (ctx, state, resources) => {
   const drawPerson = entity => {
-    // TODO: look into anchor, my char probably isn'tanchored propertly
-    ctx.drawImage(getPlayerSprite(resources.sprites, entity), entity.props.x, entity.props.y);
+    ctx.drawImage(getPlayerSprite(resources.sprites, entity, Date.now()), entity.props.x, entity.props.y);
   };
 
   //BEGIN ACTUAL GRAPHICS

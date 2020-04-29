@@ -7,7 +7,6 @@ import { setControls } from '../controls';
 import { cleanupAction } from '../cleanupAction';
 
 // NOTE: this file and /index should be the only files using the window global
-
 const step = (ctx, resources) => dt => {
   graphics(ctx, window.store.getState(), resources, dt);
   window.raf = window.requestAnimationFrame(step(ctx, resources));
@@ -42,6 +41,4 @@ export const replaceAllTheModules = () => {
     clearInterval(window.updateInterval);
     window.updateInterval = setUpdate();
   }
-  // should i also hot the logger???
-  // NOTE: I might have to add controller in here
 }

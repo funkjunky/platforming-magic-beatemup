@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createState } from '../createState';
+import { createState } from './createState';
 
 export const States = {
   grounded: 'grounded',
@@ -15,7 +15,8 @@ const jumpSlice = createSlice({
   initialState: createState(States.falling), // Note: Date.now() will be called early on import
   reducers: {
     grounded: () => createState(States.grounded),
-    // TODO: I'm not sure i want this logic here... It'd be nice to keep these hyper simple
+    // TODO: this should be part of an extra abstraction layer between buttons and actions. button => filter => action
+    //        The filter should be defined in the typeDefinitions
     jumping: state => state[States.grounded] ? createState(States.jumping) : undefined, // undefined means unchanged,
     falling: () => createState(States.falling),
   },

@@ -3,6 +3,7 @@ import boundingBoxes from './basicBoundingBoxes';
 
 import movement, * as Movement from './movement';
 import jump, * as Jump from './jump';
+import { characterWidth } from '../loadResources';
 
 const { jumping, falling, grounded } = Jump.States;
 const { pushingLeft, pushingRight, stopping } = Movement.States;
@@ -19,7 +20,7 @@ const combineReducers = reducers => (draftState, action) =>
 // in pixels per second
 const acc = 100; // So it takes 1 second to get to max speed
 const dec = 50; // it takes 2 seconds to stop, naturally
-const maxVel = 100;
+const maxVel = characterWidth;
 const fallingAcc = 200;
 const terminalVel = 200;
 const jumpingVel = 150;
