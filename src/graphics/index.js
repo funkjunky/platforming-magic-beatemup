@@ -14,11 +14,16 @@ const c = {
   orange:     '#ffaf3f'
 };
 
+const getDir = movement => {
+  if (movement[stopping]) return movement[stopping].lastState;
+  else return movement[pushingRight] ? pushingRight : pushingLeft;
+}
+
 const groundedDuration = 300;
 const getPlayerSprite = (sprites, entity, now) => {
   // TODO: this code is too dense. Find a way to abstract out pieces to remove context and simplify it
   const { jump, movement } = entity.states;
-  const dir = Object.values(movement)[0].lastState || entity.props.vx < 0 ? pushingLeft : pushingRight;
+  const dir = getDir(movement);
   const getSprite = getGetSprite(now);
   if(jump[jumping]) {
     return sprites[dir].jumping.raising[0];
@@ -26,22 +31,14 @@ const getPlayerSprite = (sprites, entity, now) => {
   } else if (jump[falling]) {
     return sprites[dir].jumping.falling[0];
 
-  } else if (movement[pushingRight]) {
+  } else if (movement[pushingRight] || movement[pushingLeft]) {
     // TODO: make sprite take an object, not a normal function, so it's more clear?? Maybe
     return getSprite(
-      movement[pushingRight],
+      movement[dir],
       // Need abs, because we could be pushing right, while sliding left (ie. -vx)
       96 * 96 / Math.floor(Math.abs(entity.props.vx), 1),
-      sprites.pushingRight.running
+      sprites[dir].running
     );
-
-  } else if (movement[pushingLeft]) {
-    return getSprite(
-      movement[pushingLeft],
-      96 * 96 / Math.floor(Math.abs(entity.props.vx), 1),
-      sprites.pushingLeft.running
-    );
-
   } else if (jump[grounded] && (now - jump[grounded].createdAt) < groundedDuration) {
     // TODO: make a landing animation and use it here instead IT should last groundedDuration
     const idleMsPerFrame = 500;
@@ -56,9 +53,7 @@ const getPlayerSprite = (sprites, entity, now) => {
     return getSprite(
       movement[stopping],
       idleMsPerFrame,
-      movement[stopping].lastState === pushingRight
-        ? sprites[pushingRight].idle
-        : sprites[pushingLeft].idle,
+      sprites[dir].idle,
     );
 
   } else {
