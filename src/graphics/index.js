@@ -1,6 +1,6 @@
 import { level } from '../entities/level';
-import * as Jump from '../entities/jump';
-import * as Movement from '../entities/movement';
+import * as Jump from '../entities/states/jump';
+import * as Movement from '../entities/states/movement';
 
 const { jumping, falling, grounded } = Jump.States;
 const { pushingLeft, pushingRight, stopping } = Movement.States;

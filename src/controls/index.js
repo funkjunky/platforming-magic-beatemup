@@ -1,5 +1,5 @@
-import { pushingLeft, pushingRight, stopping } from '../entities/movement';
-import { jumping, falling } from '../entities/jump';
+import { pushingLeft, pushingRight, stopping } from '../entities/states/movement';
+import { jumping, falling } from '../entities/states/jump';
 import { player1 } from '../index';
 
 export const setControls = (dispatch) => {

@@ -1,6 +1,6 @@
 import loadResources from '../loadResources';
 import graphics from '../graphics';
-import { typeDefinitions } from '../entities/typeDefinitions';
+import { entityDefinitions } from '../entities';
 import { update } from '../lastUpdated';
 import reducer from '../reducer';
 import { setControls } from '../controls';
@@ -24,7 +24,7 @@ export const setUpdate = () => setInterval(() => {
   const { entities, lastUpdated } = window.store.getState();
   const dt = (Date.now() - lastUpdated) / 1000;
   Object.values(entities).forEach(entity =>
-    typeDefinitions[entity.type].update(entity, dt, window.store.dispatch));
+    entityDefinitions[entity.type].update(entity, dt, window.store.dispatch));
   window.store.dispatch(cleanupAction())
   // call cleanup
   window.store.dispatch(update(Date.now()));

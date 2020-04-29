@@ -1,6 +1,6 @@
 import character from '../assets/character.png';
 
-import { States } from './entities/movement';
+import { States } from './entities/states/movement';
 const { pushingLeft, pushingRight } = States;
 
 export const characterWidth = 96;
