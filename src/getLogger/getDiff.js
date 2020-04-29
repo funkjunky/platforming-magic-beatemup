@@ -1,34 +1,17 @@
 export const getDiff = (newObj, oldObj) => {
   return {
-    new: getNewDiff(newObj, oldObj),
-    old: getOldDiff(newObj, oldObj),
+    new: getXDiff(newObj, oldObj, newObj),
+    old: getXDiff(newObj, oldObj, oldObj),
   };
 }
-
-const getNewDiff = (newVar, oldVar) => {
-  // Note: we can do this because our data is immutible
+const getXDiff = (newVar, oldVar, perspective) => {
   if (newVar !== oldVar) {
-    if (typeof newVar !== 'object' || typeof oldVar !== 'object') return newVar;
+    if (typeof newVar !== 'object' || typeof oldVar !== 'object') return perspective;
     else {
-      return Object.entries(newVar).reduce((newObj, [key, value]) => {
-        const res = getNewDiff(value, oldVar[key]);
-        if (res)  return { ...newObj, [key]: res };
-        else      return newObj;
-      }, {});
-    }
-  }
-}
-
-// TODO: maybe i should do new and old in one function and build up the objects by reference?
-const getOldDiff = (newVar, oldVar) => {
-  // Note: we can do this because our data is immutible
-  if (newVar !== oldVar) {
-    if (typeof newVar !== 'object' || typeof oldVar !== 'object') return oldVar;
-    else {
-      return Object.entries(newVar).reduce((oldObj, [key, value]) => {
-        const res = getOldDiff(value, oldVar[key]);
-        if (res)  return { ...oldObj, [key]: res };
-        else      return oldObj;
+      return Object.entries(newVar).reduce((obj, [key, value]) => {
+        const res = getXDiff(value, oldVar[key], perspective[key]);
+        if (res)  return { ...obj, [key]: res };
+        else      return obj;
       }, {});
     }
   }

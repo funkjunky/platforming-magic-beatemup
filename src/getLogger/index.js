@@ -24,7 +24,7 @@ const logger = () => {
         const filteredLogs = logs.filter(getFilter(filters));
         // we check lazily if the filtered logs has changed.
         if (oldCount !== filteredLogs.length) {
-          printType(filteredLogs);
+          printFirstThreeDiffs(filteredLogs);
         }
         oldCount = filteredLogs.length;
         return result;
