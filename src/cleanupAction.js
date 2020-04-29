@@ -16,7 +16,8 @@ export const cleanupAction = () => (dispatch, getState) => {
       if (doBoxesIntersect(block, top)) {
         dispatch(updateProps({ entity, newProps: { y: block.y + block.width, vy: 0 } }));
       }
-      if (doBoxesIntersect(block, bottom)) {
+      // i add 1 pixel, then correct flush, so this won't be triggered against after being "grounded"
+      if (doBoxesIntersect({ ...block, y: block.y + 1 }, bottom)) {
         dispatch(updateProps({ entity, newProps: { y: block.y - entity.props.height, vy: 0 } }));
       }
 
@@ -35,7 +36,7 @@ export const cleanupAction = () => (dispatch, getState) => {
       }
       // TODO: move state changes into their own function, even if i have to re-iterate on blocks? Hmmm...
       // This feels a little more out there, so even as the props are pushed away, this still feels the ground.
-      if (doBoxesIntersect(block, { ...bottom, y: bottom.y + 5 })) {
+      if (doBoxesIntersect(block, bottom)) {
         if (!entity.states.jump[States.grounded]) {
           dispatch(grounded(entity));
         }
