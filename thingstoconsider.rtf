@@ -18,8 +18,14 @@
 \f1  
 \f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 Accomplishments 
 \f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec4 \uc0\u10032 \
+\outl0\strokewidth0 \strokec4 \uc0\u10032 
+\f2 \
 \pard\pardeftab720\sl520\partightenfactor0
+
+\f1 \cf2 \outl0\strokewidth0 	\uc0\u10032  
+\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 chore/button-filter
+\f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec4 \
 
 \f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 	
 \f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
@@ -29,23 +35,11 @@
 \f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
 \uc0\u10032  
 \f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 feat/first-animations\
-
-\f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
-	\uc0\u10032  
-\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 feat/first-level\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 \
- \'97 chore/button-filter\
- - add button => filter => actions.\
-	- Add actionFilter to typeDefinitions [action filters is a thunk that takes an action]\
-		- typeDefn[player].actionFilter = action => (dispatch, getState) => dispatch(action)\
-	- Call action filter in buttons, instead of directly calling action.\
-	- action filter defaults to just dispatching the action.\
-\
 \'97 feat/smooth-movement\
 \
  - add intensity of joystick: \{ state: \'91pushingLeft\'92, params: \{ intensity: [0-1] \} \}\
- ?? How to do graphics for different intensities??\
  - add in the ability to more quickly change directions. Ie. if vx is opposite, then double effect\
  - add in a bit of ramp up acceleration and slow down [different based on changing direction or drifting] Play with it to make it feel nice.\
  - smooth out jumping acceleration, still and while moving\

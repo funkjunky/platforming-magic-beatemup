@@ -1,11 +1,12 @@
 import { pushingLeft, pushingRight, stopping } from '../entities/states/movement';
 import { jumping, falling } from '../entities/states/jump';
 import { player1 } from '../index';
+import Player from '../entities/player';
 
 export const setControls = (dispatch) => {
   const [Controls, interval] = getControls();
 
-  const dispatchMiddleware = entityStateAction => dispatch(entityStateAction(player1));
+  const dispatchMiddleware = entityStateAction => dispatch(Player.actionsFilter(entityStateAction(player1)));
   Controls.addMiddleware(dispatchMiddleware);
 
   Controls.onAxis({
