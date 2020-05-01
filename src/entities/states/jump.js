@@ -16,9 +16,7 @@ const jumpSlice = createSlice({
   initialState: createState(States.falling), // Note: Date.now() will be called early on import
   reducers: {
     grounded: () => createState(States.grounded),
-    // TODO: this should be part of an extra abstraction layer between buttons and actions. button => filter => action
-    //        The filter should be defined in the typeDefinitions
-    jumping: state => state[States.grounded] ? createState(States.jumping) : undefined, // undefined means unchanged,
+    jumping: () => createState(States.jumping),
     falling: () => createState(States.falling),
   },
 });

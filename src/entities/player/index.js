@@ -24,6 +24,13 @@ const playerDefinition = {
   type: 'player',
   stateReducer: combineReducers({ movement, jump }),
   boundingBoxes,
+  actionsFilter: action => (dispatch, getState) => {
+    if (action.type === Jump.jumping.toString() && !getState().entities[action.payload.id].states.jump.grounded) return;
+    //TODO: this is just to stop action spam... I need a more generic solution for thi.
+    else if (action.type === Jump.falling.toString() && getState().entities[action.payload.id].states.jump.falling) return;
+
+    return dispatch(action);
+  },
   // dt is in seconds.
   update: (entity, dt, dispatch) => {
     const { props, states: { movement, jump } } = entity;

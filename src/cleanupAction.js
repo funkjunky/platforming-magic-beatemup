@@ -13,10 +13,19 @@ export const cleanupAction = () => (dispatch, getState) => {
     const { top, bottom, left, right } = entityDefn.boundingBoxes(entity);
     // stop the entity from being in any square
     level.forEach(block => {
+      // TODO: move state changes into their own function, even if i have to re-iterate on blocks? Hmmm...
+      // This feels a little more out there, so even as the props are pushed away, this still feels the ground.
+      if (doBoxesIntersect(block, bottom)) {
+        if (!entity.states.jump[States.grounded]) {
+          dispatch(grounded(entity));
+        }
+        isGrounded = true;
+      }
+
       if (doBoxesIntersect(block, top)) {
         dispatch(updateProps({ entity, newProps: { y: block.y + block.width, vy: 0 } }));
       }
-      // i add 1 pixel, then correct flush, so this won't be triggered against after being "grounded"
+      // i add 1 pixel, then correct flush, so this won't be triggered again after being "grounded"
       if (doBoxesIntersect({ ...block, y: block.y + 1 }, bottom)) {
         dispatch(updateProps({ entity, newProps: { y: block.y - entity.props.height, vy: 0 } }));
       }
@@ -27,22 +36,14 @@ export const cleanupAction = () => (dispatch, getState) => {
       if (doBoxesIntersect(block, left)) {
         dispatch(updateProps({ entity, newProps: { x: block.x + block.width, vx: 0 } }));
       }
-
-      // State related cleanup
-      // TODO: This should probably be in tyeDefinition player
-      const maxJumpDuration = 1000;
-      if (entity.states.jump[States.jumping] && (Date.now() - entity.states.jump[States.jumping].createdAt) > maxJumpDuration) {
-        dispatch(falling(entity));
-      }
-      // TODO: move state changes into their own function, even if i have to re-iterate on blocks? Hmmm...
-      // This feels a little more out there, so even as the props are pushed away, this still feels the ground.
-      if (doBoxesIntersect(block, bottom)) {
-        if (!entity.states.jump[States.grounded]) {
-          dispatch(grounded(entity));
-        }
-        isGrounded = true;
-      }
     });
+
+    // TODO: This should probably be in typeDefinition player
+    const maxJumpDuration = 1000;
+    if (entity.states.jump[States.jumping] && (Date.now() - entity.states.jump[States.jumping].createdAt) > maxJumpDuration) {
+      dispatch(falling(entity));
+    }
+
     if (!isGrounded && entity.states.jump[States.grounded]) {
       dispatch(falling(entity));
     }
