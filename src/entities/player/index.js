@@ -14,8 +14,8 @@ const { pushingLeft, pushingRight, stopping } = Movement.States;
 // TODO: these should all be in entity itsself. Maybe props? Maybe somewhere more static (attrs)????
 //        entity.state, entity.props, entity.attrs
 // in pixels per second
-const acc = 100; // So it takes 1 second to get to max speed
-const dec = 50; // it takes 2 seconds to stop, naturally
+const acc = 200; // So it takes 0.5 second to get to max speed
+const dec = 100; // it takes 1 seconds to stop, naturally
 const maxVel = characterWidth;
 const fallingAcc = 200;
 const terminalVel = 200;

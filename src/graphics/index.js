@@ -73,7 +73,7 @@ export default (ctx, state, resources) => {
   };
 
   //BEGIN ACTUAL GRAPHICS
-  ctx.clearRect(0, 0, 640, 480);
+  ctx.clearRect(0, 0, 960, 540);
   //default colour
   ctx.fillStyle = c.blue;
 
