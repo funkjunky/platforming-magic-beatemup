@@ -84,4 +84,8 @@ export default (ctx, state, resources) => {
     drawPerson(entity);
     ctx.restore();
   });
+
+  // printing character position:
+  ctx.font = "20px Georgia";
+  ctx.fillText('VY: ' + Object.values(state.entities)[0].props.vy, 20, 20);
 };

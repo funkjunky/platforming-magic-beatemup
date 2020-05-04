@@ -28,7 +28,7 @@ export const setUpdate = () => setInterval(() => {
   window.store.dispatch(cleanupAction())
   // call cleanup
   window.store.dispatch(update(Date.now()));
-}, 50);
+}, 20);
 
 export const replaceAllTheModules = () => {
   if (window.raf) loadRaf();
