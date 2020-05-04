@@ -23,7 +23,7 @@ export const cleanupAction = () => (dispatch, getState) => {
       }
 
       if (doBoxesIntersect(block, top)) {
-        dispatch(updateProps({ entity, newProps: { y: block.y + block.width, vy: 0 } }));
+        dispatch(updateProps({ entity, newProps: { y: block.y + block.height, vy: 0 } }));
       }
       // i add 1 pixel, then correct flush, so this won't be triggered again after being "grounded"
       if (doBoxesIntersect({ ...block, y: block.y + 1 }, bottom)) {

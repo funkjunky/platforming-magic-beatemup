@@ -73,7 +73,7 @@ export default (ctx, state, resources) => {
   };
 
   //BEGIN ACTUAL GRAPHICS
-  ctx.clearRect(0, 0, 640, 480);
+  ctx.clearRect(0, 0, 960, 540);
   //default colour
   ctx.fillStyle = c.blue;
 
@@ -84,4 +84,8 @@ export default (ctx, state, resources) => {
     drawPerson(entity);
     ctx.restore();
   });
+
+  // printing character position:
+  ctx.font = "20px Georgia";
+  ctx.fillText('VY: ' + Object.values(state.entities)[0].props.vy, 20, 20);
 };
