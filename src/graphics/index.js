@@ -1,9 +1,11 @@
 import { level } from '../entities/level';
 import * as Jump from '../entities/states/jump';
 import * as Movement from '../entities/states/movement';
+import * as Dash from '../entities/states/dash';
 
 const { jumping, falling, grounded } = Jump.States;
 const { pushingLeft, pushingRight, stopping } = Movement.States;
+const { dashing } = Dash.States;
 
 const c = {
   purple:     '#b35ce5',
@@ -22,7 +24,7 @@ const getDir = movement => {
 const groundedDuration = 300;
 const getPlayerSprite = (sprites, entity, now) => {
   // TODO: this code is too dense. Find a way to abstract out pieces to remove context and simplify it
-  const { jump, movement } = entity.states;
+  const { jump, movement, dash } = entity.states;
   const dir = getDir(movement);
   const getSprite = getGetSprite(now);
   if(jump[jumping]) {
@@ -30,6 +32,9 @@ const getPlayerSprite = (sprites, entity, now) => {
 
   } else if (jump[falling]) {
     return sprites[dir].jumping.falling[0];
+
+  } else if (dash[dashing]) {
+    return sprites[dir].dashing[0];
 
   } else if (movement[pushingRight] || movement[pushingLeft]) {
     // TODO: make sprite take an object, not a normal function, so it's more clear?? Maybe
@@ -40,12 +45,11 @@ const getPlayerSprite = (sprites, entity, now) => {
       sprites[dir].running
     );
   } else if (jump[grounded] && (now - jump[grounded].createdAt) < groundedDuration) {
-    // TODO: make a landing animation and use it here instead IT should last groundedDuration
-    const idleMsPerFrame = 500;
+    const groundedMsPerFrame = groundedDuration / 3;
     return getSprite(
-      movement[stopping],
-      idleMsPerFrame,
-      sprites[dir].idle,
+      jump[grounded],
+      groundedMsPerFrame,
+      sprites[dir].jumping.landing,
     );
 
   } else if (movement[stopping]) {
@@ -57,7 +61,7 @@ const getPlayerSprite = (sprites, entity, now) => {
     );
 
   } else {
-    console.error('NO GRAPHIC FOR STATE', movement, stopping, movement[stopping]);  
+    console.error('NO GRAPHIC FOR STATE', movement, stopping, movement[stopping]);
   }
 };
 

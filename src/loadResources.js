@@ -11,7 +11,7 @@ const loadResources = async () => {
   console.log('about to loadframes');
   // specify resources, which will trigger the onload
   rightFacingImage.src = character;
-  const frames = await loadFrames({ rightFacingImage, count: 10, width: characterWidth, height: characterWidth });
+  const frames = await loadFrames({ rightFacingImage, count: 13, width: characterWidth, height: characterWidth });
 
   return {
     sprites: {
@@ -32,12 +32,13 @@ const getSprites = (frames, direction) => ({
     chargingup: [frames[direction][2]],
     casting: [frames[direction][4]],
   },
-  running: select(frames[direction], [6, 7, 8, 7]),
+  running: select(frames[direction], [7, 8, 9, 8]),
+  dashing: [frames[direction][6]],
   jumping: {
-    raising: [frames[direction][9]],
-    crescendo: [frames[direction][9]],
-    falling: [frames[direction][9]],
-    landing: [frames[direction][9]],
+    raising: [frames[direction][10]],
+    crescendo: [frames[direction][10]],
+    falling: [frames[direction][10]],
+    landing: select(frames[direction], [11, 12, 1]),
   },
 });
 
