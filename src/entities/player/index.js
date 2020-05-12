@@ -3,6 +3,7 @@ import { updateProps } from '../index';
 import boundingBoxes from '../basicBoundingBoxes';
 import movement, * as Movement from '../states/movement';
 import jump, * as Jump from '../states/jump';
+import dash, * as Dash from '../states/dash';
 import { combineReducers } from '../combineReducers';
 
 const { jumping, falling, grounded } = Jump.States;
@@ -23,13 +24,15 @@ const decel = {
   jumping: 100,
 }
 const maxVel = 200;
+const dashingVel = 400;
+
 const fallingAcc = 400;
 const terminalVel = 600;
 const jumpingVel = 250;
 const jumpingDec = 200;
 const playerDefinition = {
   type: 'player',
-  stateReducer: combineReducers({ movement, jump }),
+  stateReducer: combineReducers({ movement, jump, dash }),
   boundingBoxes,
   actionsFilter: action => (dispatch, getState) => {
     const { jump } = getState().entities[action.payload.id].states;
@@ -45,6 +48,9 @@ const playerDefinition = {
     // TODO: this places sucks... maybe turn jump into a thunk
     if (action.type === Jump.jumping.toString()) dispatch(updateProps({ entity: action.payload, newProps: { vy: -jumpingVel } }));
 
+    // can only dash while grounded
+    if (action.type === Dash.dashing.toString() && !jump.grounded) return;
+
     // TODO: this also sucks...
     // If falling and current is jumping AND it's less than 1 second old, then drop vy to 0, instantly start falling
     if (
@@ -57,18 +63,33 @@ const playerDefinition = {
   },
   // dt is in seconds.
   update: (entity, dt, dispatch) => {
-    const { props, states: { movement, jump } } = entity;
+    const { props, states: { movement, jump, dash } } = entity;
     // would immer allow me to reuse the props, like destructuring them?
     let vx = props.vx;
     let vy = props.vy;
     const acc = accel[Object.keys(jump)[0]];
     const dec = decel[Object.keys(jump)[0]];
-    if (movement[pushingRight]) {
-      vx = Math.min(maxVel, props.vx + acc * dt)
-      if (vx < 0 && jump.grounded) vx += acc * dt * 3; //change direction faster
+    if (dash.dashing) {
+      vx = movement[pushingRight] || (movement[stopping] && movement[stopping].lastState === pushingRight)
+        ? dashingVel
+        : -dashingVel;
+    } else if (movement[pushingRight]) {
+      if (props.vx > maxVel) {
+        // if grounded, then slow down dash 3x, otherwise 1x
+        vx = props.vx - acc * dt * (jump.grounded ? 3 : 1); //triple friction until we're below max vel
+      } else {
+        vx = maxVel < props.vx ? props.vx : props.vx + acc * dt;
+        // if trying to change direction on the ground, or in the air while going over max speed.
+        // air: it's to stop people from flying off by accident during a dash jump.
+        if (vx < 0 && (jump.grounded || props.vx < -maxVel)) vx += acc * dt * 3; //change direction faster
+      }
     } else if (movement[pushingLeft]) {
-      vx = Math.max(-maxVel, props.vx - acc * dt)
-      if (vx > 0 && jump.grounded) vx -= acc * dt * 3; //change direction faster
+      if (props.vx < -maxVel) {
+        vx = props.vx + acc * dt * (jump.grounded ? 3 : 1); //only diff beteen right and left is + -. simplify this
+      }else {
+        vx = -maxVel > props.vx ? props.vx : props.vx - acc * dt;
+        if (vx > 0 && (jump.grounded || props.vx > maxVel)) vx -= acc * dt * 3;
+      }
     } else if (movement[stopping]) {
       // decelerate
       if (props.vx > 0) vx = Math.max(0, props.vx - dec * dt);

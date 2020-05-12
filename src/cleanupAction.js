@@ -2,6 +2,7 @@ import { level } from './entities/level';
 import { updateProps } from './entities';
 import { entityDefinitions } from './entities';
 import { grounded, falling, States } from './entities/states/jump';
+import { notdashing, States as DashStates } from './entities/states/dash';
 
 export const cleanupAction = () => (dispatch, getState) => {
   Object.values(getState().entities).forEach(entity => {
@@ -42,6 +43,12 @@ export const cleanupAction = () => (dispatch, getState) => {
     const maxJumpDuration = 1000;
     if (entity.states.jump[States.jumping] && (Date.now() - entity.states.jump[States.jumping].createdAt) > maxJumpDuration) {
       dispatch(falling(entity));
+    }
+
+    // TODO: This should probably be in typeDefinition player
+    const maxDashDuration = 500;
+    if (entity.states.dash[DashStates.dashing] && (Date.now() - entity.states.dash[DashStates.dashing].createdAt) > maxDashDuration) {
+      dispatch(notdashing(entity));
     }
 
     if (!isGrounded && entity.states.jump[States.grounded]) {

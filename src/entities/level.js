@@ -11,7 +11,7 @@ export const level = [
   //right wall
   { x: canvasWidth - blockHeight, y: 0, width: blockHeight, height: canvasHeight - blockHeight },
   //centre platform
-  { x: canvasWidth * 3 / 8, y: canvasHeight * 3 / 4, width: canvasWidth / 4, height: canvasHeight / 4 - blockHeight },
+  //{ x: canvasWidth * 3 / 8, y: canvasHeight * 3 / 4, width: canvasWidth / 4, height: canvasHeight / 4 - blockHeight },
   //platform1
   { x: canvasWidth / 8, y: canvasHeight / 2, width: canvasWidth / 4, height: blockHeight },
   //platform2
