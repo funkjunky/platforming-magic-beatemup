@@ -1,4 +1,5 @@
 import { pushingLeft, pushingRight, stopping } from '../entities/states/movement';
+import { dashing, notdashing } from '../entities/states/dash';
 import { jumping, falling } from '../entities/states/jump';
 import { player1 } from '../index';
 import Player from '../entities/player';
@@ -25,6 +26,12 @@ export const setControls = (dispatch) => {
     button: 0,
     press: jumping,
     release: falling,
+  });
+
+  Controls.on({
+    button: 1,
+    press: dashing,
+    release: notdashing,
   });
 
   return interval;
