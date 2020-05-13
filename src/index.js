@@ -10,6 +10,7 @@ import { replaceAllTheModules, setUpdate, loadRaf } from './bootstrap';
 import { setControls } from './controls';
 import getLogger from './getLogger';
 import { characterWidth } from './loadResources';
+import defaultMapping from './controls/defaultMapping';
 
 document.addEventListener('DOMContentLoaded', firstLoad);
 
@@ -41,7 +42,7 @@ async function firstLoad() {
     id: player1.id,
   }));
 
-  window.controlsInterval = setControls(window.store.dispatch);
+  window.controlsInterval = setControls(defaultMapping, window.store.dispatch);
   window.updateInterval = setUpdate();
 }
 

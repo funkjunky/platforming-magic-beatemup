@@ -5,6 +5,7 @@ import { update } from '../lastUpdated';
 import reducer from '../reducer';
 import { setControls } from '../controls';
 import { cleanupAction } from '../cleanupAction';
+import defaultControlsIndex from '../controls/defaultMapping';  // TODO: rename so it's consistent
 
 // NOTE: this file and /index should be the only files using the window global
 const step = (ctx, resources) => dt => {
@@ -35,7 +36,7 @@ export const replaceAllTheModules = () => {
   if (window.store) window.store.replaceReducer(reducer);
   if (window.controlsInterval) {
     clearInterval(window.controlsInterval);
-    window.controlsInterval = setControls(window.store.dispatch);
+    window.controlsInterval = setControls(defaultControlsIndex, window.store.dispatch);
   }
   if (window.updateInterval) {
     clearInterval(window.updateInterval);
