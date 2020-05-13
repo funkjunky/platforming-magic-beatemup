@@ -21,32 +21,22 @@
 \uc0\u10032 \
 \pard\pardeftab720\sl520\partightenfactor0
 \cf2 	\uc0\u10032 
+\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0  feat/dash-stop-animations
+\f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\
+	\uc0\u10032 
 \f0 \cf0 \cb1 \kerning1\expnd0\expndtw0  feat/dashing\
 \pard\pardeftab720\sl520\partightenfactor0
 \cf0 	
 \f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
 \outl0\strokewidth0 \strokec4 \uc0\u10032  
-\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 feat/smooth-movement
-\f2 \cf2 \cb3 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec4 \
-\pard\pardeftab720\sl520\partightenfactor0
-
-\f1 \cf2 \outl0\strokewidth0 	\uc0\u10032  
-\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 chore/button-filter\
+\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 feat/smooth-movement\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 \
-\'97 feat/dash-stop-animations\
-\
- - create and add dashing and stopping animations [ipad]\
- - put them into the game\
-\
- \'97 \'97\
 \
 \'97 feat/xbox1-mapping\
 \
- - add intensity of joystick: \{ state: \'91pushingLeft\'92, params: \{ intensity: [0-1] \} \}\
-\
- - map button indicies to label of the controller. ie. \{ a: 0 \}\
+* - map button indicies to label of the controller. ie. \{ a: 0 \}\
  - also indicate directionals as \{ \'91axes\'92: 0 \}, add a comment // dpad: \{ left: 12, up: 13, etc. \}\
  - create a mapping for actions, like jumping, to buttons. Ie. \{ a: \'91jump\'92 \}\
  - use this mapping for jumping and moving, instead of raw controller input\
@@ -81,6 +71,8 @@ ie. a = jump => [action filter: call jump ONLY IF grounded] => jump action switc
  - address TODOs\
 \
  - Get trello setup to story proper work!! maybe create epics for feature branch names?\
+\
+ - story for: handling variable joystick input (how to not spam actions?? Perhaps START pushingRight, but call a different filtered out action to update the intensity in state)\
 \
  - Story for Logger: have type showing, and expand to see payload and diff\
 	- group every 20 in collapsable collections, header is the timestamp for the actions [beginning to end]\

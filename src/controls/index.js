@@ -4,32 +4,32 @@ import { jumping, falling } from '../entities/states/jump';
 import { player1 } from '../index';
 import Player from '../entities/player';
 
-export const setControls = (dispatch) => {
+export const setControls = (controllerMap, dispatch) => {
   const [Controls, interval] = getControls();
 
   const dispatchMiddleware = entityStateAction => dispatch(Player.actionsFilter(entityStateAction(player1)));
   Controls.addMiddleware(dispatchMiddleware);
 
   Controls.onAxis({
-    axis: axis => axis[0] < -0.5,
+    axis: axis => axis[0] < 0,
     press: pushingLeft,
     release: stopping,
   });
 
   Controls.onAxis({
-    axis: axis => axis[0] > 0.5,
+    axis: axis => axis[0] > 0,
     press: pushingRight,
     release: stopping,
   });
 
   Controls.on({
-    button: 0,
+    button: controllerMap.a,
     press: jumping,
     release: falling,
   });
 
   Controls.on({
-    button: 1,
+    button: controllerMap.b,
     press: dashing,
     release: notdashing,
   });
