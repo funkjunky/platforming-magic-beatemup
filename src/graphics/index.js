@@ -17,7 +17,8 @@ const c = {
 };
 
 const getDir = movement => {
-  if (movement[stopping]) return movement[stopping].lastState;
+  // TODO: bug: we can flukily get stopping.lastState = stopping... I need to patch that, So i can remove that condition.
+  if (movement[stopping] && movement[stopping].lastState !== stopping) return movement[stopping].lastState;
   else return movement[pushingRight] ? pushingRight : pushingLeft;
 }
 
