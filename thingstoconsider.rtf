@@ -37,8 +37,10 @@
 \'97 feat/xbox1-mapping\
 \
 * - map button indicies to label of the controller. ie. \{ a: 0 \}\
- - also indicate directionals as \{ \'91axes\'92: 0 \}, add a comment // dpad: \{ left: 12, up: 13, etc. \}\
+ *- also indicate directionals dpad: \{ left: 12, up: 13, etc. \}\
  - create a mapping for actions, like jumping, to buttons. Ie. \{ a: \'91jump\'92 \}\
+	- so, xbox1 mapping is a convinience, and a default\'85 but nothing more\
+	- the real mapping would be \{ jump: 0, dash: 1\}, because the player would hit a button that would come from the API. to set the controls. So in controls.js => \{ button: mapping.jump \}\
  - use this mapping for jumping and moving, instead of raw controller input\
 \
 \'97 \'97\

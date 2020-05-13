@@ -5,6 +5,7 @@ import { player1 } from '../index';
 import Player from '../entities/player';
 
 export const setControls = (controllerMap, dispatch) => {
+  console.log('stuff: ', controllerMap, dispatch);
   const [Controls, interval] = getControls();
 
   const dispatchMiddleware = entityStateAction => dispatch(Player.actionsFilter(entityStateAction(player1)));
@@ -23,13 +24,13 @@ export const setControls = (controllerMap, dispatch) => {
   });
 
   Controls.on({
-    button: controllerMap.a,
+    button: controllerMap.jump,
     press: jumping,
     release: falling,
   });
 
   Controls.on({
-    button: controllerMap.b,
+    button: controllerMap.dash,
     press: dashing,
     release: notdashing,
   });
