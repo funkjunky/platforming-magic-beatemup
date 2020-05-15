@@ -20,34 +20,33 @@
 \f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
 \uc0\u10032 \
 \pard\pardeftab720\sl520\partightenfactor0
-\cf2 	\uc0\u10032 
+
+\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 	
+\f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\uc0\u10032  
+\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 feat/xbox1-mapping
+\f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\
+	\uc0\u10032 
 \f0 \cf0 \cb1 \kerning1\expnd0\expndtw0  feat/dash-stop-animations
 \f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
 \
 	\uc0\u10032 
 \f0 \cf0 \cb1 \kerning1\expnd0\expndtw0  feat/dashing\
-\pard\pardeftab720\sl520\partightenfactor0
-\cf0 	
-\f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec4 \uc0\u10032  
-\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 feat/smooth-movement\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 \
 \
-\'97 feat/xbox1-mapping\
-\
-* - map button indicies to label of the controller. ie. \{ a: 0 \}\
- *- also indicate directionals dpad: \{ left: 12, up: 13, etc. \}\
- - create a mapping for actions, like jumping, to buttons. Ie. \{ a: \'91jump\'92 \}\
-	- so, xbox1 mapping is a convinience, and a default\'85 but nothing more\
-	- the real mapping would be \{ jump: 0, dash: 1\}, because the player would hit a button that would come from the API. to set the controls. So in controls.js => \{ button: mapping.jump \}\
- - use this mapping for jumping and moving, instead of raw controller input\
-\
-\'97 \'97\
-\
 \'97 feat/first-audio\
- - get a sound working [turn off after]\
- - get music working [turn off after getting it to work, or itll be annoying =x]\
+ - get a sound working on dash [anywhere, just hearing something]\
+ - add sound loop, gets called every 100ms exactly. polled more often, so we accurately hit it at the exact correct time.\
+ - sound mapping from state to sound asset\
+ - in sound loop, play sound mapping for exactly the minimum of 100ms or end of clip\
+ - store nextSoundLoop Date.now in redux\
+ - startSoundClip, will immediately play the sound clip for duration until the nextSoundLoop\
+\
+ - make sound effect quiter, so it isn\'92t too annoying.\
+\
+ - get music working [turn off after getting it to work]\
 \'97- \'97\
 \
 \'97 feat/first-fireball\
@@ -79,6 +78,8 @@ ie. a = jump => [action filter: call jump ONLY IF grounded] => jump action switc
  - Story for Logger: have type showing, and expand to see payload and diff\
 	- group every 20 in collapsable collections, header is the timestamp for the actions [beginning to end]\
 	- make sure logger useful and add anything that may help [maybe controls to expand action and diff, maybe only show type. Add filters?]\
+\
+ - story to: remove difference between a hard refresh and an HMR\'85 everything should go through HMR if possible\
 \
  - use high performance timer, and have controls and update return a callback for interval, and set the \'93intervals\'94 in index instead using the high performance timer.\
 \

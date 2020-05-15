@@ -4,11 +4,41 @@ import { jumping, falling } from '../entities/states/jump';
 import { player1 } from '../index';
 import Player from '../entities/player';
 
+import dashSound from '../../assets/dash.wav';
+
 export const setControls = (controllerMap, dispatch) => {
   const [Controls, interval] = getControls();
 
-  const dispatchMiddleware = entityStateAction => dispatch(Player.actionsFilter(entityStateAction(player1)));
+  const dispatchMiddleware = entityStateAction =>
+    typeof entityStateAction === 'function'
+      ? dispatch(Player.actionsFilter(entityStateAction(player1)))
+  : entityStateAction[0](); //just for playing the sound effect for now
+
   Controls.addMiddleware(dispatchMiddleware);
+
+  const audioElement = new Audio();
+  audioElement.src = dashSound;
+
+  let audioContext;
+  const connectOnce = () => {
+    if (!audioContext) {
+      audioContext = new AudioContext();
+      const track = audioContext.createMediaElementSource(audioElement);
+      track.connect(audioContext.destination);
+    }
+  }
+  const play = () => {
+    connectOnce();
+    audioElement.load();
+    audioElement.play();
+  }
+
+  // Just for soundeffect
+  Controls.on({
+    button: controllerMap.dash,
+    press: [play],
+    release: [() => {}],
+  });
 
   Controls.onAxis({
     axis: axis => axis[0] < 0,
