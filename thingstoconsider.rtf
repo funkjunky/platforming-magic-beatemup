@@ -37,17 +37,42 @@
 \cf0 \
 \
 \'97 feat/first-audio\
- - get a sound working on dash [anywhere, just hearing something]\
- - add sound loop, gets called every 100ms exactly. polled more often, so we accurately hit it at the exact correct time.\
- - sound mapping from state to sound asset\
- - in sound loop, play sound mapping for exactly the minimum of 100ms or end of clip\
- - store nextSoundLoop Date.now in redux\
- - startSoundClip, will immediately play the sound clip for duration until the nextSoundLoop\
+ *- get a sound working on dash [anywhere, just hearing something]\
+\
+ *- create getSoundState with audio inside register\
+ *- add the loop function into bootstrap\
+ *- get it working!\
+ *- use now and state to start the sound at the correct time.\
+\
+ *- things working again\'85\
+ - Cleaning up load resources, bootstrap, and everything there\'85\
+\
+ - HMR isn\'92t working correctly\'85 old code is remaining for soundState\
+ - move load resources into loadResources\
+ - cant spam sound\'85 get that working again\
+\
+ - get pause pausing the sound, and restarting it\
+\
+ - add pause graphic. [semi-transparent covering screen, last thing drawn, pause in big font]\
+ - bring together all updates into one interval\
+\
+ - Add pause, and ensure that the sound continues just fine after unpause [have to hold dash :p]\
+	~ note: I think I can pause controls as well. If the player continues to hold dash, after unpause, they should continue to dash.\
+\
+ - move dashSound into loadResources.\
+ - move the sound playing outside of getSoundState\
+ - ???? more clean up?\
+\
+ ~ Function: Given a state start and stop sounds, if not already started or stopped.\
+	~ separate sound state, of what is actually playing and their resources\
+	~ Function checks sound-state, based on real state, and starts a missing sound at the correct point, or stops a no longer existing sound, or alters a sound as necessary\
+\
+ - get it working with the sound update loop\
 \
  - make sound effect quiter, so it isn\'92t too annoying.\
 \
  - get music working [turn off after getting it to work]\
-\'97- \'97\
+\'97 \'97\
 \
 \'97 feat/first-fireball\
  \
@@ -73,6 +98,8 @@ ie. a = jump => [action filter: call jump ONLY IF grounded] => jump action switc
 \
  - Get trello setup to story proper work!! maybe create epics for feature branch names?\
 \
+ - story for: evaluate whether the audio element is the appropriate container\'85 maybe use a stream, or oscillator\
+\
  - story for: handling variable joystick input (how to not spam actions?? Perhaps START pushingRight, but call a different filtered out action to update the intensity in state)\
 \
  - Story for Logger: have type showing, and expand to see payload and diff\
@@ -81,9 +108,18 @@ ie. a = jump => [action filter: call jump ONLY IF grounded] => jump action switc
 \
  - story to: remove difference between a hard refresh and an HMR\'85 everything should go through HMR if possible\
 \
+ - story for: adding entity type graphics and audio in separate files. [graphics.js and audio.js in respective folders], pull them out of general graphics and audio files\
+\
  - use high performance timer, and have controls and update return a callback for interval, and set the \'93intervals\'94 in index instead using the high performance timer.\
 \
  - story for further movement improvements: jumpReady state, so we can jump earlier than grounding and jump shortly after starting falling?\
+\
+ - Story for: ALL of the surface level code, should be CRAZY SIMPLE. All state definition and nothing more. All business logic complexity should be abstracted away. [ie. soundUpdate, should just be `if state, then soundShouldBePlaying` Use another function to only register the sound if not registered]\
+\
+- Story for rewinding:\
+	- first one for record props on states state changes, You can only rewind to points of state changes.\
+	- second, change updateProps to work off of Date.now, instead of dt. All values calculated by when the state started, versus Date.now(). This allows a state to be reverted, as if it never happened, super cool, and will be hyper helpful when i take this online!\
+	~ actually, this is more complicated. jump updates vy, but vy updates y, how do i control vy updating y? Also what if multiple things are changing vy or y? I still think this is possible, but it will require some interesting engineering.\
 \
  - put timestamp in redux [using middleware], so i have a reference for each state.\
 \
@@ -168,9 +204,6 @@ Conclusion:\
 		- with joystick: \'93on(joystickLeft, intensiity => if(canMove()) dispatch(moveleft(intensity))\
 			- this would trigger often, but thats fine, its a simple state change\
 \
- - [DONE] HOW to draw controls filtered by state [SOLVED] RO-state | conditionals (red, green bottom boxes)\
- - [DONE] HOW to draw update calling entities update [remember that the update lives outside of the state, technically]\
-	 [SOLVED] ( update => [entities.update] => [statemachine.update] => state )\
 \
  - HOW add in distinction between entity properties, and state.\
 	- update only changes properties??\
@@ -180,13 +213,13 @@ Conclusion:\
 	- update passes level information to player, who uses it to do their movement update.\
 		- with this it can slow the player down on an incline,or cause some players to slide, etc.\
 \
- [DONE] - copy vimrc over to this laptop\
- [DONE[ - get web server modernized and running, minimize it and simplify it, then update my seed with the new dev server, because the seed is currently relying on global [ie. its broken]\
- [DONE] - ensure we don\'92t have errors and basic shape graphics are showing.\
 \
- [DONE] - clear current graphics.\
- [DONE] - show my character from the sprite sheet\
 \
- [DONE] - used redux toolkit\
+/**** old ideas ****/\
 \
- [DONE] - draw diagram for whole system as per tiny note.}
+Sound:\
+ - add sound loop, gets called every 100ms exactly. polled more often, so we accurately hit it at the exact correct time.\
+ - sound mapping from state to sound asset\
+ - in sound loop, play sound mapping for exactly the minimum of 100ms or end of clip\
+ - store nextSoundLoop Date.now in redux\
+ - startSoundClip, will immediately play the sound clip for duration until the nextSoundLoop}

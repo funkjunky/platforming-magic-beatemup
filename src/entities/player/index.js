@@ -108,8 +108,8 @@ const playerDefinition = {
     const newProps = {
       vx,
       vy,
-      x: props.x + Math.floor(dt * vx),
-      y: props.y + Math.floor(dt * vy),
+      x: props.x + (dt * vx),
+      y: props.y + (dt * vy),
     };
     dispatch(updateProps({ entity, newProps }));
   },

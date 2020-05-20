@@ -1,11 +1,23 @@
 import character from '../assets/character.png';
+import dash from '../assets/dash.wav';
 
 import { States } from './entities/states/movement';
 const { pushingLeft, pushingRight } = States;
 
 export const characterWidth = 96;
 
-const loadResources = async () => {
+const loadSounds = async audioContext => ({
+  dash: await loadSound(audioContext, dash),
+});
+
+const loadSound = async (audioContext, src) => {
+  const res = await fetch(src);
+  const arrayBuffer = await res.arrayBuffer();
+  const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+  return audioBuffer;
+}
+
+const loadResources = async audioContext => {
   const rightFacingImage = new Image();
 
   console.log('about to loadframes');
@@ -18,6 +30,7 @@ const loadResources = async () => {
       pushingRight: getSprites(frames, pushingRight),
       pushingLeft: getSprites(frames, pushingLeft),
     },
+    sounds: await loadSounds(audioContext),
   }
 };
 

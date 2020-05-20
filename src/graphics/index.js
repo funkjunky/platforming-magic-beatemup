@@ -90,7 +90,18 @@ export default (ctx, state, resources) => {
     ctx.restore();
   });
 
+  if (state.pause) {
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = c.orange;
+    ctx.fillRect(0, 0, 960, 540);
+    ctx.globalAlpha = 1.0;
+    ctx.fillStyle = c.darkGreen;
+    ctx.textAlign = 'center';
+    ctx.fillText('PAUSE', 480, 270);
+  }
+
   // printing character position:
   ctx.font = "20px Georgia";
-  ctx.fillText('VY: ' + Object.values(state.entities)[0].props.vy, 20, 20);
+  ctx.textAlign = 'left';
+  ctx.fillText('VX: ' + Object.values(state.entities)[0].props.vx, 20, 20);
 };

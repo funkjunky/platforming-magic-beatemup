@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux';
 
 import entities from './entities';
-import lastUpdated from './lastUpdated';
+import time from './time';
+import pause from './pause';
 
 export default combineReducers({
   entities,
-  lastUpdated,
+  time,
+  pause,
 });

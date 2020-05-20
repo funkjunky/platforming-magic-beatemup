@@ -6,11 +6,12 @@ import thunk from 'redux-thunk';
 
 import { createEntity } from './entities';
 import reducer from './reducer.js';
-import { replaceAllTheModules, setUpdate, loadRaf } from './bootstrap';
-import { setControls } from './controls';
+import { replaceAllTheModules, createInterval, loadRaf } from './bootstrap';
+import { getControls, setControls } from './controls';
 import getLogger from './getLogger';
-import { characterWidth } from './loadResources';
+import loadResources, { characterWidth } from './loadResources';
 import defaultMapping from './controls/defaultMapping';
+import { createSoundState } from './createSoundState';
 
 document.addEventListener('DOMContentLoaded', firstLoad);
 
@@ -27,8 +28,17 @@ async function firstLoad() {
     )),
   );
 
+  // define controls
+  window.controls = getControls();
+  setControls(window.controls, defaultMapping, window.store.dispatch);
+
+  // TODO: make this NOT global, soundState should be the global thing??
+  window.audioContext = new AudioContext(); //like canvas.getContext. It's a singleton generally.
+  const resources = await loadResources(window.audioContext);
+  // create soundState
+  window.soundState = createSoundState(resources.sounds, window.audioContext);
   // load request animation frame
-  loadRaf();
+  loadRaf(resources);
 
   // create the first player entity
   window.store.dispatch(createEntity({
@@ -42,8 +52,7 @@ async function firstLoad() {
     id: player1.id,
   }));
 
-  window.controlsInterval = setControls(defaultMapping, window.store.dispatch);
-  window.updateInterval = setUpdate();
+  window.interval = createInterval();
 }
 
 if(module.hot) {
