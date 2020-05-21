@@ -1,9 +1,10 @@
-import { pushingLeft, pushingRight, stopping } from '../entities/states/movement';
-import { dashing, notdashing } from '../entities/states/dash';
-import { jumping, falling } from '../entities/states/jump';
+import { pushingLeft, pushingRight, stopping } from 'gameLogic/entities/states/movement';
+import { dashing, notdashing } from 'gameLogic/entities/states/dash';
+import { jumping, falling } from 'gameLogic/entities/states/jump';
+// TODO: plaer1 is awkward
 import { player1 } from '../index';
-import Player from '../entities/player';
-import { togglePause } from '../pause';
+import Player from 'gameLogic/entities/player';
+import { togglePause } from 'gameLogic/pause';
 
 export const setControls = (Controls, controllerMap, dispatch) => {
   const playerAction = action => () =>

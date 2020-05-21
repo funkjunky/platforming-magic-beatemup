@@ -36,7 +36,7 @@
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 \
 \
-\'97 feat/first-audio\
+\'97 feat/first-audio (BIG rework)\
  *- get a sound working on dash [anywhere, just hearing something]\
 \
  *- create getSoundState with audio inside register\
@@ -45,10 +45,11 @@
  *- use now and state to start the sound at the correct time.\
 \
  *- things working again\'85\
- - Cleaning up load resources, bootstrap, and everything there\'85\
+ *- Cleaning up load resources, bootstrap, and everything there\'85\
+ *- only index should reference window, pass everything else\
+ *- try and make audioContext only be in soundState, but loadResources\
+ *- continue to tidy up\
 \
- - HMR isn\'92t working correctly\'85 old code is remaining for soundState\
- - move load resources into loadResources\
  - cant spam sound\'85 get that working again\
 \
  - get pause pausing the sound, and restarting it\
@@ -73,6 +74,10 @@
 \
  - get music working [turn off after getting it to work]\
 \'97 \'97\
+\
+\
+- fix devtools warnings. Likely broken extensions\
+\
 \
 \'97 feat/first-fireball\
  \

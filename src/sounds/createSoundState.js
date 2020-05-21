@@ -1,4 +1,4 @@
-export const createSoundState = (sounds, audioContext) => {
+const createSoundState = (sounds, audioContext) => {
   const playingSounds = {}; // sounds[label][owner.id]
 
   const soundState = {
@@ -25,3 +25,5 @@ export const createSoundState = (sounds, audioContext) => {
   };
   return soundState;
 };
+
+export default createSoundState;

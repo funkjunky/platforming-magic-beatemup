@@ -1,7 +1,7 @@
-import character from '../assets/character.png';
-import dash from '../assets/dash.wav';
+import character from 'assets/character.png';
+import dash from 'assets/dash.wav';
+import { States } from 'gameLogic/entities/states/movement';
 
-import { States } from './entities/states/movement';
 const { pushingLeft, pushingRight } = States;
 
 export const characterWidth = 96;

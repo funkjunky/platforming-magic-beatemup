@@ -4,14 +4,11 @@ import 'end-polyFills';
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 
-import { createEntity } from './entities';
-import reducer from './reducer.js';
-import { replaceAllTheModules, createInterval, loadRaf } from './bootstrap';
-import { getControls, setControls } from './controls';
-import getLogger from './getLogger';
-import loadResources, { characterWidth } from './loadResources';
-import defaultMapping from './controls/defaultMapping';
-import { createSoundState } from './createSoundState';
+import { createEntity } from 'gameLogic/entities';
+import reducer from 'gameLogic/reducer.js';
+import { loadResourcesAndLoops } from './bootstrap';
+import getLogger from 'getLogger';
+import { characterWidth } from './loadResources';
 
 document.addEventListener('DOMContentLoaded', firstLoad);
 
@@ -28,18 +25,6 @@ async function firstLoad() {
     )),
   );
 
-  // define controls
-  window.controls = getControls();
-  setControls(window.controls, defaultMapping, window.store.dispatch);
-
-  // TODO: make this NOT global, soundState should be the global thing??
-  window.audioContext = new AudioContext(); //like canvas.getContext. It's a singleton generally.
-  const resources = await loadResources(window.audioContext);
-  // create soundState
-  window.soundState = createSoundState(resources.sounds, window.audioContext);
-  // load request animation frame
-  loadRaf(resources);
-
   // create the first player entity
   window.store.dispatch(createEntity({
     props: {
@@ -52,10 +37,17 @@ async function firstLoad() {
     id: player1.id,
   }));
 
-  window.interval = createInterval();
+  loadResourcesAndLoops(window);
 }
 
 if(module.hot) {
   module.hot.accept();
-  replaceAllTheModules();
+
+  // if this is an HMR and NOT the first load
+  if (window.interval || window.raf || window.store) {
+    window.cancelAnimationFrame(window.raf);
+    window.store.replaceReducer(reducer);
+    clearInterval(window.interval);
+    loadResourcesAndLoops(window);
+  }
 }

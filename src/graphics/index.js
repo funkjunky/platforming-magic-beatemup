@@ -1,7 +1,7 @@
-import { level } from '../entities/level';
-import * as Jump from '../entities/states/jump';
-import * as Movement from '../entities/states/movement';
-import * as Dash from '../entities/states/dash';
+import { level } from 'gameLogic/entities/level';
+import * as Jump from 'gameLogic/entities/states/jump';
+import * as Movement from 'gameLogic/entities/states/movement';
+import * as Dash from 'gameLogic/entities/states/dash';
 
 const { jumping, falling, grounded } = Jump.States;
 const { pushingLeft, pushingRight, stopping } = Movement.States;
@@ -72,9 +72,9 @@ const getGetSprite = now => (state, msPerFrame, sprites) => {
     return sprites[index];
 };
 
-export default (ctx, state, resources) => {
+export default (ctx, state, sprites) => {
   const drawPerson = entity => {
-    ctx.drawImage(getPlayerSprite(resources.sprites, entity, Date.now()), entity.props.x, entity.props.y);
+    ctx.drawImage(getPlayerSprite(sprites, entity, Date.now()), entity.props.x, entity.props.y);
   };
 
   //BEGIN ACTUAL GRAPHICS

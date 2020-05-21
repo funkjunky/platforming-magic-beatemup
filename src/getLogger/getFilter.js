@@ -1,5 +1,5 @@
-import { updateProps } from '../entities';
-import { updateLastFrame, updateCurrentFrame } from '../time';
+import { updateProps } from 'gameLogic/entities';
+import { updateLastFrame, updateCurrentFrame } from 'gameLogic/time';
 
 export const getFilter = filters => ({ action }) =>
   // TODO: use type insteadof toString??
