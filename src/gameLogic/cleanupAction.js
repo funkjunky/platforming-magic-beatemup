@@ -41,13 +41,14 @@ export const cleanupAction = () => (dispatch, getState) => {
 
     // TODO: This should probably be in typeDefinition player
     const maxJumpDuration = 1000;
-    if (entity.states.jump[States.jumping] && (Date.now() - entity.states.jump[States.jumping].createdAt) > maxJumpDuration) {
+    // TODO: once a game clock is implemented, we can use that here, to continue to dash after a pause
+    if (entity.states.jump[States.jumping] && (getState().time.currentFrame - entity.states.jump[States.jumping].createdAt) > maxJumpDuration) {
       dispatch(falling(entity));
     }
 
     // TODO: This should probably be in typeDefinition player
     const maxDashDuration = 500;
-    if (entity.states.dash[DashStates.dashing] && (Date.now() - entity.states.dash[DashStates.dashing].createdAt) > maxDashDuration) {
+    if (entity.states.dash[DashStates.dashing] && (getState().time.currentFrame - entity.states.dash[DashStates.dashing].createdAt) > maxDashDuration) {
       dispatch(notdashing(entity));
     }
 

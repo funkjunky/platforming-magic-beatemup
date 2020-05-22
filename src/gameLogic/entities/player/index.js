@@ -38,9 +38,9 @@ const playerDefinition = {
     const { jump } = getState().entities[action.payload.id].states;
     if (action.type === Jump.jumping.toString()
       && !jump.grounded
-      // TODO: abstract out Date.now
+      // TODO: abstract out getState.time.currentFrame
       // This is to say, if you recentl started falling, you can STILL jump
-      && !(jump.falling && Date.now() - jump.falling.createdAt < 100)
+      && !(jump.falling && getState().time.currentFrame - jump.falling.createdAt < 100)
     ) return;
     // TODO: this is just to stop action spam... I need a more generic solution for thi.
     else if (action.type === Jump.falling.toString() && getState().entities[action.payload.id].states.jump.falling) return;

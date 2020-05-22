@@ -10,17 +10,23 @@ const createSoundState = (sounds, audioContext) => {
       const sampleSource = audioContext.createBufferSource();
       sampleSource.buffer = sounds[label];
       sampleSource.connect(audioContext.destination);
-      sampleSource.start(0, now - state.createdAt);
+      sampleSource.start(0, (now - state.createdAt) / 1000);
 
-      if (!sounds[label]) sounds[label] = {};
-      sounds[label][owner.id] = {
+      if (!playingSounds[label]) playingSounds[label] = {};
+      playingSounds[label][owner.id] = {
         state,
         sampleSource,
       };
     },
     unregisterSound: (label, owner) => {
-      //sounds[label][owner.id].sampleSource.stop();
-      delete sounds[label][owner.id];
+      playingSounds[label][owner.id].sampleSource.stop();
+      delete playingSounds[label][owner.id];
+    },
+    unregisterAllSounds: () => {
+      Object.entries(playingSounds).forEach(([k, s]) => {
+        Object.values(s).forEach(({ sampleSource }) => sampleSource.stop());
+        delete playingSounds[k];
+      });
     },
   };
   return soundState;

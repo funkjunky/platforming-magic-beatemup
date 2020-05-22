@@ -6,7 +6,7 @@ import { player1 } from '../index';
 import Player from 'gameLogic/entities/player';
 import { togglePause } from 'gameLogic/pause';
 
-export const setControls = (Controls, controllerMap, dispatch) => {
+export const setGameControls = (Controls, controllerMap, dispatch) => {
   const playerAction = action => () =>
     dispatch(Player.actionsFilter(action(player1)));
 
@@ -34,14 +34,20 @@ export const setControls = (Controls, controllerMap, dispatch) => {
     release: playerAction(notdashing),
   });
 
-  Controls.on({
-    button: controllerMap.pause,
-    press: () => dispatch(togglePause()),
-    release: () => {}, // TODO: release should be optional
-  });
-
   return Controls;
 };
+
+export const setAppControls = (Controls, controllerMap, dispatch) => {
+  Controls.on({
+    button: controllerMap.pause,
+    press: () => {
+      // TODO: this is a hack. I need to handle sounds better
+      window.soundState.unregisterAllSounds();
+      dispatch(togglePause());
+    },
+    release: () => {}, // TODO: release should be optional
+  });
+}
 
 export const getControls = () => {
   const buttonListeners = [];
