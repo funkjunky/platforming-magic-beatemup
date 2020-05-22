@@ -4,13 +4,11 @@ import 'end-polyFills';
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 
-import { createEntity } from './entities';
-import reducer from './reducer.js';
-import { replaceAllTheModules, setUpdate, loadRaf } from './bootstrap';
-import { setControls } from './controls';
-import getLogger from './getLogger';
+import { createEntity } from 'gameLogic/entities';
+import reducer from 'gameLogic/reducer.js';
+import { loadResourcesAndLoops } from './bootstrap';
+import getLogger from 'getLogger';
 import { characterWidth } from './loadResources';
-import defaultMapping from './controls/defaultMapping';
 
 document.addEventListener('DOMContentLoaded', firstLoad);
 
@@ -27,9 +25,6 @@ async function firstLoad() {
     )),
   );
 
-  // load request animation frame
-  loadRaf();
-
   // create the first player entity
   window.store.dispatch(createEntity({
     props: {
@@ -42,11 +37,17 @@ async function firstLoad() {
     id: player1.id,
   }));
 
-  window.controlsInterval = setControls(defaultMapping, window.store.dispatch);
-  window.updateInterval = setUpdate();
+  loadResourcesAndLoops(window);
 }
 
 if(module.hot) {
   module.hot.accept();
-  replaceAllTheModules();
+
+  // if this is an HMR and NOT the first load
+  if (window.interval || window.raf || window.store) {
+    window.cancelAnimationFrame(window.raf);
+    window.store.replaceReducer(reducer);
+    clearInterval(window.interval);
+    loadResourcesAndLoops(window);
+  }
 }

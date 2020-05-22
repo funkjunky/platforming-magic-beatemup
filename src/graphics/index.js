@@ -1,7 +1,7 @@
-import { level } from '../entities/level';
-import * as Jump from '../entities/states/jump';
-import * as Movement from '../entities/states/movement';
-import * as Dash from '../entities/states/dash';
+import { level } from 'gameLogic/entities/level';
+import * as Jump from 'gameLogic/entities/states/jump';
+import * as Movement from 'gameLogic/entities/states/movement';
+import * as Dash from 'gameLogic/entities/states/dash';
 
 const { jumping, falling, grounded } = Jump.States;
 const { pushingLeft, pushingRight, stopping } = Movement.States;
@@ -72,9 +72,10 @@ const getGetSprite = now => (state, msPerFrame, sprites) => {
     return sprites[index];
 };
 
-export default (ctx, state, resources) => {
+export default (ctx, state, sprites) => {
+  const now = window.store.getState().time.currentFrame;
   const drawPerson = entity => {
-    ctx.drawImage(getPlayerSprite(resources.sprites, entity, Date.now()), entity.props.x, entity.props.y);
+    ctx.drawImage(getPlayerSprite(sprites, entity, now), entity.props.x, entity.props.y);
   };
 
   //BEGIN ACTUAL GRAPHICS
@@ -90,7 +91,18 @@ export default (ctx, state, resources) => {
     ctx.restore();
   });
 
+  if (state.pause) {
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = c.orange;
+    ctx.fillRect(0, 0, 960, 540);
+    ctx.globalAlpha = 1.0;
+    ctx.fillStyle = c.darkGreen;
+    ctx.textAlign = 'center';
+    ctx.fillText('PAUSE', 480, 270);
+  }
+
   // printing character position:
   ctx.font = "20px Georgia";
-  ctx.fillText('VY: ' + Object.values(state.entities)[0].props.vy, 20, 20);
+  ctx.textAlign = 'left';
+  ctx.fillText('VX: ' + Object.values(state.entities)[0].props.vx, 20, 20);
 };

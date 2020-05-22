@@ -21,7 +21,7 @@ module.exports = {
         },
       },
       {
-        test: /\.(png|svg|jpg|gif)$/,
+        test: /\.(png|svg|jpg|gif|wav)$/,
         use: ['file-loader'],
       },
     ],
@@ -40,5 +40,17 @@ module.exports = {
   watchOptions: {
     poll: 1000,
     ignored: ['node_modules'],
+  },
+  resolve: {
+    alias: {
+      gameLogic: path.resolve(__dirname, 'src/gameLogic'),
+
+      controls: path.resolve(__dirname, 'src/controls'),
+      getLogger: path.resolve(__dirname, 'src/getLogger'),
+      graphics: path.resolve(__dirname, 'src/graphics'),
+      sounds: path.resolve(__dirname, 'src/sounds'),
+
+      assets: path.resolve(__dirname, 'assets'),
+    }
   },
 };

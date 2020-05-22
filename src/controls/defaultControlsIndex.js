@@ -4,6 +4,7 @@ import xbox1 from './mappings/xbox1';
 const mapping = {
   jump: xbox1.a,
   dash: xbox1.b,
+  pause: xbox1.start,
 };
 
 export default mapping;
