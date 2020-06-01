@@ -3,6 +3,7 @@ import { updateProps } from './entities';
 import { entityDefinitions } from './entities';
 import { grounded, falling, States } from './entities/states/jump';
 import { notdashing, States as DashStates } from './entities/states/dash';
+import { doBoxesIntersect } from './entities/doBoxesIntersect';
 
 export const cleanupAction = () => (dispatch, getState) => {
   Object.values(getState().entities).forEach(entity => {
@@ -18,7 +19,7 @@ export const cleanupAction = () => (dispatch, getState) => {
       // This feels a little more out there, so even as the props are pushed away, this still feels the ground.
       if (doBoxesIntersect(block, bottom)) {
         if (!entity.states.jump[States.grounded]) {
-          dispatch(grounded(entity));
+          dispatch(grounded({ entity }));
         }
         isGrounded = true;
       }
@@ -43,27 +44,17 @@ export const cleanupAction = () => (dispatch, getState) => {
     const maxJumpDuration = 1000;
     // TODO: once a game clock is implemented, we can use that here, to continue to dash after a pause
     if (entity.states.jump[States.jumping] && (getState().time.currentFrame - entity.states.jump[States.jumping].createdAt) > maxJumpDuration) {
-      dispatch(falling(entity));
+      dispatch(falling({ entity }));
     }
 
     // TODO: This should probably be in typeDefinition player
     const maxDashDuration = 500;
     if (entity.states.dash[DashStates.dashing] && (getState().time.currentFrame - entity.states.dash[DashStates.dashing].createdAt) > maxDashDuration) {
-      dispatch(notdashing(entity));
+      dispatch(notdashing({ entity }));
     }
 
     if (!isGrounded && entity.states.jump[States.grounded]) {
-      dispatch(falling(entity));
+      dispatch(falling({ entity }));
     }
   });
-}
-
-const centrex = ({ x, width }) => x + width / 2;
-const centrey = ({ y, height }) => y + height / 2;
-// out of laziness taken from https://gamedev.stackexchange.com/questions/586/what-is-the-fastest-way-to-work-out-2d-bounding-box-intersection
-// I adjusted to anchor in centre for calculation. I should default anchor in centre for performance, perhaps. Or simplicity of code?
-// // TODO: factor out division for performance
-function doBoxesIntersect(a, b) {
-  return Math.abs(centrex(a) - centrex(b)) < ((b.width + a.width) / 2)
-  && Math.abs(centrey(a) - centrey(b)) < ((b.height + a.height) / 2);
 }

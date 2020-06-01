@@ -37,9 +37,18 @@
 \cf0 \
 \'97 feat/first-fireball\
  \
-- Add fireball to button, that casts, then shoots out, then pulses, then disappears\
-	(just like my old demo, but in this case it will seek to location, NOT another entity)\
+ ~ Add fireball to button, that casts, then shoots out, then pulses, then disappears\
 \
+ *- add all of the infastructure code to hypothetically work\
+ - fill in the gaps\
+	*- state actions now take an object WITH \{entity\}, so i can also pass other properties, for now \'91params\'92 will be the only other property. [entities/index.js reducer default cast, for state actions]\
+	*- install redux yield effect, add the middleware\
+	*- add the fireball entity under entities folder and aoeEffect\
+	*- add props in entityDefinition for fireball and aoeEffect\
+	*- handle takeDamage action (in generator/fireball)\
+	*- handle \'91dmgPerSecond\'92 on fireball (in generator/fireball)\
+	*- handle \'91collidedWith\'92 [dont forget not to trigger on owner] state (in generator/fireball)\
+ - get things working! [there isn\'92t anything to take damage, and that\'92s ok, just the graphics]\
 \'97 \'97\
 \
 \'97 feat/gameTime\
@@ -51,9 +60,26 @@
 \
 \'97\
 \
+\'97 feat/enemies-attacks-health\
+\
+ - write todo here\'85 re-use character sprite for enemies, draw square around my character temporarily to distinguish him\
+\
+\'97 \'97\
+\
+\'97 feat/minimum-polish\
+\
+ - ensure we have basic sound effects for various things (doesn\'92t need to be perfect, just something to fill the void)\
+ - add in music, ensure it isn\'92t too loud. Err on the side of quiet\
+ - anything other little thing that helps it feel JUST A LITTLE like a real game\
+\
+\'97 \'97\
+\
  - address TODOs\
 \
  - Get trello setup to story proper work!! maybe create epics for feature branch names?\
+	- first story: publish and advertise with friends!\
+\
+ - story for: createStateSlice([\'91dashing\'92, \'91notdashing\'92], [createdAt, lastState]), where lastState and createdAt are higher order function, that applies _state as a property. [NOTE: this will make \'91createState\'92 obsolete in a way\'85 instead \'91createdAt\'92 will handle it.]\
 \
  - story for: evaluate whether the audio element is the appropriate container\'85 maybe use a stream, or oscillator\
 \

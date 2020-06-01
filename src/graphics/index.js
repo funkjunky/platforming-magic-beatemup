@@ -104,5 +104,5 @@ export default (ctx, state, sprites) => {
   // printing character position:
   ctx.font = "20px Georgia";
   ctx.textAlign = 'left';
-  ctx.fillText('VX: ' + Object.values(state.entities)[0].props.vx, 20, 20);
+  //ctx.fillText('VX: ' + Object.values(state.entities)[0].props.vx, 20, 20);
 };

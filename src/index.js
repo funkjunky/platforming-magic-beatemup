@@ -3,6 +3,8 @@ import 'end-polyFills';
 
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
+import { createYieldEffectMiddleware } from 'redux-yield-effect';
+import { tickMiddleware, resumeTicks } from 'effect-tick';
 
 import { createEntity } from 'gameLogic/entities';
 import reducer from 'gameLogic/reducer.js';
@@ -21,9 +23,12 @@ async function firstLoad() {
     reducer,
     composeEnhancers(applyMiddleware(
       thunk,
+      createYieldEffectMiddleware(),
+      tickMiddleware, //might be screwing up things...
       logger.middleware,
     )),
   );
+  window.store.dispatch(resumeTicks());
 
   // create the first player entity
   window.store.dispatch(createEntity({
