@@ -8,6 +8,8 @@ import { doBoxesIntersect } from './entities/doBoxesIntersect';
 export const cleanupAction = () => (dispatch, getState) => {
   Object.values(getState().entities).forEach(entity => {
     const entityDefn = entityDefinitions[entity.type];
+    //TODO: temporary until i figure out how to handle multiple entity types
+    if (entity.type !== 'player') return;
 
     // if jumping has been jumping for jumpDuration, then switch it to falling
 

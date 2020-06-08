@@ -6,16 +6,24 @@ import { doBoxesIntersect } from './doBoxesIntersect';
 
 import player from './player';
 import fireball from './fireball';
+import aoeEffect from './aoeEffect';
 
 let _id= 0;
-export const createEntity = createAction('CREATE_ENTITY', ({ id, type, state, props }) => ({
-  payload: {
-    id: id || type + ++_id,
-    type,
-    state,
-    props,
-  },
-}));
+export const createEntity = createAction('CREATE_ENTITY', ({ id, type, state, props }) => {
+  const processedId = id || type + ++_id;
+  return {
+    payload: {
+      id: processedId,
+      type,
+      state,
+      props,
+    },
+    // see: redux-meta-selector middleware
+    meta: {
+      selector: state => state.entities[processedId],
+    },
+  }
+});
 
 export const removeEntity = createAction('REMOVE_ENTITY');
 
@@ -25,6 +33,7 @@ export const takeDamage = createAction('TAKE_DAMAGE');
 export const entityDefinitions = {
   player,
   fireball,
+  aoeEffect,
 };
 
 // put the action(s) that are being called for the update,
@@ -40,17 +49,18 @@ export const updateProps = createAction('UPDATE_PROPS', (payload, meta) => ({
 const entitiesReducer = (state = {}, action) => produce(state, draftState => {
   switch(action.type) {
     case createEntity.toString(): {
+      console.log('payload create: ', action.payload);
       const {
         id, type, states = {},
         // sensible props defaults. Currently use vx and vy for player
-        props: { x = 0, y = 0, vx = 0, vy = 0, height = 96, width = 96 }
+        props, props: { x = 0, y = 0, vx = 0, vy = 0 }
       } = action.payload;
 
       draftState[id] = {
         id,
         type,
         states: produce(states, states => entityDefinitions[type].stateReducer(states, action)),
-        props: { x, y, vx, vy, height, width },
+        props: { x, y, vx, vy, ...props },
       };
       break;
     }

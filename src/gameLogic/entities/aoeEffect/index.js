@@ -1,6 +1,5 @@
 import boundingBoxes from '../basicBoundingBoxes';
-import { takeDamage } from '../entities';
-import { updateProps } from '../index';
+import { updateProps, takeDamage } from '../index';
 
 // TODO: available props should be defined here...
 //  as well as perhaps how the entity can be interacted with.

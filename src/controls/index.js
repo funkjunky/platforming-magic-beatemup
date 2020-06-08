@@ -3,15 +3,13 @@ import { pauseTicks } from 'effect-tick';
 import { pushingLeft, pushingRight, stopping } from 'gameLogic/entities/states/movement';
 import { dashing, notdashing } from 'gameLogic/entities/states/dash';
 import { jumping, falling } from 'gameLogic/entities/states/jump';
-import { castFireball } from 'gameLogic/generators/fireball';
-// TODO: plaer1 is awkward
-import { player1 } from '../index';
+import castFireball from 'gameLogic/generators/fireball';
 import Player from 'gameLogic/entities/player';
 import { togglePause } from 'gameLogic/pause';
 
-export const setGameControls = (Controls, controllerMap, dispatch) => {
+export const setGameControls = (Controls, controllerMap, dispatch, getPlayer1) => {
   const playerAction = action => () =>
-    dispatch(Player.actionsFilter(action({ entity: player1 })));
+    dispatch(Player.actionsFilter(action({ entity: getPlayer1() })));
 
   Controls.onAxis({
     axis: axis => axis[0] < 0,
@@ -39,7 +37,9 @@ export const setGameControls = (Controls, controllerMap, dispatch) => {
 
   Controls.on({
     button: controllerMap.fireball,
-    press: playerAction(castFireball),
+    press: () => {},
+    // TODO: how do i use filterActions with generators? ie. only shoot while grounded
+    release: () => dispatch(castFireball(getPlayer1)),
     // TODO: add charging to cast, release to cancel.
   });
 

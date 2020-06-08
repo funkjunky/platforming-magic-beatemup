@@ -44,6 +44,7 @@ const getSprites = (frames, direction) => ({
   spell: {
     chargingup: [frames[direction][2]],
     casting: [frames[direction][4]],
+    recover: [frames[direction][5]], //opps, i ordered 4 and 5 wrong in the image
   },
   running: select(frames[direction], [7, 8, 9, 8]),
   dashing: [frames[direction][6]],

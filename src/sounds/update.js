@@ -2,6 +2,9 @@
 // TODO: this function should simply state WHAT should be playing (state)... abstract the conditionals to another function.
 const soundUpdate = (state, soundState) => {
   Object.values(state.entities).forEach(entity => {
+    //TODO: temporary until i handle all types
+    if (entity.type !== 'player') return;
+
     // TODO: not every entity will have states.dash
     // if the entity is dashing, and we're not playing the sound, then...
     if (entity.states.dash.dashing && !(soundState.getPlayingSounds()['dash'] && soundState.getPlayingSounds()['dash'][entity.id])) {
