@@ -1,14 +1,15 @@
+import { pauseTicks } from 'effect-tick';
+
 import { pushingLeft, pushingRight, stopping } from 'gameLogic/entities/states/movement';
 import { dashing, notdashing } from 'gameLogic/entities/states/dash';
 import { jumping, falling } from 'gameLogic/entities/states/jump';
-// TODO: plaer1 is awkward
-import { player1 } from '../index';
+import castFireball from 'gameLogic/generators/fireball';
 import Player from 'gameLogic/entities/player';
 import { togglePause } from 'gameLogic/pause';
 
-export const setGameControls = (Controls, controllerMap, dispatch) => {
+export const setGameControls = (Controls, controllerMap, dispatch, getPlayer1) => {
   const playerAction = action => () =>
-    dispatch(Player.actionsFilter(action(player1)));
+    dispatch(Player.actionsFilter(action({ entity: getPlayer1() })));
 
   Controls.onAxis({
     axis: axis => axis[0] < 0,
@@ -34,6 +35,14 @@ export const setGameControls = (Controls, controllerMap, dispatch) => {
     release: playerAction(notdashing),
   });
 
+  Controls.on({
+    button: controllerMap.fireball,
+    press: () => {},
+    // TODO: how do i use filterActions with generators? ie. only shoot while grounded
+    release: () => dispatch(castFireball(getPlayer1)),
+    // TODO: add charging to cast, release to cancel.
+  });
+
   return Controls;
 };
 
@@ -43,6 +52,8 @@ export const setAppControls = (Controls, controllerMap, dispatch) => {
     press: () => {
       // TODO: this is a hack. I need to handle sounds better
       window.soundState.unregisterAllSounds();
+      dispatch(pauseTicks());
+      //---------
       dispatch(togglePause());
     },
     release: () => {}, // TODO: release should be optional

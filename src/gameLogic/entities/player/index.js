@@ -4,6 +4,7 @@ import boundingBoxes from '../basicBoundingBoxes';
 import movement, * as Movement from '../states/movement';
 import jump, * as Jump from '../states/jump';
 import dash, * as Dash from '../states/dash';
+import conjure from '../states/conjure';
 import { combineReducers } from '../combineReducers';
 
 const { jumping, falling, grounded } = Jump.States;
@@ -32,10 +33,11 @@ const jumpingVel = 250;
 const jumpingDec = 200;
 const playerDefinition = {
   type: 'player',
-  stateReducer: combineReducers({ movement, jump, dash }),
+  stateReducer: combineReducers({ movement, jump, dash, conjure }),
   boundingBoxes,
   actionsFilter: action => (dispatch, getState) => {
-    const { jump } = getState().entities[action.payload.id].states;
+    // TODO: can i go back to just payload.id? why is entity a property? Probably cant because of generators?
+    const { jump } = getState().entities[action.payload.entity.id].states;
     if (action.type === Jump.jumping.toString()
       && !jump.grounded
       // TODO: abstract out getState.time.currentFrame
@@ -43,10 +45,10 @@ const playerDefinition = {
       && !(jump.falling && getState().time.currentFrame - jump.falling.createdAt < 100)
     ) return;
     // TODO: this is just to stop action spam... I need a more generic solution for thi.
-    else if (action.type === Jump.falling.toString() && getState().entities[action.payload.id].states.jump.falling) return;
+    else if (action.type === Jump.falling.toString() && getState().entities[action.payload.entity.id].states.jump.falling) return;
 
     // TODO: this places sucks... maybe turn jump into a thunk
-    if (action.type === Jump.jumping.toString()) dispatch(updateProps({ entity: action.payload, newProps: { vy: -jumpingVel } }));
+    if (action.type === Jump.jumping.toString()) dispatch(updateProps({ entity: action.payload.entity, newProps: { vy: -jumpingVel } }));
 
     // can only dash while grounded
     if (action.type === Dash.dashing.toString() && !jump.grounded) return;
@@ -55,9 +57,9 @@ const playerDefinition = {
     // If falling and current is jumping AND it's less than 1 second old, then drop vy to 0, instantly start falling
     if (
       action.type === Jump.falling.toString()
-      && getState().entities[action.payload.id].states.jump.jumping
-      && Date.now() - getState().entities[action.payload.id].states.jump.jumping.createdAt < 1000
-    ) dispatch(updateProps({ entity: action.payload, newProps: { vy: 0 } }));
+      && getState().entities[action.payload.entity.id].states.jump.jumping
+      && Date.now() - getState().entities[action.payload.entity.id].states.jump.jumping.createdAt < 1000
+    ) dispatch(updateProps({ entity: action.payload.entity, newProps: { vy: 0 } }));
 
     return dispatch(action);
   },

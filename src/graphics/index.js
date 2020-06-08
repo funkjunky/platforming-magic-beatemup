@@ -2,10 +2,12 @@ import { level } from 'gameLogic/entities/level';
 import * as Jump from 'gameLogic/entities/states/jump';
 import * as Movement from 'gameLogic/entities/states/movement';
 import * as Dash from 'gameLogic/entities/states/dash';
+import * as Conjure from 'gameLogic/entities/states/conjure';
 
 const { jumping, falling, grounded } = Jump.States;
 const { pushingLeft, pushingRight, stopping } = Movement.States;
 const { dashing } = Dash.States;
+const { conjuring, casting, recovering, ready } = Conjure.States;
 
 const c = {
   purple:     '#b35ce5',
@@ -25,12 +27,18 @@ const getDir = movement => {
 const groundedDuration = 300;
 const getPlayerSprite = (sprites, entity, now) => {
   // TODO: this code is too dense. Find a way to abstract out pieces to remove context and simplify it
-  const { jump, movement, dash } = entity.states;
+  const { jump, movement, dash, conjure } = entity.states;
   const dir = getDir(movement);
   const getSprite = getGetSprite(now);
-  if(jump[jumping]) {
+  if (conjure[conjuring]) {
+    // TODO: name sprites the same as their states
+    return sprites[dir].spell.chargingup[0];
+  } else if (conjure[casting]) {
+    return sprites[dir].spell.casting[0];
+  } else if (conjure[recovering]) {
+    return sprites[dir].spell.recover[0];
+  } else if(jump[jumping]) {
     return sprites[dir].jumping.raising[0];
-
   } else if (jump[falling]) {
     return sprites[dir].jumping.falling[0];
 
@@ -77,6 +85,17 @@ export default (ctx, state, sprites) => {
   const drawPerson = entity => {
     ctx.drawImage(getPlayerSprite(sprites, entity, now), entity.props.x, entity.props.y);
   };
+  const drawFireball = entity => {
+    ctx.fillStyle = c.red;
+    ctx.beginPath();
+    ctx.arc(entity.props.x, entity.props.y, entity.props.radius, 0, 2 * Math.PI);
+    ctx.fill();
+  };
+  const drawAoeEffect = entity => {
+    ctx.fillStyle = c.red;
+    ctx.globalAlpha = 0.5;
+    ctx.fillRect(entity.props.x, entity.props.y, entity.props.width, entity.props.height);
+  };
 
   //BEGIN ACTUAL GRAPHICS
   ctx.clearRect(0, 0, 960, 540);
@@ -87,7 +106,18 @@ export default (ctx, state, sprites) => {
 
   Object.values(state.entities).reverse().forEach(entity => {
     ctx.save();
-    drawPerson(entity);
+    switch (entity.type) {
+      case 'player':
+        drawPerson(entity);
+        break;
+      case 'fireball':
+        drawFireball(entity);
+        break;
+      case 'aoeEffect':
+        drawAoeEffect(entity);
+        break;
+      default:
+    }
     ctx.restore();
   });
 
@@ -104,5 +134,7 @@ export default (ctx, state, sprites) => {
   // printing character position:
   ctx.font = "20px Georgia";
   ctx.textAlign = 'left';
-  ctx.fillText('VX: ' + Object.values(state.entities)[0].props.vx, 20, 20);
+  Object.values(state.entities).filter(({ type }) => type === 'fireball').forEach((fireball, i) =>
+    ctx.fillText('X, Y: ' + fireball.props.x + ', ' + fireball.props.y, 20, 20 + 40 * i)
+  );
 };

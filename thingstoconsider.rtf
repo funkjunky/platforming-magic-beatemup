@@ -21,26 +21,20 @@
 \uc0\u10032 \
 \pard\pardeftab720\sl520\partightenfactor0
 \cf2 	\uc0\u10032 
-\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0  feat/first-audio (BIG rework)
+\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0  feat/first-fireball [generators added!]
+\f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\
+	\uc0\u10032 
+\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0  feat/first-audio
 \f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
 \
 
 \f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 	
 \f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
 \uc0\u10032  
-\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 feat/xbox1-mapping
-\f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
-\
-	\uc0\u10032 
-\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0  feat/dash-stop-animations\
+\f0 \cf0 \cb1 \kerning1\expnd0\expndtw0 feat/xbox1-mapping\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 \
-\'97 feat/first-fireball\
- \
-- Add fireball to button, that casts, then shoots out, then pulses, then disappears\
-	(just like my old demo, but in this case it will seek to location, NOT another entity)\
-\
-\'97 \'97\
 \
 \'97 feat/gameTime\
 \
@@ -51,9 +45,32 @@
 \
 \'97\
 \
+\'97 feat/enemies-attacks-health\
+\
+ - write todo here\'85 re-use character sprite for enemies, draw square around my character temporarily to distinguish him\
+\
+\'97 \'97\
+\
+ - maybe don\'92t use folders for single files, because devtools sucks and only shows index?\
+\
+\'97 feat/minimum-polish\
+\
+ - ensure we have basic sound effects for various things (doesn\'92t need to be perfect, just something to fill the void)\
+ - add in music, ensure it isn\'92t too loud. Err on the side of quiet\
+ - anything other little thing that helps it feel JUST A LITTLE like a real game\
+	- actually enforce \'93ready\'94 for casting. ie. filter fireball only if conjure[ready]\
+\'97 \'97\
+\
  - address TODOs\
 \
  - Get trello setup to story proper work!! maybe create epics for feature branch names?\
+	- first story: publish and advertise with friends!\
+\
+ - how to structure lanes??\
+\
+ - Add All stories below!\
+\
+ - story for: createStateSlice([\'91dashing\'92, \'91notdashing\'92], [createdAt, lastState]), where lastState and createdAt are higher order function, that applies _state as a property. [NOTE: this will make \'91createState\'92 obsolete in a way\'85 instead \'91createdAt\'92 will handle it.]\
 \
  - story for: evaluate whether the audio element is the appropriate container\'85 maybe use a stream, or oscillator\
 \
@@ -67,8 +84,6 @@
 \
  - story for: adding entity type graphics and audio in separate files. [graphics.js and audio.js in respective folders], pull them out of general graphics and audio files\
 \
- - use high performance timer, and have controls and update return a callback for interval, and set the \'93intervals\'94 in index instead using the high performance timer.\
-\
  - story for further movement improvements: jumpReady state, so we can jump earlier than grounding and jump shortly after starting falling?\
 \
  - Story for: ALL of the surface level code, should be CRAZY SIMPLE. All state definition and nothing more. All business logic complexity should be abstracted away. [ie. soundUpdate, should just be `if state, then soundShouldBePlaying` Use another function to only register the sound if not registered]\
@@ -78,7 +93,18 @@
 	- second, change updateProps to work off of Date.now, instead of dt. All values calculated by when the state started, versus Date.now(). This allows a state to be reverted, as if it never happened, super cool, and will be hyper helpful when i take this online!\
 	~ actually, this is more complicated. jump updates vy, but vy updates y, how do i control vy updating y? Also what if multiple things are changing vy or y? I still think this is possible, but it will require some interesting engineering.\
 \
- - put timestamp in redux [using middleware], so i have a reference for each state.\
+ - Story for: use high performance timer, and have controls and update return a callback for interval, and set the \'93intervals\'94 in index instead using the high performance timer.\
+\
+ - Story for: put timestamp in redux [using middleware], so i have a reference for each state.\
+\
+ - Epic for: don\'92t forget juice! [can you do epics in Trello? Anyways this is a huge undertaking! Perhaps a weekend sprint? I\'92m going to want lots of animations, and lots of punchy sound effects\'85 maybe tweak the sounds myself? :o MAYBE THROUGH SOUND API???? :O :O :O]\
+\
+\'97 end of adding stories\
+\
+ - Look through this README\
+	- get story ideas\
+	- add to technologies.md, and perhaps write different notes to record progress and things learned.\
+	- clean this TODO up, including removing archive. \
 \
 ~~ Things To Consider ~~:\
 \
