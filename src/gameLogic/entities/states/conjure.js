@@ -11,7 +11,7 @@ export const States = {
 
 const conjureSlice = createSlice({
   name: 'conjure',
-  initialState: createState(States.ready),
+  initialState: { [States.ready]: { createdAt: 0 } },
   reducers: {
     conjuring: (_, { params }) => createState(States.conjuring, params),
     casting: (_, { params }) => createState(States.casting, params),

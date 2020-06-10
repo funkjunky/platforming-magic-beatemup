@@ -13,7 +13,7 @@ export const States = {
 //        It'd be nice to go back to simple states if possible
 const jumpSlice = createSlice({
   name: 'jump',
-  initialState: createState(States.falling), // Note: Date.now() will be called early on import
+  initialState: { [States.falling]: { createdAt: 0 } },
   reducers: {
     grounded: () => createState(States.grounded),
     jumping: () => createState(States.jumping),

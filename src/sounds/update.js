@@ -9,7 +9,7 @@ const soundUpdate = (state, soundState) => {
     // if the entity is dashing, and we're not playing the sound, then...
     if (entity.states.dash.dashing && !(soundState.getPlayingSounds()['dash'] && soundState.getPlayingSounds()['dash'][entity.id])) {
       // create the sound, and start it at the appropriate time based on the state time, and now
-      soundState.registerSound('dash', entity, entity.states.dash.dashing, state.time.currentFrame);
+      soundState.registerSound('dash', entity, entity.states.dash.dashing, state.gameTime);
     } else if (!entity.states.dash.dashing && soundState.getPlayingSounds()['dash'] && soundState.getPlayingSounds()['dash'][entity.id]) {
       soundState.unregisterSound('dash', entity);
     }
