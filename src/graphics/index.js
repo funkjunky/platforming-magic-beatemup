@@ -81,9 +81,8 @@ const getGetSprite = now => (state, msPerFrame, sprites) => {
 };
 
 export default (ctx, state, sprites) => {
-  const now = window.store.getState().time.currentFrame;
   const drawPerson = entity => {
-    ctx.drawImage(getPlayerSprite(sprites, entity, now), entity.props.x, entity.props.y);
+    ctx.drawImage(getPlayerSprite(sprites, entity, window.store.getState().gameTime), entity.props.x, entity.props.y);
   };
   const drawFireball = entity => {
     ctx.fillStyle = c.red;

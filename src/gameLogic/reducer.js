@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 
 import entities from './entities';
-import time from './time';
+import gameTime from './gameTime';
 import pause from './pause';
 
 export default combineReducers({
   entities,
-  time,
+  gameTime,
   pause,
 });

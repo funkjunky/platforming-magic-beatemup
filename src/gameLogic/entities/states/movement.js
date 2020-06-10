@@ -10,7 +10,7 @@ export const States = {
 
 const movementSlice = createSlice({
   name: 'movement',
-  initialState: createState(States.stopping, { lastState: States.pushingRight }),
+  initialState: { [States.stopping]: { createdAt: 0, lastState: States.pushingRight } },
   reducers: {
     pushingRight: () => createState(States.pushingRight),
     pushingLeft: () => createState(States.pushingLeft),

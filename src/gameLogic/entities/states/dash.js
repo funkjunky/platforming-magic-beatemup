@@ -9,7 +9,7 @@ export const States = {
 
 const dashSlice = createSlice({
   name: 'dash',
-  initialState: createState(States.notdashing),
+  initialState: { [States.notdashing]: { createdAt: 0 } },
   reducers: {
     dashing: () => createState(States.dashing),
     notdashing: () => createState(States.notdashing),
