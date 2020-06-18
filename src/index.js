@@ -12,7 +12,7 @@ import reducer from 'gameLogic/reducer.js';
 import { loadResourcesAndLoops } from './bootstrap';
 import getLogger from 'getLogger';
 import { characterWidth } from './loadResources';
-import castFireball from 'gameLogic/entities/fireball';
+import spawnEnemiesLevel1 from 'gameLogic/generators/spawnEnemies';
 
 document.addEventListener('DOMContentLoaded', firstLoad);
 
@@ -34,7 +34,7 @@ async function firstLoad() {
   window.store.dispatch(resumeTicks());
 
   // create the first player entity
-  const firstPlayer = window.store.dispatch(createEntity({
+  window.store.dispatch(createEntity({
     props: {
       x: characterWidth * 3,
       y: characterWidth,
@@ -44,6 +44,8 @@ async function firstLoad() {
     type: 'player',
     id: player1.id,
   }));
+
+  window.store.dispatch(spawnEnemiesLevel1());
 
   loadResourcesAndLoops(window);
 }

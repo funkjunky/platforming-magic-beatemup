@@ -107,6 +107,7 @@ export default (ctx, state, sprites) => {
     ctx.save();
     switch (entity.type) {
       case 'player':
+      case 'doppleganger':
         drawPerson(entity);
         break;
       case 'fireball':

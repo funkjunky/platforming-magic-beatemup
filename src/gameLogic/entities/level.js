@@ -1,6 +1,7 @@
 const blockHeight = 10;
-const canvasWidth = 960;
-const canvasHeight = 540;
+// TODO: export this from elsewhere
+export const canvasWidth = 960;
+export const canvasHeight = 540;
 // array of squares drawn down
 // SSB style
 export const level = [

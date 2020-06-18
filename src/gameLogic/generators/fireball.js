@@ -1,5 +1,4 @@
 import { call, put, fork } from 'redux-yield-effect/lib/effects';
-//import { createAction } from '@reduxjs/toolkit';
 import { addTick } from 'effect-tick';
 
 // TODO: takeDamage should be part of some entities, I don't think it should be generic... hmm
@@ -10,7 +9,7 @@ import { pushingRight } from 'gameLogic/entities/states/movement';
 // TODO: the currying on redux thunk is awkward... perhaps just better formatting, or use generators?
 // TODO:  when to call entity, or when to pass it as the function... it's hard to tell... clean up somehow??
 //Curry is necessary for react-redux later. connect shorthand
-export default function* _fireball(owner) {
+export default function* fireball(owner) {
   const fireball = yield call(conjureFireball, owner, { speed: 100, radius: 12 })
 
   // TODO: put this in 'castingFireball'
@@ -68,5 +67,6 @@ function* fireballExplosion({ x, y, width, height, dmgPerTick }) {
   yield put(removeEntity(explosion()));
 }
 
+// TODO: replace fireball and aoeeffect with the entity `type` property
 const createFireball = props => createEntity({ type: 'fireball', props });
 const createExplosion = props => createEntity({ type: 'aoeEffect', props });

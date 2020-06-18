@@ -8,10 +8,10 @@ import { doBoxesIntersect } from './entities/doBoxesIntersect';
 export const cleanupAction = () => (dispatch, getState) => {
   Object.values(getState().entities).forEach(entity => {
     const entityDefn = entityDefinitions[entity.type];
-    //TODO: temporary until i figure out how to handle multiple entity types
-    if (entity.type !== 'player') return;
-
-    // if jumping has been jumping for jumpDuration, then switch it to falling
+    //TODO: hmmmm need a better way to do this whole function.
+    //      the level interaction is for players and enemies, maybe some other entities
+    //      the jumping and dashing and falling all depend on the entity, especially the dashing
+    if (entity.type !== 'player' && entity.type !== 'doppleganger') return;
 
     let isGrounded = false;
     const { top, bottom, left, right } = entityDefn.boundingBoxes(entity);

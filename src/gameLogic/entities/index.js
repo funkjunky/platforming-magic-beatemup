@@ -7,6 +7,7 @@ import { doBoxesIntersect } from './doBoxesIntersect';
 import player from './player';
 import fireball from './fireball';
 import aoeEffect from './aoeEffect';
+import doppleganger from './doppleganger';
 
 let _id= 0;
 export const createEntity = createAction('CREATE_ENTITY', ({ id, type, state, props }) => {
@@ -34,6 +35,8 @@ export const entityDefinitions = {
   player,
   fireball,
   aoeEffect,
+
+  doppleganger,
 };
 
 // put the action(s) that are being called for the update,
