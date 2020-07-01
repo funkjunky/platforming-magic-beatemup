@@ -8,7 +8,7 @@ const aoeEffectDefinition = {
   type: 'aoeEffect',
   stateReducer: () => {},
   boundingBoxes,
-  update: (entity, dt, dispatch) => {
+  updateProps: (entity, dt, dispatch) => {
     dispatch(updateProps({ entity, newProps: { sTillTick: entity.props.sTillTick - dt } }));
   },
   // TODO: dt should probably be in ms, not seconds... in other update, just convert ms to seconds

@@ -13,6 +13,7 @@ import { loadResourcesAndLoops } from './bootstrap';
 import getLogger from 'getLogger';
 import { characterWidth } from './loadResources';
 import spawnEnemiesLevel1 from 'gameLogic/generators/spawnEnemies';
+import { togglePause } from 'gameLogic/pause';
 
 document.addEventListener('DOMContentLoaded', firstLoad);
 
@@ -46,6 +47,18 @@ async function firstLoad() {
   }));
 
   window.store.dispatch(spawnEnemiesLevel1());
+
+  let pausedBecauseOfVisibilityChange = false;
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && !window.store.getState().pause) {
+      window.store.dispatch(togglePause());
+      pausedBecauseOfVisibilityChange = true;
+    } else if (!document.hidden && pausedBecauseOfVisibilityChange) {
+      // TODO: add a toggle to turn this off in options
+      window.setTimeout(() => window.store.dispatch(togglePause()), 200);
+      pausedBecauseOfVisibilityChange = false;
+    }
+  });
 
   loadResourcesAndLoops(window);
 }

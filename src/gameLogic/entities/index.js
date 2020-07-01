@@ -52,7 +52,6 @@ export const updateProps = createAction('UPDATE_PROPS', (payload, meta) => ({
 const entitiesReducer = (state = {}, action) => produce(state, draftState => {
   switch(action.type) {
     case createEntity.toString(): {
-      console.log('payload create: ', action.payload);
       const {
         id, type, states = {},
         // sensible props defaults. Currently use vx and vy for player
@@ -75,7 +74,10 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
     // props update action
     case updateProps.toString():
       // Note: IF one at a time is too slow, do all at once.
-      Object.entries(action.payload.newProps).forEach(([key, value]) => draftState[action.payload.entity.id].props[key] = value);
+      Object.entries(action.payload.newProps).forEach(([key, value]) => {
+        draftState[action.payload.entity.id].props[key] = value;
+      });
+      
       break;
 
     // take damage is sent to a target or anyone in the area for the damage

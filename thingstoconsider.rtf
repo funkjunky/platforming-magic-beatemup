@@ -31,6 +31,8 @@
 \f0 \cf0 \cb1 \kerning1\expnd0\expndtw0  feat/first-audio\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 \
+~~~~ HOW DO I DO GROUNDING SO AI CAN JUMP?!?!? ~~~~\
+\
 \'97 feat/enemies-attacks-health\
 \
  *- create a new entity for enemies.\
@@ -42,7 +44,15 @@
  - enemies move randomly left and right for random periods of time. Using generator actions\
 	*- pushingLeftForX, pushingRightForX\
 	*- using entity update member to randomly choose these if not moving.\
-	- randomly jump\
+	*- create a props jump vy action, and use that to see the explicit jump vy update\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 	*- randomly jump\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+	*- abstract around the doppleganger ai from the updateProps of the entity\
+	- get jumping working again, lololollol\
+	- do the same for all entities. [update calls other functions]\
+\
 	- randomly shoot fireballs\
  - enemies add collision for fireballs with enemies and with player\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
@@ -53,9 +63,30 @@
 \
 \'97 \'97\
 \
- - HMR for generators?\
+ - stop characters from going through the floor while alt-tabbed\'85 why do AIs go through the floor?\
+\
+\'97 feat/better-development\
+\
+ - middleware for collecting debugging information\
+	- store all actions, including generators and functions (store their reflected name and arguments, also mark them as what they are) [Into it\'92s OWN Redux store]\
+\
+ - Create a dropdown to choose right debuggers on the top right. (currently just \'93print action\'94)\
+\
+ - create printActions function that takes the debug store, and return the react component.	- create the function and have it return a connected react component\
+	- This react component should have a text input to filter the actions. \
+	- show all actions\
+	- show actions based on the filter. [filter on keys and values]\
+\
+ - in index, onChange of the dropdown, unrender the old component, then render the new one.\
+\
+ - On the bottom add a connected plot graph of the number of active entities [polled every 100th of a second]\
+	- create the function that takes the game store and return a connected component\
+\
+ - HMR for generators\
 \
  - maybe don\'92t use folders for single files, because devtools sucks and only shows index?\
+\
+\'97 \'97\
 \
 \'97 feat/minimum-polish\
 \

@@ -10,7 +10,7 @@ const fireballDefinition = {
   type: 'fireball',
   stateReducer: combineReducers({ movement }),
   boundingBoxes,
-  update: (entity, dt, dispatch) => {
+  updateProps: (entity, dt, dispatch) => {
     const { props: { x, y, speed }, states: { movement } } = entity;
 
     // TODO: just awful logic

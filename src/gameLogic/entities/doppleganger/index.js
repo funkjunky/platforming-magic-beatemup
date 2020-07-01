@@ -50,7 +50,10 @@ const playerDefinition = {
     else if (action.type === Jump.falling.toString() && getState().entities[action.payload.entity.id].states.jump.falling) return;
 
     // TODO: this places sucks... maybe turn jump into a thunk
-    if (action.type === Jump.jumping.toString()) dispatch(updateProps({ entity: action.payload.entity, newProps: { vy: -jumpingVel } }));
+    if (action.type === Jump.jumping.toString()) {
+      console.log('setting vy: ', updateProps({ entity: action.payload.entity, newProps: { vy: -jumpingVel } }));
+      dispatch(updateProps({ entity: action.payload.entity, newProps: { vy: -jumpingVel } }));
+    }
 
     // can only dash while grounded
     if (action.type === Dash.dashing.toString() && !jump.grounded) return;
@@ -65,23 +68,28 @@ const playerDefinition = {
 
     return dispatch(action);
   },
-  // dt is in seconds.
-  update: (entity, dt, dispatch) => {
-    const { props, states: { movement, jump, dash } } = entity;
-
-    // ~~~ AI for dopplegangers ~~ //
-    if (movement[stopping]) {
+  updateDoAction: (entity, dispatch) => {
+    if (entity.states.movement[stopping]) {
+      // TODO:dependant on loop cycle interval
       if (Math.random() < 0.5) {
         dispatch(pushingLeftForX(entity, Math.random() * 2000));
       } else {
         dispatch(pushingRightForX(entity, Math.random() * 2000));
       }
     }
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
-    
+    //this is dumb, but every LOOP there' a 1/100 chance of jumping
+    if (entity.states.jump[grounded] && Math.random() > 0.99) {
+      dispatch(playerDefinition.actionsFilter(Jump.jumping({ entity })));
+    }
+  },
+  // dt is in seconds.
+  updateProps: (entity, dt, dispatch) => {
+    const { props, states: { movement, jump, dash } } = entity;
+
     // would immer allow me to reuse the props, like destructuring them?
     let vx = props.vx;
     let vy = props.vy;
+    if (jump[jumping]) console.log('vy: ', vy);
     const acc = accel[Object.keys(jump)[0]];
     const dec = decel[Object.keys(jump)[0]];
     if (dash.dashing) {

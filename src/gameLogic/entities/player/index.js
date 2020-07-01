@@ -64,7 +64,7 @@ const playerDefinition = {
     return dispatch(action);
   },
   // dt is in seconds.
-  update: (entity, dt, dispatch) => {
+  updateProps: (entity, dt, dispatch) => {
     const { props, states: { movement, jump, dash } } = entity;
     // would immer allow me to reuse the props, like destructuring them?
     let vx = props.vx;
