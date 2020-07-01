@@ -13,7 +13,7 @@ export const createInterval = (globals) => {
     if (!globals.store.getState().pause) {
       globals.store.dispatch(incrementGameTime(dt));
       controlsUpdate(globals.gameControls);
-      aiUpdate(globals.store.getState(), globals.store.dispatch);
+      aiUpdate(globals.store.getState, globals.store.dispatch);
       gameUpdate(dt / 1000, globals.store.getState(), globals.store.dispatch);
       soundUpdate(globals.store.getState(), globals.soundState);
     }

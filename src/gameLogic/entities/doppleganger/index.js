@@ -6,6 +6,7 @@ import jump, * as Jump from '../states/jump';
 import dash, * as Dash from '../states/dash';
 import conjure from '../states/conjure';
 import { combineReducers } from '../combineReducers';
+import castFireball from 'gameLogic/generators/fireball';
 
 import { pushingLeftForX, pushingRightForX } from 'gameLogic/generators/enemyAI';
 
@@ -51,7 +52,6 @@ const playerDefinition = {
 
     // TODO: this places sucks... maybe turn jump into a thunk
     if (action.type === Jump.jumping.toString()) {
-      console.log('setting vy: ', updateProps({ entity: action.payload.entity, newProps: { vy: -jumpingVel } }));
       dispatch(updateProps({ entity: action.payload.entity, newProps: { vy: -jumpingVel } }));
     }
 
@@ -68,7 +68,9 @@ const playerDefinition = {
 
     return dispatch(action);
   },
-  updateDoAction: (entity, dispatch) => {
+  updateDoAction: (getEntity, dispatch) => {
+    // TODO: is this bad? because I'm not unwrapping entity last second... hmmm
+    const entity = getEntity();
     if (entity.states.movement[stopping]) {
       // TODO:dependant on loop cycle interval
       if (Math.random() < 0.5) {
@@ -78,8 +80,13 @@ const playerDefinition = {
       }
     }
     //this is dumb, but every LOOP there' a 1/100 chance of jumping
-    if (entity.states.jump[grounded] && Math.random() > 0.99) {
+    if (entity.states.jump[grounded] && Math.random() > 0.995) {
       dispatch(playerDefinition.actionsFilter(Jump.jumping({ entity })));
+    }
+
+    if (entity.states.jump[grounded] && Math.random() > 0.99) {
+      // TODO: I need to provide the selector, NOT the entity itsself
+      dispatch(castFireball(getEntity));
     }
   },
   // dt is in seconds.
@@ -89,7 +96,6 @@ const playerDefinition = {
     // would immer allow me to reuse the props, like destructuring them?
     let vx = props.vx;
     let vy = props.vy;
-    if (jump[jumping]) console.log('vy: ', vy);
     const acc = accel[Object.keys(jump)[0]];
     const dec = decel[Object.keys(jump)[0]];
     if (dash.dashing) {
