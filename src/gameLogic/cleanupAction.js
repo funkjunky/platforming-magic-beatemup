@@ -15,14 +15,12 @@ export const cleanupAction = () => (dispatch, getState) => {
 
     let isGrounded = false;
     const { top, bottom, left, right } = entityDefn.boundingBoxes(entity);
-    let blockHit = false;
     // stop the entity from being in any square
     level.forEach(block => {
       // TODO: move state changes into their own function, even if i have to re-iterate on blocks? Hmmm...
       // This feels a little more out there, so even as the props are pushed away, this still feels the ground.
       if (doBoxesIntersect(block, bottom)) {
         if (entity.states.jump[States.falling]) {
-          console.log('grounding...');
           dispatch(grounded({ entity }));
         }
         isGrounded = true;
@@ -34,7 +32,6 @@ export const cleanupAction = () => (dispatch, getState) => {
       // i add 1 pixel, then correct flush, so this won't be triggered again after being "grounded"
       if (doBoxesIntersect({ ...block, y: block.y + 1 }, bottom)) {
         // HERE: This is triggering after we jump [WHY DOES THIS SUDDENLY HAPPEN?!]
-        if (entity.id === 'doppleganger1') blockHit = block;
         dispatch(updateProps({ entity, newProps: { y: block.y - entity.props.height, vy: 0 } }));
       }
 
@@ -45,16 +42,6 @@ export const cleanupAction = () => (dispatch, getState) => {
         dispatch(updateProps({ entity, newProps: { x: block.x + block.width, vx: 0 } }));
       }
     });
-
-    /*
-    if (entity.id === 'doppleganger1') {
-      if (blockHit) {
-        console.log('bottom hit', blockHit, bottom);
-      } else {
-        console.log('NOT hit', bottom);
-      }
-    }
-    */
 
     // TODO: This should probably be in typeDefinition player
     const maxJumpDuration = 1000;

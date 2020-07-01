@@ -12,9 +12,9 @@ export function* sleep(ms) {
 
 const spawnLocations = [
   { x: 30, y: 300 },
-  //  { x: 60, y: 100 },
-  //{ x: canvasWidth - 130, y: 300 },
-  //{ x: canvasWidth - 160, y: 100 },
+  { x: 60, y: 100 },
+  { x: canvasWidth - 130, y: 300 },
+  { x: canvasWidth - 160, y: 100 },
 ];
 
 export default function* spawnEnemies() {
