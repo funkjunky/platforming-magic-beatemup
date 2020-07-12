@@ -2,12 +2,13 @@ import { createAction } from '@reduxjs/toolkit';
 import produce from 'immer';
 
 // TODO: suspicious, because this file contains zero logic, until I add this
-import { doBoxesIntersect } from './doBoxesIntersect';
+import { doBoxesIntersect } from '../doBoxesIntersect';
 
 import player from './player';
 import fireball from './fireball';
 import aoeEffect from './aoeEffect';
 import doppleganger from './doppleganger';
+import block from './block';
 
 let _id= 0;
 export const createEntity = createAction('CREATE_ENTITY', ({ id, type, state, props }) => {
@@ -35,6 +36,7 @@ export const entityDefinitions = {
   player,
   fireball,
   aoeEffect,
+  block,
 
   doppleganger,
 };
@@ -61,7 +63,7 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
       draftState[id] = {
         id,
         type,
-        states: produce(states, states => entityDefinitions[type].stateReducer(states, action)),
+        states: produce(states, states => entityDefinitions[type].stateReducer?.(states, action)),
         props: { x, y, vx, vy, ...props },
       };
       break;

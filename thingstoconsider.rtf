@@ -54,9 +54,30 @@
 	*- do the same for all entities. [update calls other functions]\
 \
 	*- randomly shoot fireballs\
- - enemies add collision for fireballs with enemies and with player\
+\
+\
+\
+ - turn blocks into real entities\
+	*- give them their own typeDefinition\
+	*- create the entities when the game starts\
+	*- still hard code blocks collision, but getting from store\
+	*- ensure everything still works\
+	*- do graphics from entities\
+	*- delete old level.js and ensure things still work\
+\
+ - abstract collision detection [ONLY GET blocks working, and console logs for other collisions]\
+	*- each entity has collidesWith object, which defined what to do when collided with entity.\
+	- cleanupAction:\
+		- clears all collidedWith properties\
+		- checks if any entities are colliding with other entities and marks them as \'93collidedWith\'94 if it\'92s in the entities \'93collidedWith\'94 keys. in this field we copy the entity. [immer should ensure it will not be mutated]\
+		- iterate through entities calling their collidedWith handlers [note: each handler only handles it\'92s OWNERS response. That means, with a \'93player <> fireball\'94 collision, the player takes damage, while the fireball disappears. They each know of each other as they process this]\
+\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf0  - ensure damage is working\
+\cf0  - Have doppleganger typeDefinition use player functions. Make it entirely DRY. I don\'92t want to have t duplicate the next part!\
+\
+ - add collisions between players and dopplegangers\
+\
+\
  - add sword swinging, including collision and dmg [sword swing on x, move fireball to y]\
  - show healthbar at top left as big rectangle [add divisions for every 4hp]\
  - Do I have a game yet?\

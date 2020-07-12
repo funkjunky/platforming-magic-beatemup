@@ -2,7 +2,7 @@ import { combineReducers } from '../combineReducers';
 import movement, * as Movement from '../states/movement';
 import boundingBoxes from '../basicBoundingBoxes';
 import { updateProps } from '../index';
-import { doBoxesIntersect } from '../doBoxesIntersect';
+import { doBoxesIntersect } from '../../doBoxesIntersect';
 
 const { pushingRight } = Movement.States;
 

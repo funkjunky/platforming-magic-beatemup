@@ -14,6 +14,7 @@ import getLogger from 'getLogger';
 import { characterWidth } from './loadResources';
 import spawnEnemiesLevel1 from 'gameLogic/generators/spawnEnemies';
 import { togglePause } from 'gameLogic/pause';
+import createLevel from './createLevel';
 
 document.addEventListener('DOMContentLoaded', firstLoad);
 
@@ -45,6 +46,8 @@ async function firstLoad() {
     type: 'player',
     id: player1.id,
   }));
+
+  window.store.dispatch(createLevel())
 
   window.store.dispatch(spawnEnemiesLevel1());
 

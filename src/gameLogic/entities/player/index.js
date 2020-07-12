@@ -10,6 +10,43 @@ import { combineReducers } from '../combineReducers';
 const { jumping, falling, grounded } = Jump.States;
 const { pushingLeft, pushingRight, stopping } = Movement.States;
 
+// TODO: once blocks are their own entities, we'll come back to this
+const handleBlockCollision = (player, block, dispatch) => {
+  let isGrounded = false;
+  const { top, bottom, left, right } = entityDefn.boundingBoxes(entity);
+  // stop the entity from being in any square
+  level.forEach(block => {
+    // TODO: move state changes into their own function, even if i have to re-iterate on blocks? Hmmm...
+    // This feels a little more out there, so even as the props are pushed away, this still feels the ground.
+    if (doBoxesIntersect(block, bottom)) {
+      if (entity.states.jump[States.falling]) {
+        dispatch(grounded({ entity }));
+      }
+      isGrounded = true;
+    }
+
+    if (doBoxesIntersect(block, top)) {
+      dispatch(updateProps({ entity, newProps: { y: block.y + block.height, vy: 0 } }));
+    }
+    // i add 1 pixel, then correct flush, so this won't be triggered again after being "grounded"
+    if (doBoxesIntersect({ ...block, y: block.y + 1 }, bottom)) {
+      // HERE: This is triggering after we jump [WHY DOES THIS SUDDENLY HAPPEN?!]
+      dispatch(updateProps({ entity, newProps: { y: block.y - entity.props.height, vy: 0 } }));
+    }
+
+    if (doBoxesIntersect(block, right)) {
+      dispatch(updateProps({ entity, newProps: { x: block.x - entity.props.width, vx: 0 } }));
+    }
+    if (doBoxesIntersect(block, left)) {
+      dispatch(updateProps({ entity, newProps: { x: block.x + block.width, vx: 0 } }));
+    }
+  });
+
+    if (!isGrounded && entity.states.jump[States.grounded]) {
+      dispatch(falling({ entity }));
+    }
+};
+
 // TODO: these should all be in entity itsself. Maybe props? Maybe somewhere more static (attrs)????
 //        entity.state, entity.props, entity.attrs
 // in pixels per second
@@ -35,6 +72,13 @@ const playerDefinition = {
   type: 'player',
   stateReducer: combineReducers({ movement, jump, dash, conjure }),
   boundingBoxes,
+  /*
+  collidesWith: {
+    'block': handleBlockCollision,
+    'fireball': handleFireballCollision,
+    'aoeEffect': handleAoeEffectCollision,
+  },
+  */
   actionsFilter: action => (dispatch, getState) => {
     // TODO: can i go back to just payload.id? why is entity a property? Probably cant because of generators?
     const { jump } = getState().entities[action.payload.entity.id].states;

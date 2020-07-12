@@ -1,9 +1,8 @@
-import { level } from './entities/level';
 import { updateProps } from './entities';
 import { entityDefinitions } from './entities';
 import { grounded, falling, States } from './entities/states/jump';
 import { notdashing, States as DashStates } from './entities/states/dash';
-import { doBoxesIntersect } from './entities/doBoxesIntersect';
+import { doBoxesIntersect } from './doBoxesIntersect';
 
 export const cleanupAction = () => (dispatch, getState) => {
   Object.values(getState().entities).forEach(entity => {
@@ -16,30 +15,30 @@ export const cleanupAction = () => (dispatch, getState) => {
     let isGrounded = false;
     const { top, bottom, left, right } = entityDefn.boundingBoxes(entity);
     // stop the entity from being in any square
-    level.forEach(block => {
+    Object.values(getState().entities).filter(({ type }) => type === 'block').forEach(block => {
       // TODO: move state changes into their own function, even if i have to re-iterate on blocks? Hmmm...
       // This feels a little more out there, so even as the props are pushed away, this still feels the ground.
-      if (doBoxesIntersect(block, bottom)) {
+      if (doBoxesIntersect(block.props, bottom)) {
         if (entity.states.jump[States.falling]) {
           dispatch(grounded({ entity }));
         }
         isGrounded = true;
       }
 
-      if (doBoxesIntersect(block, top)) {
-        dispatch(updateProps({ entity, newProps: { y: block.y + block.height, vy: 0 } }));
+      if (doBoxesIntersect(block.props, top)) {
+        dispatch(updateProps({ entity, newProps: { y: block.props.y + block.props.height, vy: 0 } }));
       }
       // i add 1 pixel, then correct flush, so this won't be triggered again after being "grounded"
-      if (doBoxesIntersect({ ...block, y: block.y + 1 }, bottom)) {
+      if (doBoxesIntersect({ ...block.props, y: block.props.y + 1 }, bottom)) {
         // HERE: This is triggering after we jump [WHY DOES THIS SUDDENLY HAPPEN?!]
-        dispatch(updateProps({ entity, newProps: { y: block.y - entity.props.height, vy: 0 } }));
+        dispatch(updateProps({ entity, newProps: { y: block.props.y - entity.props.height, vy: 0 } }));
       }
 
-      if (doBoxesIntersect(block, right)) {
-        dispatch(updateProps({ entity, newProps: { x: block.x - entity.props.width, vx: 0 } }));
+      if (doBoxesIntersect(block.props, right)) {
+        dispatch(updateProps({ entity, newProps: { x: block.props.x - entity.props.width, vx: 0 } }));
       }
-      if (doBoxesIntersect(block, left)) {
-        dispatch(updateProps({ entity, newProps: { x: block.x + block.width, vx: 0 } }));
+      if (doBoxesIntersect(block.props, left)) {
+        dispatch(updateProps({ entity, newProps: { x: block.props.x + block.props.width, vx: 0 } }));
       }
     });
 

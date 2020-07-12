@@ -1,4 +1,3 @@
-import { level } from 'gameLogic/entities/level';
 import * as Jump from 'gameLogic/entities/states/jump';
 import * as Movement from 'gameLogic/entities/states/movement';
 import * as Dash from 'gameLogic/entities/states/dash';
@@ -101,8 +100,6 @@ export default (ctx, state, sprites) => {
   //default colour
   ctx.fillStyle = c.blue;
 
-  level.forEach(block => ctx.fillRect(block.x, block.y, block.width, block.height));
-
   Object.values(state.entities).reverse().forEach(entity => {
     ctx.save();
     switch (entity.type) {
@@ -115,6 +112,9 @@ export default (ctx, state, sprites) => {
         break;
       case 'aoeEffect':
         drawAoeEffect(entity);
+        break;
+      case 'block':
+        ctx.fillRect(entity.props.x, entity.props.y, entity.props.width, entity.props.height);
         break;
       default:
     }
