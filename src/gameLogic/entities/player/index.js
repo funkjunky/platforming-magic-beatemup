@@ -6,45 +6,54 @@ import jump, * as Jump from '../states/jump';
 import dash, * as Dash from '../states/dash';
 import conjure from '../states/conjure';
 import { combineReducers } from '../combineReducers';
+import { doBoxesIntersect } from '../../doBoxesIntersect';
+import Block from '../block';
+import Fireball from '../fireball';
+import AoeEffect from '../aoeEffect';
 
 const { jumping, falling, grounded } = Jump.States;
+const { dashing } = Dash.States;
 const { pushingLeft, pushingRight, stopping } = Movement.States;
 
-// TODO: once blocks are their own entities, we'll come back to this
-const handleBlockCollision = (player, block, dispatch) => {
-  let isGrounded = false;
-  const { top, bottom, left, right } = entityDefn.boundingBoxes(entity);
-  // stop the entity from being in any square
-  level.forEach(block => {
-    // TODO: move state changes into their own function, even if i have to re-iterate on blocks? Hmmm...
-    // This feels a little more out there, so even as the props are pushed away, this still feels the ground.
-    if (doBoxesIntersect(block, bottom)) {
-      if (entity.states.jump[States.falling]) {
-        dispatch(grounded({ entity }));
-      }
-      isGrounded = true;
-    }
+const handleFireballCollision = (player, fireball, dispatch) => {
+  console.log('player collided with fireball: ', player.id, fireball.id, dispatch);
+};
 
-    if (doBoxesIntersect(block, top)) {
-      dispatch(updateProps({ entity, newProps: { y: block.y + block.height, vy: 0 } }));
-    }
-    // i add 1 pixel, then correct flush, so this won't be triggered again after being "grounded"
-    if (doBoxesIntersect({ ...block, y: block.y + 1 }, bottom)) {
-      // HERE: This is triggering after we jump [WHY DOES THIS SUDDENLY HAPPEN?!]
-      dispatch(updateProps({ entity, newProps: { y: block.y - entity.props.height, vy: 0 } }));
-    }
+const handleAoeEffectCollision = (player, aoeEffect, dispatch) => {
+  console.log('player collided with aoeEffect: ', player.id, aoeEffect.id, dispatch);
+};
 
-    if (doBoxesIntersect(block, right)) {
-      dispatch(updateProps({ entity, newProps: { x: block.x - entity.props.width, vx: 0 } }));
-    }
-    if (doBoxesIntersect(block, left)) {
-      dispatch(updateProps({ entity, newProps: { x: block.x + block.width, vx: 0 } }));
-    }
-  });
+const howPlayerBlock = (player, { props }) => {
+  const { top, bottom, left, right } = playerDefinition.boundingBoxes(player);
+  if (doBoxesIntersect(props, top)) {
+    return { top };
+  }
+  if (doBoxesIntersect(props, bottom)) {
+    return { bottom };
+  }
+  if (doBoxesIntersect(props, right)) {
+    return { right };
+  }
+  if (doBoxesIntersect(props, left)) {
+    return { left };
+  }
+};
 
-    if (!isGrounded && entity.states.jump[States.grounded]) {
-      dispatch(falling({ entity }));
-    }
+const handleCollisionPlayerBlock = (dispatch, entity, { props }, how) => {
+  if (how.top) {
+    dispatch(updateProps({ entity, newProps: { y: props.y + props.height, vy: 0 } }));
+  }
+  // Note: I'm not sure if this is a good practice...
+  //      I was hoping to only use the collision info to resolve
+  if (how.bottom && entity.states.jump[falling]) {
+    dispatch(updateProps({ entity, newProps: { y: props.y - entity.props.height + 1, vy: 0 } }));
+  }
+  if (how.right) {
+    dispatch(updateProps({ entity, newProps: { x: props.x - entity.props.width, vx: 0 } }));
+  }
+  if (how.left) {
+    dispatch(updateProps({ entity, newProps: { x: props.x + props.width, vx: 0 } }));
+  }
 };
 
 // TODO: these should all be in entity itsself. Maybe props? Maybe somewhere more static (attrs)????
@@ -72,13 +81,20 @@ const playerDefinition = {
   type: 'player',
   stateReducer: combineReducers({ movement, jump, dash, conjure }),
   boundingBoxes,
-  /*
   collidesWith: {
-    'block': handleBlockCollision,
-    'fireball': handleFireballCollision,
-    'aoeEffect': handleAoeEffectCollision,
+    [Block.type]: {
+      how: howPlayerBlock,
+      handleCollision: handleCollisionPlayerBlock,
+    },
+    [Fireball.type]: {
+      how: (player, fireball) => {},
+      handleCollision: handleFireballCollision,
+    },
+    [AoeEffect.type]: {
+      how: (player, aoeEffect) => {},
+      handleCollision: (proximity) => handleAoeEffectCollision(proximity),
+    },
   },
-  */
   actionsFilter: action => (dispatch, getState) => {
     // TODO: can i go back to just payload.id? why is entity a property? Probably cant because of generators?
     const { jump } = getState().entities[action.payload.entity.id].states;
@@ -95,7 +111,7 @@ const playerDefinition = {
     if (action.type === Jump.jumping.toString()) dispatch(updateProps({ entity: action.payload.entity, newProps: { vy: -jumpingVel } }));
 
     // can only dash while grounded
-    if (action.type === Dash.dashing.toString() && !jump.grounded) return;
+    if (action.type === dashing.toString() && !jump.grounded) return;
 
     // TODO: this also sucks...
     // If falling and current is jumping AND it's less than 1 second old, then drop vy to 0, instantly start falling
@@ -106,6 +122,31 @@ const playerDefinition = {
     ) dispatch(updateProps({ entity: action.payload.entity, newProps: { vy: 0 } }));
 
     return dispatch(action);
+  },
+  // TODO: these things should probably be in a dash / jump generator
+  //      but,I'm not yet sure how to handle filtering generator actions.
+  updateState: (entity, gameState, dispatch) => {
+    // TODO: This should probably be in typeDefinition player
+    const maxJumpDuration = 1000;
+    // TODO: once a game clock is implemented, we can use that here, to continue to dash after a pause
+    if (entity.states.jump[jumping] && (gameState.gameTime - entity.states.jump[jumping].createdAt) > maxJumpDuration) {
+      dispatch(Jump.falling({ entity }));
+    }
+
+    // TODO: This should probably be in typeDefinition player
+    const maxDashDuration = 500;
+    if (entity.states.dash[dashing] && (gameState.gameTime - entity.states.dash[dashing].createdAt) > maxDashDuration) {
+      dispatch(Dash.notdashing({ entity }));
+    }
+
+    // ground if collided with floor
+    const collidedWithFloor = entity.collidedWith.find(({ entity, how }) => entity.type === Block.type && how.bottom)
+    if (entity.states.jump[falling] && collidedWithFloor) {
+      dispatch(Jump.grounded({ entity }));
+    // fall if no longer colliding with floor
+    } else if (entity.states.jump[grounded] && !collidedWithFloor) {
+      dispatch(Jump.falling({ entity }));
+    }
   },
   // dt is in seconds.
   updateProps: (entity, dt, dispatch) => {
@@ -142,7 +183,6 @@ const playerDefinition = {
       if (props.vx < 0) vx = Math.min(0, props.vx + dec * dt);
     }
 
-    // temporary, until i implement jumping. I need the grounded to properly do the acc of falling
     if (jump[falling]) {
       vy = Math.min(terminalVel, vy + dt * fallingAcc);
     } else if (jump[jumping]) {

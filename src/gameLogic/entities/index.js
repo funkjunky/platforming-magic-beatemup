@@ -29,6 +29,10 @@ export const createEntity = createAction('CREATE_ENTITY', ({ id, type, state, pr
 
 export const removeEntity = createAction('REMOVE_ENTITY');
 
+export const clearCollidedWith = createAction('CLEAR_COLLIDED_WITH');
+
+export const pushCollidedWith = createAction('ADD_COLLIDED_WITH');
+
 // TODO: should this be here? Not all entities take damage
 export const takeDamage = createAction('TAKE_DAMAGE');
 
@@ -65,12 +69,21 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
         type,
         states: produce(states, states => entityDefinitions[type].stateReducer?.(states, action)),
         props: { x, y, vx, vy, ...props },
+        collidedWith: [],
       };
       break;
     }
 
     case removeEntity.toString():
       delete draftState[action.payload.id];
+      break;
+
+    case clearCollidedWith.toString():
+      draftState[action.payload.entity.id].collidedWith = [];
+      break;
+
+    case pushCollidedWith.toString():
+      draftState[action.payload.entity.id].collidedWith.push(action.payload.collidedWith);
       break;
 
     // props update action

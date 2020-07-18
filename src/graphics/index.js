@@ -134,7 +134,7 @@ export default (ctx, state, sprites) => {
   // printing character position:
   ctx.font = "20px Georgia";
   ctx.textAlign = 'left';
-  Object.values(state.entities).filter(({ type }) => type === 'fireball').forEach((fireball, i) =>
+  Object.values(state.entities).filter(({ type }) => type === 'player').forEach((fireball, i) =>
     ctx.fillText('X, Y: ' + fireball.props.x + ', ' + fireball.props.y, 20, 20 + 40 * i)
   );
 };

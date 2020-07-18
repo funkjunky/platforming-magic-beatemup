@@ -1,8 +1,7 @@
 import soundUpdate from 'sounds/update';
-import gameUpdate from 'gameLogic/update';
+import entitiesUpdate from 'gameLogic/entities/update';
 import { incrementGameTime } from 'gameLogic/gameTime';
 import controlsUpdate from 'controls/update';
-import aiUpdate from 'gameLogic/aiUpdate';
 
 export const createInterval = (globals) => {
   let lastTimestamp = Date.now();
@@ -13,8 +12,7 @@ export const createInterval = (globals) => {
     if (!globals.store.getState().pause) {
       globals.store.dispatch(incrementGameTime(dt));
       controlsUpdate(globals.gameControls);
-      aiUpdate(globals.store.getState, globals.store.dispatch);
-      gameUpdate(dt / 1000, globals.store.getState(), globals.store.dispatch);
+      entitiesUpdate(dt / 1000, globals.store.getState, globals.store.dispatch);
       soundUpdate(globals.store.getState(), globals.soundState);
     }
   }, 20);
