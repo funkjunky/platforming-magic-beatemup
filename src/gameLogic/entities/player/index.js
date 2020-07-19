@@ -6,55 +6,13 @@ import jump, * as Jump from '../states/jump';
 import dash, * as Dash from '../states/dash';
 import conjure from '../states/conjure';
 import { combineReducers } from '../combineReducers';
-import { doBoxesIntersect } from '../../doBoxesIntersect';
 import Block from '../block';
-import Fireball from '../fireball';
-import AoeEffect from '../aoeEffect';
+
+import collidesWith from './collidesWith';
 
 const { jumping, falling, grounded } = Jump.States;
 const { dashing } = Dash.States;
 const { pushingLeft, pushingRight, stopping } = Movement.States;
-
-const handleFireballCollision = (player, fireball, dispatch) => {
-  console.log('player collided with fireball: ', player.id, fireball.id, dispatch);
-};
-
-const handleAoeEffectCollision = (player, aoeEffect, dispatch) => {
-  console.log('player collided with aoeEffect: ', player.id, aoeEffect.id, dispatch);
-};
-
-const howPlayerBlock = (player, { props }) => {
-  const { top, bottom, left, right } = playerDefinition.boundingBoxes(player);
-  if (doBoxesIntersect(props, top)) {
-    return { top };
-  }
-  if (doBoxesIntersect(props, bottom)) {
-    return { bottom };
-  }
-  if (doBoxesIntersect(props, right)) {
-    return { right };
-  }
-  if (doBoxesIntersect(props, left)) {
-    return { left };
-  }
-};
-
-const handleCollisionPlayerBlock = (dispatch, entity, { props }, how) => {
-  if (how.top) {
-    dispatch(updateProps({ entity, newProps: { y: props.y + props.height, vy: 0 } }));
-  }
-  // Note: I'm not sure if this is a good practice...
-  //      I was hoping to only use the collision info to resolve
-  if (how.bottom && entity.states.jump[falling]) {
-    dispatch(updateProps({ entity, newProps: { y: props.y - entity.props.height + 1, vy: 0 } }));
-  }
-  if (how.right) {
-    dispatch(updateProps({ entity, newProps: { x: props.x - entity.props.width, vx: 0 } }));
-  }
-  if (how.left) {
-    dispatch(updateProps({ entity, newProps: { x: props.x + props.width, vx: 0 } }));
-  }
-};
 
 // TODO: these should all be in entity itsself. Maybe props? Maybe somewhere more static (attrs)????
 //        entity.state, entity.props, entity.attrs
@@ -81,20 +39,7 @@ const playerDefinition = {
   type: 'player',
   stateReducer: combineReducers({ movement, jump, dash, conjure }),
   boundingBoxes,
-  collidesWith: {
-    [Block.type]: {
-      how: howPlayerBlock,
-      handleCollision: handleCollisionPlayerBlock,
-    },
-    [Fireball.type]: {
-      how: (player, fireball) => {},
-      handleCollision: handleFireballCollision,
-    },
-    [AoeEffect.type]: {
-      how: (player, aoeEffect) => {},
-      handleCollision: (proximity) => handleAoeEffectCollision(proximity),
-    },
-  },
+  collidesWith,
   actionsFilter: action => (dispatch, getState) => {
     // TODO: can i go back to just payload.id? why is entity a property? Probably cant because of generators?
     const { jump } = getState().entities[action.payload.entity.id].states;

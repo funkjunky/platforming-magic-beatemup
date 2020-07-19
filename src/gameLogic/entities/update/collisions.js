@@ -1,13 +1,18 @@
-import { entityDefinitions, clearCollidedWith, pushCollidedWith } from '../index';
+import { entityDefinitions, clearCollidedWith, pushCollidedWith, noCollisionWithExpired } from '../index';
 
-export const updateCollisions = (entity, entities, dispatch) => {
+export const updateCollisions = (entity, state, dispatch) => {
   // clear old collisions
   dispatch(clearCollidedWith({ entity }));
+  // clear expired `noCollision` entries
+  Object.entries(entity.noCollisionWith).forEach(([id, until]) =>
+    // TODO: I shouldn't have to build up an entity... hmmmm
+    until > state.gameTime && dispatch(noCollisionWithExpired({ entity: { id } }))
+  );
 
   // detect new collisions
   const entityDefn = entityDefinitions[entity.type];
   if (entityDefn.collidesWith) {
-    Object.values(entities)
+    Object.values(state.entities)
       .filter(({ type }) => Object.keys(entityDefn.collidesWith).includes(type))
       //.forEach(b => how(a, b) ?> handleCollision) // all below code could be summarized to this
       .map(entityB => ([entityDefn.collidesWith[entityB.type].how(entity, entityB), entity, entityB]))

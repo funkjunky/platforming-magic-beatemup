@@ -1,9 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import produce from 'immer';
 
-// TODO: suspicious, because this file contains zero logic, until I add this
-import { doBoxesIntersect } from '../doBoxesIntersect';
-
 import player from './player';
 import fireball from './fireball';
 import aoeEffect from './aoeEffect';
@@ -26,6 +23,18 @@ export const createEntity = createAction('CREATE_ENTITY', ({ id, type, state, pr
     },
   }
 });
+
+// TODO: this file is getting large and has too many concepts in it
+export const noCollisionWithForDuration = ({ entity, noCollisionWith, duration }) =>
+  (dispatch, getState) =>
+    dispatch(noCollisionWithUntil({
+      entity,
+      noCollisionWith,
+      until: getState().gameTime + duration,
+    }));
+
+export const noCollisionWithUntil = createAction('NO_COLLISION_WITH_UNTIL');
+export const noCollisionWithExpired = createAction('NO_COLLISION_WITH_UNTIL');
 
 export const removeEntity = createAction('REMOVE_ENTITY');
 
@@ -70,6 +79,7 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
         states: produce(states, states => entityDefinitions[type].stateReducer?.(states, action)),
         props: { x, y, vx, vy, ...props },
         collidedWith: [],
+        noCollisionWith: {},
       };
       break;
     }
@@ -83,8 +93,21 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
       break;
 
     case pushCollidedWith.toString():
+      // TODO: provide a shortcut or defined variable for draftState[action.payload.entity.id]
       draftState[action.payload.entity.id].collidedWith.push(action.payload.collidedWith);
       break;
+
+    case noCollisionWithUntil.toString(): {
+      const { entity, noCollisionWith, until } = action.payload;
+      draftState[entity.id].noCollisionWithUntil[noCollisionWith.id] = until;
+      break;
+    }
+
+    case noCollisionWithExpired.toString(): {
+      const { entity, noCollisionWith } = action.payload;
+      delete draftState[entity.id].noCollisionWithUntil[noCollisionWith.id];
+      break;
+    }
 
     // props update action
     case updateProps.toString():
@@ -92,20 +115,11 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
       Object.entries(action.payload.newProps).forEach(([key, value]) => {
         draftState[action.payload.entity.id].props[key] = value;
       });
-      
+
       break;
 
-    // take damage is sent to a target or anyone in the area for the damage
     case takeDamage.toString():
-      // TODO: I should probably handle this in a separate function somewhere
-      if (action.payload.area) {
-        Object.values(draftState).forEach(entity =>
-          doBoxesIntersect(entity, action.payload.area) && entity.props.health
-            && (entity.props.health -= action.payload.dmg)
-        );
-      } else if (action.payload.target) {
-        draftState[action.payload.entity.id].props.health -= action.payload.dmg;
-      }
+      draftState[action.payload.entity.id].props.health -= action.payload.dmg;
       break;
 
     // Everything else with a payload is a state action!

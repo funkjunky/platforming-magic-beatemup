@@ -1,15 +1,28 @@
 import { combineReducers } from '../combineReducers';
 import movement, * as Movement from '../states/movement';
 import boundingBoxes from '../basicBoundingBoxes';
-import { updateProps } from '../index';
-import { doBoxesIntersect } from '../../doBoxesIntersect';
+import { updateProps, removeEntity } from '../index';
+import { doesSpawnIntersect } from 'gameLogic/doBoxesIntersect';
+
+import Player from '../player';
+import Doppleganger from '../Doppleganger';
 
 const { pushingRight } = Movement.States;
 
-const fireballDefinition = {
+const Fireball = {
   type: 'fireball',
   stateReducer: combineReducers({ movement }),
   boundingBoxes,
+  collidesWith: {
+    [Player.type]: {
+      how: doesSpawnIntersect,
+      handleCollision: (dispatch, entity) => dispatch(removeEntity({ entity })),
+    },
+    [Doppleganger.type]: {
+      how: doesSpawnIntersect,
+      handleCollision: (dispatch, entity) => dispatch(removeEntity({ entity })),
+    },
+  },
   updateProps: (entity, dt, dispatch) => {
     const { props: { x, y, speed }, states: { movement } } = entity;
 
@@ -17,14 +30,6 @@ const fireballDefinition = {
     const vx = movement[pushingRight] ? speed : -speed; //i dunno... is it in the conjure?
     dispatch(updateProps({ entity, newProps: { x: x + vx * dt, y } })); 
   },
-  updateWorld: (self, state, dt, dispatch) => {
-    // TODO: too separated from the logic in fireball generator...
-    Object.values(state.entities).forEach(entity =>
-      entity.id != self.id
-      && doBoxesIntersect(self, entity)
-      && dispatch(updateProps({ entity: self, newProps: { collidedWith: entity } }))
-    );
-  },
 };
 
-export default fireballDefinition;
+export default Fireball;
