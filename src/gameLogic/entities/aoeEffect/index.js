@@ -1,6 +1,8 @@
 import boundingBoxes from '../basicBoundingBoxes';
 import { updateProps } from '../index';
 
+//import { type as dopplegangerType } from '../doppleganger';
+
 // TODO: available props should be defined here...
 //  as well as perhaps how the entity can be interacted with.
 //  Like taking damage.
@@ -8,6 +10,11 @@ const aoeEffectDefinition = {
   type: 'aoeEffect',
   stateReducer: () => {},
   boundingBoxes,
+  collidesWith: {
+    ['doppleganger']: {
+      how: () => false,
+    },
+  },
   updateProps: (entity, dt, dispatch) => {
     dispatch(updateProps({ entity, newProps: { sTillTick: entity.props.sTillTick - dt } }));
   },

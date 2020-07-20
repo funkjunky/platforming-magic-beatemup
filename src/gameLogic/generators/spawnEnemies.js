@@ -19,7 +19,7 @@ const spawnLocations = [
 export default function* spawnEnemies() {
   for(const { x, y } of spawnLocations) {
     yield call(sleep, 2000);
-    yield put(createDoppleganger({ x, y, width: characterWidth, height: characterWidth }));
+    yield put(createDoppleganger({ x, y, width: characterWidth, height: characterWidth, maxHp: 12, hp: 12 }));
   }
 }
 

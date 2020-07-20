@@ -6,6 +6,7 @@ import { updateProps, takeDamage, noCollisionWithForDuration } from '../index';
 import Block from '../block';
 import Fireball from '../fireball';
 import AoeEffect from '../aoeEffect';
+
 import Player from './index';
 
 const collidesWith = {

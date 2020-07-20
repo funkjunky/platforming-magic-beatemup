@@ -42,6 +42,8 @@ async function firstLoad() {
       y: characterWidth,
       height: characterWidth,
       width: characterWidth,
+      maxHp: 24,
+      hp: 24,
     },
     type: 'player',
     id: player1.id,

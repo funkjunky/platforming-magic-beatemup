@@ -3,7 +3,7 @@ import { updateCollisions, resolveCollisions } from './collisions';
 
 const update = (dt, getState, dispatch) => {
   Object.values(getState().entities).forEach(entity => {
-    updateCollisions(entity, getState().entities, dispatch);
+    updateCollisions(entity, getState(), dispatch);
   });
   Object.values(getState().entities).forEach(entity => {
     resolveCollisions(entity, dispatch);

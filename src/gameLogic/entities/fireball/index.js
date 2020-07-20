@@ -1,11 +1,7 @@
 import { combineReducers } from '../combineReducers';
 import movement, * as Movement from '../states/movement';
 import boundingBoxes from '../basicBoundingBoxes';
-import { updateProps, removeEntity } from '../index';
-import { doesSpawnIntersect } from 'gameLogic/doBoxesIntersect';
-
-import Player from '../player';
-import Doppleganger from '../Doppleganger';
+import { updateProps } from '../index';
 
 const { pushingRight } = Movement.States;
 
@@ -13,22 +9,12 @@ const Fireball = {
   type: 'fireball',
   stateReducer: combineReducers({ movement }),
   boundingBoxes,
-  collidesWith: {
-    [Player.type]: {
-      how: doesSpawnIntersect,
-      handleCollision: (dispatch, entity) => dispatch(removeEntity({ entity })),
-    },
-    [Doppleganger.type]: {
-      how: doesSpawnIntersect,
-      handleCollision: (dispatch, entity) => dispatch(removeEntity({ entity })),
-    },
-  },
   updateProps: (entity, dt, dispatch) => {
     const { props: { x, y, speed }, states: { movement } } = entity;
 
     // TODO: just awful logic
     const vx = movement[pushingRight] ? speed : -speed; //i dunno... is it in the conjure?
-    dispatch(updateProps({ entity, newProps: { x: x + vx * dt, y } })); 
+    dispatch(updateProps({ entity, newProps: { x: x + vx * dt, y } }));
   },
 };
 

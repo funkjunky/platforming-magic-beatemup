@@ -7,14 +7,15 @@ import aoeEffect from './aoeEffect';
 import doppleganger from './doppleganger';
 import block from './block';
 
+// TODO: abstract out the hp part, as like "createDamagableEntity", with a required hp prop
 let _id= 0;
-export const createEntity = createAction('CREATE_ENTITY', ({ id, type, state, props }) => {
+export const createEntity = createAction('CREATE_ENTITY', ({ id, type, states, props }) => {
   const processedId = id || type + ++_id;
   return {
     payload: {
       id: processedId,
       type,
-      state,
+      states,
       props,
     },
     // see: redux-meta-selector middleware
@@ -34,7 +35,7 @@ export const noCollisionWithForDuration = ({ entity, noCollisionWith, duration }
     }));
 
 export const noCollisionWithUntil = createAction('NO_COLLISION_WITH_UNTIL');
-export const noCollisionWithExpired = createAction('NO_COLLISION_WITH_UNTIL');
+export const noCollisionWithExpired = createAction('NO_COLLISION_WITH_EXPIRED');
 
 export const removeEntity = createAction('REMOVE_ENTITY');
 
@@ -99,13 +100,13 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
 
     case noCollisionWithUntil.toString(): {
       const { entity, noCollisionWith, until } = action.payload;
-      draftState[entity.id].noCollisionWithUntil[noCollisionWith.id] = until;
+      draftState[entity.id].noCollisionWith[noCollisionWith.id] = until;
       break;
     }
 
     case noCollisionWithExpired.toString(): {
       const { entity, noCollisionWith } = action.payload;
-      delete draftState[entity.id].noCollisionWithUntil[noCollisionWith.id];
+      delete draftState[entity.id].noCollisionWith[noCollisionWith.id];
       break;
     }
 

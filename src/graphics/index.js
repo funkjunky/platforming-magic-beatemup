@@ -80,8 +80,41 @@ const getGetSprite = now => (state, msPerFrame, sprites) => {
 };
 
 export default (ctx, state, sprites) => {
+  const drawHealth = entity => {
+    // TODO: This function is too many things... perhaps move constants out?
+    // Or provide additional functions?
+    let { hp, maxHp } = entity;
+    const hpMarginBottom = 5;
+    const hpSquareMargin = 5;
+    const hpHeight = 8;
+    const perHpWidth = 2;
+    const hpPerSquare = 4;
+    const widthPerSquare = perHpWidth * hpPerSquare;
+    let i = 0;
+    const y = entity.y - hpMarginBottom - hpHeight;
+    while (maxHp > 0) {
+      const maxHpWidth = Math.min(maxHp, hpPerSquare) * perHpWidth;
+      const hpWidth = Math.min(hp, hpPerSquare) * perHpWidth;
+      const x = entity.x + (hpSquareMargin + widthPerSquare) * i;
+
+      ctx.strokeStyle = c.orange;
+      ctx.fillStyle = c.green;
+      ctx.fillRect(x, y, hpWidth, hpHeight);
+      ctx.strokeRect(x, y, maxHpWidth, hpHeight);
+      for (var k = Math.min(hp, hpPerSquare); k != 0; --k) {
+        ctx.strokeStyle = c.darkGreen;
+        ctx.strokeRect(x + perHpWidth * k, y, 1, hpHeight);
+      }
+
+      maxHp -= hpPerSquare;
+      hp -= hpPerSquare;
+      ++i;
+    }
+  };
+
   const drawPerson = entity => {
     ctx.drawImage(getPlayerSprite(sprites, entity, window.store.getState().gameTime), entity.props.x, entity.props.y);
+    drawHealth(entity);
   };
   const drawFireball = entity => {
     ctx.fillStyle = c.red;
