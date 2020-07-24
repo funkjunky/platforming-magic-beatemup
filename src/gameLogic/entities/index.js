@@ -86,6 +86,7 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
     }
 
     case removeEntity.toString():
+      // TODO: use action.payload.entity.id to be consistent
       delete draftState[action.payload.id];
       break;
 
@@ -120,7 +121,7 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
       break;
 
     case takeDamage.toString():
-      draftState[action.payload.entity.id].props.health -= action.payload.dmg;
+      draftState[action.payload.entity.id].props.hp -= action.payload.dmg;
       break;
 
     // Everything else with a payload is a state action!

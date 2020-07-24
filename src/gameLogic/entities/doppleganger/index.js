@@ -26,7 +26,6 @@ const dopplegangerDefinition = {
     }
 
     if (entity.states.jump[Jump.grounded] && Math.random() > 0.99) {
-      // TODO: I need to provide the selector, NOT the entity itsself
       dispatch(castFireball(getEntity));
     }
   },

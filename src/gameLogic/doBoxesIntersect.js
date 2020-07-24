@@ -16,4 +16,7 @@ export const doEntitiesIntersect = (a, b) => doBoxesIntersect(a.props, b.props);
 
 // We don't count the intersection if the spawn is a child of the entity
 // ie. a player casts a fireball, we don't want that player to be hit by their own fireball
-export const doesSpawnIntersect = (spawn, entity) => doEntitiesIntersect(spawn, entity) && spawn.owner.id !== entity.id;
+export const doesSpawnIntersect = (spawn, entity) =>
+  Math.abs(spawn.props.x - entity.props.x) < spawn.props.radius
+  && Math.abs(spawn.props.y - entity.props.y) < spawn.props.radius
+  && spawn.props.owner.id !== entity.id;

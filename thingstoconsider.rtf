@@ -92,19 +92,38 @@
  	*- add clause so you cant run into your own fireball or explosion\
 	*- show healthbar at top left as big rectangle [add divisions for every 4hp]\
 	*- add the divisions per 1hp\
-	[-] test dopplegangers can get hit by player fireballs and players can get hit by doppleganger fireballs\
+	[*-] test dopplegangers can get hit by player fireballs and players can get hit by doppleganger fireballs\
 \
- - add sword swinging, including collision and dmg [sword swing on x, move fireball to y]\
- - Do I have a game yet?\
+ - add sword swinging, including collision and dmg\
+	- move fireball to y button\
+	- dispatch action to attack, probably a generator\
+	- action to attack should change attacking state [windingup, swinging [immediately do dmg], recovery, ready]\
+	- wire up animation frames\
+	- play a sound\
+	- add collision\
+		~ in collision player<>doppleganger\
+		- if player state is swinging, then check a box in front of the player and mark with \'93attack\'94\
+		- deal dmg to dopple ganger\
+	- add the opposite collision for dopple ganger and let them attack.\
+\
+ - spawn a new dopple ganger every 5 seconds or so\'85\
+\
+ - Do I have a game yet? What would make this a fun game? stats? better controls? More obvious health or impacts??\
 \
  - Clean up entities/index before final push\
 \
 \'97 \'97\
 \
+\'97 fix/jumping-falling-bugs\
+\
  - DRYifiy the entityDefinition function calls\
 	> 
 \f3\fs22 \cf7 \cb8 \CocoaLigature0 definition\cf9 (entity).\cf7 updateState\cf9 (\cf7 getState\cf9 (), dispatch);
 \f0\fs28 \cf0 \cb1 \CocoaLigature1 \
+ - fix falling through floor bug\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0  - infinite jump bug\
+ - pulsing of explosion stopped. Get it to pulse on damage?? perhaps using a state?\
 \
 \'97 feat/better-development\
 \
@@ -123,7 +142,8 @@
  - On the bottom add a connected plot graph of the number of active entities [polled every 100th of a second]\
 	- create the function that takes the game store and return a connected component\
 \
- - HMR for generators\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0  - HMR for generators\
 \
  - maybe don\'92t use folders for single files, because devtools sucks and only shows index?\
 \

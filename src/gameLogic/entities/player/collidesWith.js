@@ -46,16 +46,14 @@ const collidesWith = {
   [Fireball.type]: {
     how: (player, fireball) => doesSpawnIntersect(fireball, player),
     handleCollision: (dispatch, entity, fireball) => {
-      if (entity.id !== fireball.props.owner.id) {
-        dispatch(takeDamage({ entity, dmg: fireball.props.dmg }));
-        // TODO: add knockback and stun
-      }
+      dispatch(takeDamage({ entity, dmg: fireball.props.dmg }));
+      // TODO: add knockback and stun
     },
   },
   [AoeEffect.type]: {
     how: doEntitiesIntersect,
     handleCollision: (dispatch, entity, aoeEffect) => {
-      dispatch(takeDamage({ entity, dmg: aoeEffect.props.dmg }));
+      dispatch(takeDamage({ entity, dmg: aoeEffect.props.dmgPerTick }));
       dispatch(noCollisionWithForDuration({ entity, noCollisionWith: aoeEffect, duration: 1000 }));
     },
   },

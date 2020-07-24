@@ -5,6 +5,8 @@ import { createEntity, removeEntity } from 'gameLogic/entities';
 import { conjuring, casting, recovering, ready } from 'gameLogic/entities/states/conjure';
 import { pushingRight } from 'gameLogic/entities/states/movement';
 
+// import { handleFireballDeath } from 'gameLogic/generators/fireball';
+
 // TODO: the currying on redux thunk is awkward... perhaps just better formatting, or use generators?
 // TODO:  when to call entity, or when to pass it as the function... it's hard to tell... clean up somehow??
 //Curry is necessary for react-redux later. connect shorthand
@@ -17,11 +19,16 @@ export default function* fireball(owner) {
   yield put(pushingRight({ entity: fireball() }));
   const duration = 3000;
   yield call(waitForTrigger, fireball, duration);
-  yield put(recovering({ entity: owner() }));
 
-  const { props: { x, y } } = fireball();
-  yield put(removeEntity(fireball()));
-  yield fork(fireballExplosion, { x, y, width: 50, height: 50, dmgPerTick: 2 });
+  if (fireball()) {
+    // TODO: figure out how to call handleFireballDeath() [yield, frk and put. can't dispatch] should be able to also dispatch, perhaps put generator
+    //      If needed fork redux yield effect. It isn't being maintained anymore anyways, may as well take ownership, lol
+    const { props: { x, y } } = fireball();
+    yield fork(fireballExplosion, { x, y, width: 50, height: 50, dmgPerTick: 2 });
+    yield put(removeEntity(fireball()));
+  }
+  // TODO: put in function as "death of fireball" Shared with collidesWith fireball
+  yield put(recovering({ entity: owner() }));
 
   let msTillRecovery = 500;
   // TODO: deal with warning about generator... I should figure out how to get this to work as a thunk
@@ -35,7 +42,7 @@ function* waitForTrigger(fireball, duration) {
   let msTillFinished = duration;
   // TODO: deal with warning about generator... I should figure out how to get this to work as a thunk
   yield put(addTick(function* _tick(dt) {
-    return (msTillFinished -= dt) <= 0 || fireball().props.collidedWith;
+    return (msTillFinished -= dt) <= 0 || !fireball();
   }));
 }
 
@@ -51,7 +58,7 @@ function* conjureFireball(owner, props) {
   return yield put(createFireball({ owner: { id }, x: x + width / 2, y, ...props }));
 }
 
-function* fireballExplosion({ x, y, width, height, dmgPerTick }) {
+export function* fireballExplosion({ x, y, width, height, dmgPerTick }) {
   // TODO: sTillTick should be automatically defined in creation ALSO it should be a parameter, NOT a prop
   const explosion = yield put(createExplosion({ x, y, width, height, dmgPerTick, sPerTick: 0.5, sTillTick: 0.5 }));
   let msTillFinished = 2000;
