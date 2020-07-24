@@ -5,6 +5,7 @@ import movement, * as Movement from '../states/movement';
 import jump, * as Jump from '../states/jump';
 import dash, * as Dash from '../states/dash';
 import conjure from '../states/conjure';
+import attack from '../states/attack';
 import { combineReducers } from '../combineReducers';
 import Block from '../block';
 
@@ -35,7 +36,7 @@ const jumpingVel = 250;
 const jumpingDec = 200;
 const playerDefinition = {
   type: 'player',
-  stateReducer: combineReducers({ movement, jump, dash, conjure }),
+  stateReducer: combineReducers({ attack, movement, jump, dash, conjure }),
   boundingBoxes,
   actionsFilter: action => (dispatch, getState) => {
     // TODO: can i go back to just payload.id? why is entity a property? Probably cant because of generators?

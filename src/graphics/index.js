@@ -2,11 +2,13 @@ import * as Jump from 'gameLogic/entities/states/jump';
 import * as Movement from 'gameLogic/entities/states/movement';
 import * as Dash from 'gameLogic/entities/states/dash';
 import * as Conjure from 'gameLogic/entities/states/conjure';
+import * as Attack from 'gameLogic/entities/states/attack';
 
 const { jumping, falling, grounded } = Jump.States;
 const { pushingLeft, pushingRight, stopping } = Movement.States;
 const { dashing } = Dash.States;
-const { conjuring, casting, recovering, ready } = Conjure.States;
+const { conjuring, casting, recovering } = Conjure.States;
+const { windingUp, swinging } = Attack.States;
 
 const c = {
   purple:     '#b35ce5',
@@ -26,11 +28,18 @@ const getDir = movement => {
 const groundedDuration = 300;
 const getPlayerSprite = (sprites, entity, now) => {
   // TODO: this code is too dense. Find a way to abstract out pieces to remove context and simplify it
-  const { jump, movement, dash, conjure } = entity.states;
+  const { attack, jump, movement, dash, conjure } = entity.states;
   const dir = getDir(movement);
   const getSprite = getGetSprite(now);
-  if (conjure[conjuring]) {
-    // TODO: name sprites the same as their states
+  if (attack[windingUp]) {
+    // TODO: name sprites the same as their states, so this is greatly streamlined
+    //      ie. this would be `attack.windingUp`
+    return sprites[dir].slash.windup[0];
+  } else if (attack[swinging]) {
+    return sprites[dir].slash.inmotion[0];
+  } else if (attack[Attack.States.recovery]) {
+    return sprites[dir].slash.recover[0];
+  } else if (conjure[conjuring]) {
     return sprites[dir].spell.chargingup[0];
   } else if (conjure[casting]) {
     return sprites[dir].spell.casting[0];
@@ -40,7 +49,6 @@ const getPlayerSprite = (sprites, entity, now) => {
     return sprites[dir].jumping.raising[0];
   } else if (jump[falling]) {
     return sprites[dir].jumping.falling[0];
-
   } else if (dash[dashing]) {
     return sprites[dir].dashing[0];
 

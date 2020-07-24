@@ -4,6 +4,7 @@ import { pushingLeft, pushingRight, stopping } from 'gameLogic/entities/states/m
 import { dashing, notdashing } from 'gameLogic/entities/states/dash';
 import { jumping, falling } from 'gameLogic/entities/states/jump';
 import castFireball from 'gameLogic/generators/fireball';
+import { swingSword } from 'gameLogic/generators/sword';
 import Player from 'gameLogic/entities/player';
 import { togglePause } from 'gameLogic/pause';
 
@@ -40,6 +41,16 @@ export const setGameControls = (Controls, controllerMap, dispatch, getPlayer1) =
     press: () => {},
     // TODO: how do i use filterActions with generators? ie. only shoot while grounded
     release: () => dispatch(castFireball(getPlayer1)),
+    // TODO: add charging to cast, release to cancel.
+  });
+
+  Controls.on({
+    button: controllerMap.swing,
+    press: () => {},
+    // TODO: how do i use filterActions with generators? ie. only shoot while grounded
+    // TODO: it'd be cool if press started wind up, and release let the swing go.
+    //      while winding up and holding it, you're slower, BUT it means you can release your attack whenever you want.
+    release: () => dispatch(swingSword(getPlayer1)),
     // TODO: add charging to cast, release to cancel.
   });
 

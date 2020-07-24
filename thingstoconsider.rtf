@@ -95,10 +95,13 @@
 	[*-] test dopplegangers can get hit by player fireballs and players can get hit by doppleganger fireballs\
 \
  - add sword swinging, including collision and dmg\
-	- move fireball to y button\
-	- dispatch action to attack, probably a generator\
-	- action to attack should change attacking state [windingup, swinging [immediately do dmg], recovery, ready]\
-	- wire up animation frames\
+	*- move fireball to y button\
+	*- dispatch action to attack, probably a generator\
+	*- action to attack should change attacking state [windingup, swinging [immediately do dmg], recovery, ready]\
+	*- wire up animation frames\
+	- add, that if either recovering from a spell or an attack, then cant attack or cast\
+		- action filter should take an actionCreator and it\'92s arguments, instead of the action.\
+			~ this allows it to work with thunks and generators [through func.name]\
 	- play a sound\
 	- add collision\
 		~ in collision player<>doppleganger\
