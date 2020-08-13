@@ -1,4 +1,4 @@
-import { put, call } from 'redux-yield-effect/lib/effects';
+import { put, call } from 'rye-middleware/lib/effects';
 import { addTick } from 'effect-tick';
 import { createEntity } from 'gameLogic/entities';
 import { characterWidth } from '../../loadResources';

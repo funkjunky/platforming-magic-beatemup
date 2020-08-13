@@ -3,7 +3,7 @@ import 'end-polyFills';
 
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import { createYieldEffectMiddleware } from 'redux-yield-effect';
+import { createYieldEffectMiddleware } from 'rye-middleware';
 import { tickMiddleware, resumeTicks } from 'effect-tick';
 import metaSelector from 'redux-meta-selector';
 

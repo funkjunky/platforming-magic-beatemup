@@ -1,4 +1,4 @@
-import { call, put } from 'redux-yield-effect/lib/effects';
+import { call, put } from 'rye-middleware/lib/effects';
 import { addTick } from 'effect-tick';
 import { windingUp, swinging, recovering, ready } from 'gameLogic/entities/states/attack';
 

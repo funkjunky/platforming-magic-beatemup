@@ -1,4 +1,4 @@
-import { call, put, fork } from 'redux-yield-effect/lib/effects';
+import { call, put, fork } from 'rye-middleware/lib/effects';
 import { addTick } from 'effect-tick';
 
 import { createEntity, removeEntity } from 'gameLogic/entities';

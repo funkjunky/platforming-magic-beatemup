@@ -1,4 +1,4 @@
-import { put, call } from 'redux-yield-effect/lib/effects';
+import { put, call } from 'rye-middleware/lib/effects';
 
 import { pushingLeft, pushingRight, stopping } from 'gameLogic/entities/states/movement';
 import { sleep } from './spawnEnemies'; //TODO: sleep should exist somewhere else... probably a library
