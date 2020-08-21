@@ -22,7 +22,7 @@ const dopplegangerDefinition = {
 
     //this is dumb, but every LOOP there' a 1/100 chance of jumping
     if (entity.states.jump[Jump.grounded] && Math.random() > 0.995) {
-      dispatch(dopplegangerDefinition.actionsFilter(jumping({ entity })));
+      dispatch(dopplegangerDefinition.actionsFilter(jumping, { entity }));
     }
 
     if (entity.states.jump[Jump.grounded] && Math.random() > 0.99) {

@@ -1,5 +1,6 @@
 import { call, put, fork } from 'rye-middleware/lib/effects';
 import { addTick } from 'effect-tick';
+import { sleep, waitForTrigger } from './tick';
 
 import { createEntity, removeEntity } from 'gameLogic/entities';
 import { conjuring, casting, recovering, ready } from 'gameLogic/entities/states/conjure';
@@ -17,8 +18,7 @@ export default function* fireball(owner) {
   yield put(casting({ entity: owner(), params: { type: 'fireball' } }));
   // TODO: Piggy backing on the movement state... but I'll still need to write the update for fireball, to move it forward.
   yield put(pushingRight({ entity: fireball() }));
-  const duration = 3000;
-  yield call(waitForTrigger, fireball, duration);
+  yield call(waitForTrigger, () => !fireball(), 3000);
 
   if (fireball()) {
     // TODO: figure out how to call handleFireballDeath() [yield, frk and put. can't dispatch] should be able to also dispatch, perhaps put generator
@@ -30,30 +30,16 @@ export default function* fireball(owner) {
   // TODO: put in function as "death of fireball" Shared with collidesWith fireball
   yield put(recovering({ entity: owner() }));
 
-  let msTillRecovery = 500;
-  // TODO: deal with warning about generator... I should figure out how to get this to work as a thunk
-  yield put(addTick(function* _tick(dt) {
-    return (msTillRecovery -= dt) <= 0;
-  }));
+  yield put(sleep(500));
   yield put(ready({ entity: owner() }));
 }
 
-function* waitForTrigger(fireball, duration) {
-  let msTillFinished = duration;
-  // TODO: deal with warning about generator... I should figure out how to get this to work as a thunk
-  yield put(addTick(function* _tick(dt) {
-    return (msTillFinished -= dt) <= 0 || !fireball();
-  }));
-}
 
 function* conjureFireball(owner, props) {
   // TODO: fireball is shared with createFireball... DRY
   yield put(conjuring({ entity: owner(), params: { type: 'fireball' } }));
-  let msTillConjured = 1000;
-  // TODO: deal with warning about generator... I should figure out how to get this to work as a thunk
-  yield put(addTick(function* _tick(dt) {
-    return (msTillConjured -= dt) <= 0;
-  }));
+  yield put(sleep(1000));
+
   const { props: { x, y, width }, id } = owner();
   return yield put(createFireball({ owner: { id }, x: x + width / 2, y, ...props }));
 }
@@ -64,7 +50,7 @@ export function* fireballExplosion({ x, y, width, height, dmgPerTick }) {
   let msTillFinished = 2000;
   // TODO: should the lifespan ONLY exist here in the generator?
   // Also there's no indication when it would disappear according to either the state or the props.
-  yield put(addTick(function* _tick(dt) {
+  yield put(addTick(function _tick(dt) {
     return (msTillFinished -= dt) <= 0;
   }));
   yield put(removeEntity(explosion()));

@@ -1,15 +1,10 @@
 import { call, put } from 'rye-middleware/lib/effects';
-import { addTick } from 'effect-tick';
+// lol effect-tick should be renamed to tick-middleware or tick-generator-middleware
+import { sleep } from './tick';
+
 import { windingUp, swinging, recovering, ready } from 'gameLogic/entities/states/attack';
 
-// TODO: create an abstraction that this and fireball can use.
-function* sleep(ms) {
-  // TODO: deal with warning about generator... I should figure out how to get this to work as a thunk
-  yield put(addTick(function* _tick(dt) {
-    return (ms -= dt) <= 0
-  }));
-}
-
+// TODO: filename should be the same as the function name
 export function* swingSword(entity) {
   yield put(windingUp({ entity: entity() }));
   yield call(sleep, 200);

@@ -1,13 +1,13 @@
 {\rtf1\ansi\ansicpg1252\cocoartf2513
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset77 ZapfDingbatsITC;\f2\fnil\fcharset0 LucidaGrande;
-\f3\fnil\fcharset0 Menlo-Regular;\f4\fswiss\fcharset0 Helvetica-Bold;\f5\froman\fcharset0 Times-Roman;
-}
+\f3\fnil\fcharset0 Menlo-Regular;\f4\fswiss\fcharset0 ArialMT;\f5\fswiss\fcharset0 Helvetica-Bold;
+\f6\froman\fcharset0 Times-Roman;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;\red82\green0\blue135;
-\red220\green0\blue5;\red75\green0\blue1;\red204\green116\blue6;\red15\green15\blue15;\red174\green174\blue174;
-\red0\green0\blue233;}
+\red220\green0\blue5;\red75\green0\blue1;\red26\green26\blue26;\red204\green116\blue6;\red15\green15\blue15;
+\red174\green174\blue174;\red0\green0\blue233;}
 {\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c100000\c100000\c100000;\cssrgb\c40000\c0\c60000;
-\cssrgb\c90000\c0\c0;\cspthree\c33912\c4843\c2525;\cspthree\c79891\c54372\c18683;\cspthree\c7060\c7058\c7060;\cspthree\c73731\c73721\c73733;
-\cssrgb\c0\c0\c93333;}
+\cssrgb\c90000\c0\c0;\cspthree\c33912\c4843\c2525;\cssrgb\c13333\c13333\c13333;\cspthree\c79891\c54372\c18683;\cspthree\c7060\c7058\c7060;
+\cspthree\c73731\c73721\c73733;\cssrgb\c0\c0\c93333;}
 \margl1440\margr1440\vieww11980\viewh9720\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
@@ -99,17 +99,84 @@
 	*- dispatch action to attack, probably a generator\
 	*- action to attack should change attacking state [windingup, swinging [immediately do dmg], recovery, ready]\
 	*- wire up animation frames\
+\
+ ~~ update redux yield effect ~~\
+ \
+ *- remove lodash, and auto fix audit, an any other obvious cleanup, tests must pass\
+ - add kill switch to library ~ dispatch action \{ type: \'92setGeneratorToDone\'92, id: <id returned by dispatching generator> \}\
+\
+	*- add actionCreator `setGeneratorToDone()` (generates the id) \{ type, id \}\
+	*- when a generator is dispatched, return setGeneratorToDone() and pass the value on return, instead of the promise.\
+	*- in the middleware, IF setGeenratorToDone, then delete id from `runningGenerators`\
+	*- before calling next, check runningGenerators, if not available, then return generator.return, to end the generator. [no arg, so as if calling next, but won\'92t run generator, will just return prev result]\
+\
+	*- separate yieldEffectMiddleware into it\'92s own function\
+		*- also abstract out the ryeGenerators through currying\
+	*- separate effelctGeneratorProcessor into it\'92s own function\
+	*- write tests to cover all of this\
+		*- unit test yieldEffectMiddleware that is returned\
+			*- returns action if no rye meta \
+			*- delete ryeGenerator, as a side effect if action was sent\
+			*- mock effectGeneratorProcessor and ensure sideeffect of adding it to ryeGenerators and that it returns the action [returned by my mock of effectGenProcessor]\
+ *- DONE Rye Middleware!\
+\
+ *- update README and package.json, giving FULL credit to original author\
+ *- publish under a new name \'93Rye\'94 or \'93redux-rye\'94 [1.0.0]\
+ *- use new library in game.\
+ *- `npm audit fix \'97force`, ensure tests pass, release new minor version\
+\
+~~~~~~~~~~~~~~~~~~~~~~~~\
+\
+Kill switch on generators:	[cancel jump, conjure, seekFireball, etc.]\
+ *- When dispatched, return function to kill the generator, or an id?\
+ *- next time the generator is looped, before calling next we check if we should stop\
+\
+*- check diff and see where I\'92m at\'85 Try and get things compiling again.\
+\
+	- change actionFilters to allowedToDispatch.\
+		*- create basic list of if satements, that return, to not allow the action\
+		*- copy -vel logic to jump generator\
+		*- add quick fall logic to generator [if stop jumping less than 1 second, then set vy to 0]\
+		*- add jump shortly after falling. (use 500ms at first to test, then use 100ms once working)\
+		- use redux thunks, instead of generators, because of new return of generators\
+			- replace all the generators for tick with thunks\
+			- get things compiled\
+\
+		- replace jump action with jump generator\
+		- replace dash action with dash generator\
+\
+		- have i added redux thunks? If not, figure it out!! [I have full control!]\
+\
+		- Get everything works\
+\
+		- add cancelling of fireball, if jump or dash and ensure it works.\
+(if not, add more points to get it working)\
+\
 	- add, that if either recovering from a spell or an attack, then cant attack or cast\
-		- action filter should take an actionCreator and it\'92s arguments, instead of the action.\
-			~ this allows it to work with thunks and generators [through func.name]\
-	- play a sound\
+	- play a sound on collision of fireball\
 	- add collision\
 		~ in collision player<>doppleganger\
 		- if player state is swinging, then check a box in front of the player and mark with \'93attack\'94\
 		- deal dmg to dopple ganger\
+		- add sound effect for collision\
 	- add the opposite collision for dopple ganger and let them attack.\
 \
  - spawn a new dopple ganger every 5 seconds or so\'85\
+\
+~~ meditate on game and think of how to make it punch! Be awesome!\
+ 
+\f4\fs32 \cf7 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec7 \uc0\u9829  
+\f0\fs28 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 manueverability?\
+\pard\pardeftab720\partightenfactor0
+
+\f4\fs32 \cf7 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec7  \uc0\u9829  high risk, high reward with casting spells [big impact spells???]\
+ \uc0\u9829  different attacks collision boxes\
+ \uc0\u9829  charging up spells and attacks, for control over damage or range, or area, or for increased effects, like stunning??
+\f0\fs28 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
 \
  - Do I have a game yet? What would make this a fun game? stats? better controls? More obvious health or impacts??\
 \
@@ -117,13 +184,19 @@
 \
 \'97 \'97\
 \
+Question: Cancel generator??? What\'92d be a nice way to achieve this??\
+	ie. cancel jump, because state is falling\
+	ie. cancel conjurefireball, because state is moving\
+	ie. cancel seekfireball, because collided with a target\
+\
 \'97 fix/jumping-falling-bugs\
 \
  - DRYifiy the entityDefinition function calls\
 	> 
-\f3\fs22 \cf7 \cb8 \CocoaLigature0 definition\cf9 (entity).\cf7 updateState\cf9 (\cf7 getState\cf9 (), dispatch);
+\f3\fs22 \cf8 \cb9 \CocoaLigature0 definition\cf10 (entity).\cf8 updateState\cf10 (\cf8 getState\cf10 (), dispatch);
 \f0\fs28 \cf0 \cb1 \CocoaLigature1 \
- - fix falling through floor bug\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0  - fix falling through floor bug\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0  - infinite jump bug\
  - pulsing of explosion stopped. Get it to pulse on damage?? perhaps using a state?\
@@ -229,12 +302,12 @@
 \
  - arbitrary graphics animations, like running\
  	- draw of running will use a singleton 
-\f4\b member of the entity 
+\f5\b member of the entity 
 \f0\b0 for the frame state.\
 	- that singleton will have it\'92s state reset on idle\
 	- I should do all arbitrary graphic states using singletons.\
 	- 
-\f4\b member of the entity
+\f5\b member of the entity
 \f0\b0  will have their own set of singletons \'93graphicsSingletons\'94\
 \
 	entity.draw,\
@@ -318,8 +391,8 @@ Conclusion:\
 - fix devtools warnings. Likely broken extensions [Chrome Bug]\
 \pard\pardeftab720\sl280\partightenfactor0
 {\field{\*\fldinst{HYPERLINK "https://bugs.chromium.org/p/chromium/issues/detail?id=974543"}}{\fldrslt 
-\f5\fs24 \cf10 \expnd0\expndtw0\kerning0
-\ul \ulc10 https://bugs.chromium.org/p/chromium/issues/detail?id=974543}}\
+\f6\fs24 \cf11 \expnd0\expndtw0\kerning0
+\ul \ulc11 https://bugs.chromium.org/p/chromium/issues/detail?id=974543}}\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf0 \
 /**** old ideas ****/\

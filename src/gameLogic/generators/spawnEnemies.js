@@ -1,13 +1,7 @@
 import { put, call } from 'rye-middleware/lib/effects';
-import { addTick } from 'effect-tick';
 import { createEntity } from 'gameLogic/entities';
 import { characterWidth } from '../../loadResources';
-
-export function* sleep(ms) {
-  yield put(addTick(function* _tick(dt) {
-    return (ms -= dt) <= 0;
-  }));
-}
+import { sleep } from './tick';
 
 const spawnLocations = [
   { x: 30, y: 300 },

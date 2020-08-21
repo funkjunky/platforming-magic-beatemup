@@ -4,10 +4,13 @@ import boundingBoxes from '../basicBoundingBoxes';
 import movement, * as Movement from '../states/movement';
 import jump, * as Jump from '../states/jump';
 import dash, * as Dash from '../states/dash';
-import conjure from '../states/conjure';
-import attack from '../states/attack';
+import conjure, * as Conjure from '../states/conjure';
+import attack, * as Attack from '../states/attack';
 import { combineReducers } from '../combineReducers';
 import Block from '../block';
+import { jump as jumpGen } from 'gameLogic/generators/jump'; 
+import { fireball } from 'gameLogic/generators/fireball'; 
+import { swingSword } from 'gameLogic/generators/sword'; 
 
 const { jumping, falling, grounded } = Jump.States;
 const { dashing } = Dash.States;
@@ -32,39 +35,21 @@ const dashingVel = 400;
 
 const fallingAcc = 400;
 const terminalVel = 600;
-const jumpingVel = 250;
 const jumpingDec = 200;
 const playerDefinition = {
   type: 'player',
   stateReducer: combineReducers({ attack, movement, jump, dash, conjure }),
   boundingBoxes,
-  actionsFilter: action => (dispatch, getState) => {
-    // TODO: can i go back to just payload.id? why is entity a property? Probably cant because of generators?
-    const { jump } = getState().entities[action.payload.entity.id].states;
-    if (action.type === Jump.jumping.toString()
-      && !jump.grounded
-      // TODO: abstract out getState.gameTime
-      // This is to say, if you recentl started falling, you can STILL jump
-      && !(jump.falling && getState().gameTime - jump.falling.createdAt < 100)
-    ) return;
-    // TODO: this is just to stop action spam... I need a more generic solution for thi.
-    else if (action.type === Jump.falling.toString() && getState().entities[action.payload.entity.id].states.jump.falling) return;
+  allowedToDispatch: (type, entity) => {
+    if (type === fireball.name && !entity.states.attack[Conjure.States.ready])   return false;
 
-    // TODO: this places sucks... maybe turn jump into a thunk
-    if (action.type === Jump.jumping.toString()) dispatch(updateProps({ entity: action.payload.entity, newProps: { vy: -jumpingVel } }));
+    if (type === swingSword.name && !entity.states.attack[Attack.States.ready])  return false;
 
-    // can only dash while grounded
-    if (action.type === dashing.toString() && !jump.grounded) return;
+    if (type === dashing.toString() && !entity.states.jump[grounded]) return false;
 
-    // TODO: this also sucks...
-    // If falling and current is jumping AND it's less than 1 second old, then drop vy to 0, instantly start falling
-    if (
-      action.type === Jump.falling.toString()
-      && getState().entities[action.payload.entity.id].states.jump.jumping
-      && getState().gameTime - getState().entities[action.payload.entity.id].states.jump.jumping.createdAt < 1000
-    ) dispatch(updateProps({ entity: action.payload.entity, newProps: { vy: 0 } }));
+    if (type === jumpGen.name && entity.states.jump[grounded] || entity.createdAgo(falling) < 100) return false;
 
-    return dispatch(action);
+    return true;
   },
   // TODO: these things should probably be in a dash / jump generator
   //      but,I'm not yet sure how to handle filtering generator actions.
