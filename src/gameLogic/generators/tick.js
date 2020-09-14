@@ -5,13 +5,13 @@ import { put } from 'rye-middleware/lib/effects';
 /// TODO better name...
 export function* waitForTrigger(condition, duration) {
   let msTillFinished = duration;
-  yield put(addTick(function _tick(dt) {
+  yield put(addTick(dt => function _tick() {
     return (msTillFinished -= dt) <= 0 || !condition;
   }));
 }
 
 export function* sleep(ms) {
-  yield put(addTick(function _tick(dt) {
+  yield put(addTick(dt => function _tick() {
     return (ms -= dt) <= 0
   }));
 }

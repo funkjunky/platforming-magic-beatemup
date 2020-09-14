@@ -18,19 +18,15 @@ const logger = () => {
       let oldResult = store.getState();
       return next => action => {
         const result = next(action);
-        const player = JSON.stringify(store.getState().entities['player1'].props, null, 2);
-        document.getElementById('logger').innerHTML = '<pre>' + player + '</pre>';
-        /*
         const diff = getDiff(store.getState(), oldResult);
         oldResult = store.getState();
         logs.unshift({ action, diff, time: Date.now() });
         const filteredLogs = logs.filter(getFilter(filters));
         // we check lazily if the filtered logs has changed.
         if (oldCount !== filteredLogs.length) {
-          //printType(filteredLogs);
+          printType(filteredLogs);
         }
         oldCount = filteredLogs.length;
-        */
         return result;
       };
     },

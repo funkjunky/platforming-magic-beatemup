@@ -1,4 +1,7 @@
 const xor = (a, b) => a && !b || b && !a;
+
+// Note: press can return a value,and we'll store that and pass it to release
+//        This is used to pass on the cancel gen action for jump and other generators
 const update = ({ axisListeners, buttonListeners }) => {
   if (!navigator.getGamepads()[0]) return;
 
@@ -14,8 +17,11 @@ const update = ({ axisListeners, buttonListeners }) => {
   // change active state
   changedButton.forEach(a => a.active = !a.active);
   // trigger listeners
-  changedButton.filter(a => !a.active).forEach(a => a.release());
-  changedButton.filter(a => a.active).forEach(a => a.press());
+  changedButton.filter(a => !a.active).forEach(a => {
+    a.release(a.result);
+    delete a.result;
+  });
+  changedButton.filter(a => a.active).forEach(a => a.result = a.press());
 }
 
 export default update;

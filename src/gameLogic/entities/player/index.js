@@ -8,9 +8,10 @@ import conjure, * as Conjure from '../states/conjure';
 import attack, * as Attack from '../states/attack';
 import { combineReducers } from '../combineReducers';
 import Block from '../block';
-import { jump as jumpGen } from 'gameLogic/generators/jump'; 
-import { fireball } from 'gameLogic/generators/fireball'; 
-import { swingSword } from 'gameLogic/generators/sword'; 
+import { jump as jumpGen } from 'gameLogic/generators/jump';
+import { dash as dashGen } from 'gameLogic/generators/dash';
+import { fireball } from 'gameLogic/generators/fireball';
+import { swingSword } from 'gameLogic/generators/sword';
 
 const { jumping, falling, grounded } = Jump.States;
 const { dashing } = Dash.States;
@@ -45,28 +46,13 @@ const playerDefinition = {
 
     if (type === swingSword.name && !entity.states.attack[Attack.States.ready])  return false;
 
-    if (type === dashing.toString() && !entity.states.jump[grounded]) return false;
+    if (type === jumpGen.name && (!entity.states.jump[grounded] && entity.createdAgo(falling) > 100)) return false;
 
-    if (type === jumpGen.name && entity.states.jump[grounded] || entity.createdAgo(falling) < 100) return false;
+    if (type === dashGen.name && (!entity.states.dash[dashing] && !entity.states.jump[grounded] && entity.createdAgo(falling) > 100)) return false;
 
     return true;
   },
-  // TODO: these things should probably be in a dash / jump generator
-  //      but,I'm not yet sure how to handle filtering generator actions.
   updateState: (entity, gameState, dispatch) => {
-    // TODO: This should probably be in typeDefinition player
-    const maxJumpDuration = 1000;
-    // TODO: once a game clock is implemented, we can use that here, to continue to dash after a pause
-    if (entity.states.jump[jumping] && (gameState.gameTime - entity.states.jump[jumping].createdAt) > maxJumpDuration) {
-      dispatch(Jump.falling({ entity }));
-    }
-
-    // TODO: This should probably be in typeDefinition player
-    const maxDashDuration = 500;
-    if (entity.states.dash[dashing] && (gameState.gameTime - entity.states.dash[dashing].createdAt) > maxDashDuration) {
-      dispatch(Dash.notdashing({ entity }));
-    }
-
     // ground if collided with floor
     const collidedWithFloor = entity.collidedWith.find(({ entity, how }) => entity.type === Block.type && how.bottom)
     if (entity.states.jump[falling] && collidedWithFloor) {

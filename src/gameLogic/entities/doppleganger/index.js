@@ -1,7 +1,7 @@
 // Toolbox imports
 import { States as Movement } from '../states/movement';
-import { jumping, States as Jump } from '../states/jump';
-import castFireball from 'gameLogic/generators/fireball';
+import { fireball } from 'gameLogic/generators/fireball';
+import { jump } from 'gameLogic/generators/jump';
 import PlayerDefinition from '../player';
 
 import { pushingLeftForX, pushingRightForX } from 'gameLogic/generators/enemyAI';
@@ -21,12 +21,12 @@ const dopplegangerDefinition = {
     }
 
     //this is dumb, but every LOOP there' a 1/100 chance of jumping
-    if (entity.states.jump[Jump.grounded] && Math.random() > 0.995) {
-      dispatch(dopplegangerDefinition.actionsFilter(jumping, { entity }));
+    if (dopplegangerDefinition.allowedToDispatch(jump.name, entity) && Math.random() > 0.995) {
+      dispatch(jump(getEntity));
     }
 
-    if (entity.states.jump[Jump.grounded] && Math.random() > 0.99) {
-      dispatch(castFireball(getEntity));
+    if (dopplegangerDefinition.allowedToDispatch(fireball.name, entity) && Math.random() > 0.99) {
+      dispatch(fireball(getEntity));
     }
   },
 };

@@ -1,65 +1,54 @@
 import { pauseTicks } from 'effect-tick';
 
 import { pushingLeft, pushingRight, stopping } from 'gameLogic/entities/states/movement';
-import { dashing, notdashing } from 'gameLogic/entities/states/dash';
-import { falling } from 'gameLogic/entities/states/jump';
-import castFireball from 'gameLogic/generators/fireball';
+import { entitySelector } from 'gameLogic/entities';
+import { fireball } from 'gameLogic/generators/fireball';
 import { swingSword } from 'gameLogic/generators/sword';
-import { jump } from 'gameLogic/generators/jump';
+import { jump, cancelJump } from 'gameLogic/generators/jump';
+import { dash, cancelDash } from 'gameLogic/generators/dash';
 import Player from 'gameLogic/entities/player';
 import { togglePause } from 'gameLogic/pause';
-import { player1 } from './index';
-
-// returns the entity, enhanced with a `createdAgo` function that gives how long a state has been active (undefined if not exist)
-const entitySelector = getState => id => () => {
-  const entity = getState().entities[id];
-
-  return {
-    ...entity,
-    createdAgo: state => entity.states[state]
-      && getState().gameTime - entity.states[state].createdAt,
-  };
-};
+import { player1 } from '../index';
 
 export const setGameControls = (Controls, controllerMap, { dispatch, getState }) => {
-  const player1Selector = () => entitySelector(getState)(player1.id);
+  const player1Selector = entitySelector(getState)(player1.id);
 
-  const tryAction = action =>
+  const tryAction = (action, attrs={}) =>
     Player.allowedToDispatch(action.type, player1Selector())
-      && dispatch(action({ entity: player1Selector }));
+      && dispatch(action({ entity: player1Selector(), ...attrs }));
   const tryGenerator = (generator, attrs) =>
     Player.allowedToDispatch(generator.name, player1Selector())
       && dispatch(generator(player1Selector, attrs));
 
   Controls.onAxis({
     axis: axis => axis[0] < 0,
-    press: tryAction(pushingLeft),
-    release: tryAction(stopping),
+    press: () => tryAction(pushingLeft),
+    release: () => tryAction(stopping),
   });
 
   Controls.onAxis({
     axis: axis => axis[0] > 0,
-    press: tryAction(pushingRight),
-    release: tryAction(stopping),
+    press: () => tryAction(pushingRight),
+    release: () => tryAction(stopping),
   });
 
   Controls.on({
     button: controllerMap.jump,
-    press: tryGenerator(jump),
-    // TODO: ALSO cancel jump generator
-    release: tryAction(falling),
+    press: () => tryGenerator(jump),
+    release: ({ endGeneratorAction }) => tryAction(cancelJump, { endGeneratorAction }),
   });
 
   Controls.on({
     button: controllerMap.dash,
-    press: tryAction(dashing),
-    release: tryAction(notdashing),
+    press: () => tryGenerator(dash),
+    release: ({ endGeneratorAction }) => tryAction(cancelDash, { endGeneratorAction }),
   });
 
+  // TODO: make it so we charge up the fireball by holding down
   Controls.on({
     button: controllerMap.fireball,
     press: () => {},
-    release: () => tryGenerator(castFireball),
+    release: () => tryGenerator(fireball),
     // TODO: add charging to cast, release to cancel.
   });
 

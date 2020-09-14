@@ -11,7 +11,8 @@ import { pushingRight } from 'gameLogic/entities/states/movement';
 // TODO: the currying on redux thunk is awkward... perhaps just better formatting, or use generators?
 // TODO:  when to call entity, or when to pass it as the function... it's hard to tell... clean up somehow??
 //Curry is necessary for react-redux later. connect shorthand
-export default function* fireball(owner) {
+// TODO: consider renaming fireball to castFireball... same with the other generators
+export async function* fireball(owner) {
   const fireball = yield call(conjureFireball, owner, { speed: 100, radius: 12, dmg: 3 })
 
   // TODO: put this in 'castingFireball'
@@ -38,7 +39,7 @@ export default function* fireball(owner) {
 function* conjureFireball(owner, props) {
   // TODO: fireball is shared with createFireball... DRY
   yield put(conjuring({ entity: owner(), params: { type: 'fireball' } }));
-  yield put(sleep(1000));
+  yield call(sleep, 1000);
 
   const { props: { x, y, width }, id } = owner();
   return yield put(createFireball({ owner: { id }, x: x + width / 2, y, ...props }));
@@ -50,7 +51,7 @@ export function* fireballExplosion({ x, y, width, height, dmgPerTick }) {
   let msTillFinished = 2000;
   // TODO: should the lifespan ONLY exist here in the generator?
   // Also there's no indication when it would disappear according to either the state or the props.
-  yield put(addTick(function _tick(dt) {
+  yield put(addTick(dt => function _tick() {
     return (msTillFinished -= dt) <= 0;
   }));
   yield put(removeEntity(explosion()));

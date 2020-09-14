@@ -3,7 +3,7 @@ import 'end-polyFills';
 
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import { createYieldEffectMiddleware } from 'rye-middleware';
+import { createRyeMiddleware } from 'rye-middleware';
 import { tickMiddleware, resumeTicks } from 'effect-tick';
 import metaSelector from 'redux-meta-selector';
 
@@ -16,9 +16,9 @@ import spawnEnemiesLevel1 from 'gameLogic/generators/spawnEnemies';
 import { togglePause } from 'gameLogic/pause';
 import createLevel from './createLevel';
 
-document.addEventListener('DOMContentLoaded', firstLoad);
-
 export const player1 = { id: 'player1' };
+
+document.addEventListener('DOMContentLoaded', firstLoad);
 
 async function firstLoad() {
   const logger = getLogger();
@@ -27,7 +27,7 @@ async function firstLoad() {
     reducer,
     composeEnhancers(applyMiddleware(
       thunk,
-      createYieldEffectMiddleware(),
+      createRyeMiddleware(),
       tickMiddleware, //might be screwing up things...
       metaSelector,
       logger.middleware,

@@ -1,4 +1,4 @@
-import { entityDefinitions } from '../index';
+import { entityDefinitions, entitySelector } from '../index';
 import { updateCollisions, resolveCollisions } from './collisions';
 
 const update = (dt, getState, dispatch) => {
@@ -16,7 +16,7 @@ const update = (dt, getState, dispatch) => {
     entityDefinitions[entity.type].updateProps?.(entity, dt, dispatch)
   });
   Object.values(getState().entities).forEach(entity => {
-    const getEntity = () => getState().entities[entity.id];
+    const getEntity = entitySelector(getState)(entity.id);
     entityDefinitions[entity.type].updateDoAction?.(getEntity, dispatch);
   });
 };

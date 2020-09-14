@@ -25,6 +25,18 @@ export const createEntity = createAction('CREATE_ENTITY', ({ id, type, states, p
   }
 });
 
+// returns the entity, enhanced with a `createdAgo` function that gives how long a state has been active (undefined if not exist)
+export const entitySelector = getState => id => () => {
+  const entity = () => getState().entities[id];
+
+  return {
+    ...entity(),
+    // TODO: should i remove position,and just use Object.values()[0]?
+    createdAgo: (state, position) => entity().states[state]
+      && getState().gameTime - entity().states[state][position].createdAt,
+  };
+};
+
 // TODO: this file is getting large and has too many concepts in it
 export const noCollisionWithForDuration = ({ entity, noCollisionWith, duration }) =>
   (dispatch, getState) =>
@@ -127,7 +139,7 @@ const entitiesReducer = (state = {}, action) => produce(state, draftState => {
     // Everything else with a payload is a state action!
     default:
       // TODO: this if statement is suspicious. Is it needed? When will this be mistakenly triggered? provide an else and console log to see.
-      if (action.payload && action.payload.entity !== undefined) {
+      if (action.payload?.entity) {
         const entity = draftState[action.payload.entity.id];
         entityDefinitions[entity.type].stateReducer(entity.states, action);
       }

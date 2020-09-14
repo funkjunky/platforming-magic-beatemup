@@ -139,17 +139,42 @@ Kill switch on generators:	[cancel jump, conjure, seekFireball, etc.]\
 		*- add quick fall logic to generator [if stop jumping less than 1 second, then set vy to 0]\
 		*- add jump shortly after falling. (use 500ms at first to test, then use 100ms once working)\
 		- use redux thunks, instead of generators, because of new return of generators\
-			- replace all the generators for tick with thunks\
-			- get things compiled\
+			*- replace all the generators for tick with thunks\
+			*- get things compiled\
+			*- replace jump action with jump generator\
 \
-		- replace jump action with jump generator\
-		- replace dash action with dash generator\
+			*- create cancelJump(endGenerator, entity) \{ endGen(); falling(\{ entity \}); \}\
+			*- cancel jump generator on release\
+			*- create dash generator\
+			*- replace dash action with dash generator and cancel on release\
+			*- fix jump!!\
+				*- add 1000 ms max vy duration\
+				*- fix jump cancling for 100ms\
+				*- double check it??\
 \
-		- have i added redux thunks? If not, figure it out!! [I have full control!]\
+			- program endGenerator on the middleware\
+				*- stop iterating if activeGenerator no longer exists\
+				*- cancel a child generator if active [this will chain reaction]\
+					*- so, hold a array of tuples [generator, childGenerator]\
+				- how do we cancel tick? It\'92s its own middleware NOT a generator\
 \
-		- Get everything works\
+				ANSWER: tick, needs to be a generator, then RYE will add it as a childGenerator, and therefor not call `next` on it. [This means tailoring tick to RYE, so it is a generator with a while loop that waits for the next interval]\
+					- we should also tie together the timers for this.\
 \
-		- add cancelling of fireball, if jump or dash and ensure it works.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 			- get things working\
+				*- fireball timings are off\
+				- quick jump fall not working\
+				- infinite jump\
+				- fall through floor easily\
+				- fireball not pulsing\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 		- how do we deep cancel a generator??? castFireball, then conjure fireball\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 		- add cancelling of fireball, if jump or dash and ensure it works.\
 (if not, add more points to get it working)\
 \
 	- add, that if either recovering from a spell or an attack, then cant attack or cast\
@@ -188,6 +213,11 @@ Question: Cancel generator??? What\'92d be a nice way to achieve this??\
 	ie. cancel jump, because state is falling\
 	ie. cancel conjurefireball, because state is moving\
 	ie. cancel seekfireball, because collided with a target\
+	!! how do i cancel sub generators? conjure in castFireball\
+\
+Question: Adding \'93tags\'94 to Rye. Attached haphazardly to the generator function INSTANCE?\
+	ie. tagged entity, to cancel all generators for an entity\
+	ie. tagged with entity AND jump, so we could call cancelJump with JUST the entity,and have the generator be cancelled by that.\
 \
 \'97 fix/jumping-falling-bugs\
 \
