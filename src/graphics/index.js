@@ -24,6 +24,7 @@ const getDir = movement => {
   else return movement[pushingRight] ? pushingRight : pushingLeft;
 }
 
+// TODO: Instead, some states should have "expirations" on them, that both logic and graphics can use.
 const groundedDuration = 300;
 const getPlayerSprite = (sprites, entity, now) => {
   // TODO: this code is too dense. Find a way to abstract out pieces to remove context and simplify it

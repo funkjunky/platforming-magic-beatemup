@@ -12,7 +12,6 @@ import reducer from 'gameLogic/reducer.js';
 import { loadResourcesAndLoops } from './bootstrap';
 import getLogger from 'getLogger';
 import { characterWidth } from './loadResources';
-import castFireball from 'gameLogic/entities/fireball';
 
 document.addEventListener('DOMContentLoaded', firstLoad);
 
@@ -26,7 +25,7 @@ async function firstLoad() {
     composeEnhancers(applyMiddleware(
       thunk,
       createYieldEffectMiddleware(),
-      tickMiddleware, //might be screwing up things...
+      tickMiddleware(), //might be screwing up things...
       metaSelector,
       logger.middleware,
     )),

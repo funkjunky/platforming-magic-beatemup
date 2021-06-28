@@ -49,7 +49,6 @@ export const updateProps = createAction('UPDATE_PROPS', (payload, meta) => ({
 const entitiesReducer = (state = {}, action) => produce(state, draftState => {
   switch(action.type) {
     case createEntity.toString(): {
-      console.log('payload create: ', action.payload);
       const {
         id, type, states = {},
         // sensible props defaults. Currently use vx and vy for player
