@@ -3,6 +3,7 @@ import * as Jump from 'gameLogic/entities/states/jump';
 import * as Movement from 'gameLogic/entities/states/movement';
 import * as Dash from 'gameLogic/entities/states/dash';
 import * as Conjure from 'gameLogic/entities/states/conjure';
+import getFrameByTime from './getFrameByTime';
 
 const { jumping, falling, grounded } = Jump.States;
 const { pushingLeft, pushingRight, stopping } = Movement.States;
@@ -24,15 +25,23 @@ const getDir = movement => {
   else return movement[pushingRight] ? pushingRight : pushingLeft;
 }
 
+const getFrameFromState = (state, now, animation) => {
+  // TODO: also add state stuff here???
+  
+  const totalMs = now - state.createdAt;
+  return getFrameByTime(totalMs, animation.runTime, animation.frames);
+};
+
 // TODO: Instead, some states should have "expirations" on them, that both logic and graphics can use.
 const groundedDuration = 300;
 const getPlayerSprite = (sprites, entity, now) => {
   // TODO: this code is too dense. Find a way to abstract out pieces to remove context and simplify it
   const { jump, movement, dash, conjure } = entity.states;
   const dir = getDir(movement);
-  const getSprite = getGetSprite(now);
+  const getSprite = getFrameByTimePassed(now);
   if (conjure[conjuring]) {
     // TODO: name sprites the same as their states
+    // TODO: so.... none of these current sprites are animations????????
     return sprites[dir].spell.chargingup[0];
   } else if (conjure[casting]) {
     return sprites[dir].spell.casting[0];
@@ -73,12 +82,6 @@ const getPlayerSprite = (sprites, entity, now) => {
   } else {
     console.error('NO GRAPHIC FOR STATE', movement, stopping, movement[stopping]);
   }
-};
-
-const getGetSprite = now => (state, msPerFrame, sprites) => {
-    const totalMs = now - state.createdAt
-    const index = Math.floor(totalMs / msPerFrame) % sprites.length;
-    return sprites[index];
 };
 
 export default (ctx, state, sprites) => {
@@ -122,13 +125,7 @@ export default (ctx, state, sprites) => {
   });
 
   if (state.pause) {
-    ctx.globalAlpha = 0.5;
-    ctx.fillStyle = c.orange;
-    ctx.fillRect(0, 0, 960, 540);
-    ctx.globalAlpha = 1.0;
-    ctx.fillStyle = c.darkGreen;
-    ctx.textAlign = 'center';
-    ctx.fillText('PAUSE', 480, 270);
+    drawGenericPause(ctx);
   }
 
   // printing character position:
@@ -138,3 +135,13 @@ export default (ctx, state, sprites) => {
     ctx.fillText('X, Y: ' + fireball.props.x + ', ' + fireball.props.y, 20, 20 + 40 * i)
   );
 };
+
+const drawGenericPause = ctx => {
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = c.orange;
+    ctx.fillRect(0, 0, 960, 540);
+    ctx.globalAlpha = 1.0;
+    ctx.fillStyle = c.darkGreen;
+    ctx.textAlign = 'center';
+    ctx.fillText('PAUSE', 480, 270);
+}

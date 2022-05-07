@@ -1,6 +1,9 @@
 import character from 'assets/character.png';
 import dash from 'assets/dash.wav';
 import { States } from 'gameLogic/entities/states/movement';
+import getSwordieSprites from './getSwordieSprites';
+import loadSound from './loadSound';
+import getFlippedFrame from './getFlippedFrame';
 
 const { pushingLeft, pushingRight } = States;
 
@@ -10,13 +13,6 @@ const loadSounds = async audioContext => ({
   dash: await loadSound(audioContext, dash),
 });
 
-const loadSound = async (audioContext, src) => {
-  const res = await fetch(src);
-  const arrayBuffer = await res.arrayBuffer();
-  const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-  return audioBuffer;
-}
-
 const loadResources = async audioContext => {
   const rightFacingImage = new Image();
 
@@ -24,67 +20,41 @@ const loadResources = async audioContext => {
   // specify resources, which will trigger the onload
   rightFacingImage.src = character;
   const frames = await loadFrames({ rightFacingImage, count: 13, width: characterWidth, height: characterWidth });
+  const swordieSprites = getSwordieSprites(frames);
 
   return {
+    frames,
     sprites: {
-      pushingRight: getSprites(frames, pushingRight),
-      pushingLeft: getSprites(frames, pushingLeft),
+      pushingRight: swordieSprites(pushingRight),
+      pushingLeft: swordieSprites(pushingLeft),
     },
     sounds: await loadSounds(audioContext),
   }
 };
+//const flippedImage = await getFlippedFrame(rightFacingImage);
+// .reduce((reversed, v) => ([ v, ...reversed ]), [])
 
-const getSprites = (frames, direction) => ({
-  idle: select(frames[direction], [0, 1]),
-  slash: {
-    windup: [frames[direction][2]],
-    inmotion: [frames[direction][3]],
-    recover: [frames[direction][5]], //opps, i ordered 4 and 5 wrong in the image
-  },
-  spell: {
-    chargingup: [frames[direction][2]],
-    casting: [frames[direction][4]],
-    recover: [frames[direction][5]], //opps, i ordered 4 and 5 wrong in the image
-  },
-  running: select(frames[direction], [7, 8, 9, 8]),
-  dashing: [frames[direction][6]],
-  jumping: {
-    raising: [frames[direction][10]],
-    crescendo: [frames[direction][10]],
-    falling: [frames[direction][10]],
-    landing: select(frames[direction], [11, 12, 1]),
-  },
-});
-
-// this will make more sense when i add more frames to animations
-const select = (arr, indices) => indices.map(i => arr[i]);
-
-const loadFrames = ({ rightFacingImage, count, width, height }) => new Promise(resolve =>
-  // TODO: create a range iterator
-  rightFacingImage.onload = async () => {
-    console.log('onload');
-    const flippedImage = await getFlippedSprite(rightFacingImage);
-    resolve({
-      [pushingRight]: await Promise.all([...Array(count).keys()].map(i =>
+// TODO: can I make a library functions to simplify this??
+const loadFrames = ({ rightFacingImage, count, width, height }) =>
+  new Promise(resolve =>
+    rightFacingImage.onload = async () =>
+      // TODO: create a range iterator
+      resolve(await Promise.all([...Array(count).keys()].map(i =>
         createImageBitmap(rightFacingImage, width * i, 0, width, height)
-      )),
-      [pushingLeft]: (await Promise.all([...Array(count).keys()].map(i =>
-        createImageBitmap(flippedImage, width * i, 0, width, height)
-      ))).reduce((reversed, v) => ([ v, ...reversed ]), [])
-    })
-  }
+      )))
 );
 
-const getFlippedSprite = image => {
-  const c = document.createElement('canvas');
-  c.width = image.width;
-  c.height= image.height;
-  const ctx = c.getContext('2d');
-  ctx.scale(-1, 1);
-  ctx.drawImage(image, -image.width, 0);
-  const img = new Image();
-  img.src = c.toDataURL();
-  return img;
-}
+// TODO: use this to ensure I can do load frames after the image has loaded,... rather than relying on an onLoad
+// So.... I can write something like:
+//  return splitImagesIntoFrames(await loadImage(rightFacingImage));
+const imagesToLoad = new set();
+const loadImage = image => new Promise(resolve => {
+  if(imagesToLoad.exists(image)) {
+    imagesToLoad.onLoad = () => resolve(image);
+  } else {
+    imagesToLoad.set(image);
+    resolve(image);
+  }
+});
 
 export default loadResources;
